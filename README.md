@@ -9,7 +9,7 @@ Conjunto de arquivos referente a biblioteca **bdgd2dss** desenvolvida na linguag
 
 ## 1 - Base de Dados Geográfica da Distribuidora - BDGD
 
-A BDGD faz parte integrante do Sistema de Informação Geográfico Regulatório da Distribuição (SIG-R). Em adição, é um modelo geográfico estabelecido com o objetivo de representar de forma simplificada o sistema elétrico real da distribuidora, visando refletir tanto a situação real dos ativos quanto as informações técnicas e comerciais de interesse. De forma a emular a rede elétrica dos agentes envolvidos, a BDGD é estruturada em entidades, modelos abstratos de dados estabelecidos com o objetivo de representar informações importantes, como as perdas estimadas pelos agentes. Cada uma dessas entidades é detalhada em diversos dados, dentre as quais constam aquelas que devem observar a codificação pré-estabelecida pelo Dicionário de Dados da Agência Nacional de Energia Elétrica (ANEEL) (DDA), o qual especifica padrões de dados a serem utilizados na BDGD, visando a normalização das informações. Em relação aos dados cartográficos, eles são disponibilizados em um arquivo *Geodatabase* (*.gdb*), por distribuidora. O Manual de Instruções da BDGD (https://www.gov.br/aneel/pt-br/centrais-de-conteudos/manuais-modelos-e-instrucoes/distribuicao) e o Módulo 10 do PRODIST (https://www.gov.br/aneel/pt-br/centrais-de-conteudos/procedimentos-regulatorios/prodist) contém informações úteis para entender a BDGD, como as entidades disponibilizadas e as definições dos campos. 
+A BDGD faz parte integrante do Sistema de Informação Geográfico Regulatório da Distribuição (SIG-R). Em adição, é um modelo geográfico estabelecido com o objetivo de representar de forma simplificada o sistema elétrico real da distribuidora, visando refletir tanto a situação real dos ativos quanto as informações técnicas e comerciais de interesse. De forma a emular a rede elétrica dos agentes envolvidos, a BDGD é estruturada em entidades, modelos abstratos de dados estabelecidos com o objetivo de representar informações importantes, como as perdas estimadas pelos agentes. Cada uma dessas entidades é detalhada em diversos dados, dentre as quais constam aquelas que devem observar a codificação pré-estabelecida pelo Dicionário de Dados da Agência Nacional de Energia Elétrica (ANEEL) (DDA), o qual especifica padrões de dados a serem utilizados na BDGD, visando a normalização das informações. Em relação aos dados cartográficos, eles são disponibilizados em um arquivo *Geodatabase* (*.gdb*), por distribuidora. O Manual de Instruções da BDGD (https://www.gov.br/aneel/pt-br/centrais-de-conteudos/manuais-modelos-e-instrucoes/distribuicao) e o Módulo 10 do PRODIST (https://www.gov.br/aneel/pt-br/centrais-de-conteudos/procedimentos-regulatorios/prodist) contém informações úteis para entender a BDGD, como as entidades disponibilizadas e as definições dos campos [^Ref-BDGD]. 
 
 Inicialmente, os dados da BDGD são classificados como entidades geográficas e não geográficas, as Tabelas 1 e 2 mostram as camadas que as compõe, respectivamente.
 
@@ -41,7 +41,7 @@ Inicialmente, os dados da BDGD são classificados como entidades geográficas e 
 | 36  | UNTRD  | Unidade Transformadora da Distribuição                     |
 | 37  | UNTRS  | Unidade Transformadora da Subestação                       |
 
-**Fonte:** Adaptado de ANEEL (2021).
+**Fonte:** Adaptado de ANEEL (2021) [^Ref-ManualBDGD].
 
 **Tabela 1: Entidades não geográficas da BDGD.**
 
@@ -70,17 +70,17 @@ Inicialmente, os dados da BDGD são classificados como entidades geográficas e 
 | 20  | RAMLIG  | Ramal de Ligação                              |
 | 21  | SEGCON  | Segmento Condutor                             |
 
-**Fonte:** Adaptado de ANEEL (2021).
+**Fonte:** Adaptado de ANEEL (2021) [^Ref-ManualBDGD].
 
 ### 1.2 - *Download* dos arquivos
 
-Para realizar o *download* dos dados de uma distribuidora, basta acessar o link: https://dadosabertos-aneel.opendata.arcgis.com/search?tags=distribuicao e pesquisá-la. Assim sendo, aparecerá mais de um arquivo, correspondente a cada ano. A Figura 1 mostra essa etapa.
+Para realizar o *download* dos dados de uma distribuidora, basta acessar o link: https://dadosabertos-aneel.opendata.arcgis.com/search?tags=distribuicao [^Ref-BDGD] e pesquisá-la. Assim sendo, aparecerá mais de um arquivo, correspondente a cada ano. A Figura 1 mostra essa etapa.
 
 ![dadosabertos_f1](https://github.com/user-attachments/assets/7a004291-d5ac-41c0-a7e1-31eacc8aa05d)
 
 **Figura 1: Captura de tela dos dados da BDGD.**
 
-**Fonte:** ANEEL (2024).
+**Fonte:** ANEEL (2024) [^Ref-BDGD].
 
 Escolhendo o arquivo correspondente, basta baixar como mostra a Figura 2. Alerta-se que essa etapa pode demorar um pouco. 
 
@@ -88,13 +88,13 @@ Escolhendo o arquivo correspondente, basta baixar como mostra a Figura 2. Alerta
 
 **Figura 2: Captura de tela de *download* dos dados da BDGD.**
 
-**Fonte:** Adaptado de ANEEL (2024).
+**Fonte:** Adaptado de ANEEL (2024) [^Ref-BDGD].
 
 ## 2 - Tratamento dos arquivos no *QGIS*
 
 ### 2.1 - Gerenciador de Fonte de Dados
 
-Após realizado o *download*, será possível trabalhar com os arquivos. Para isso deve-se usar a ferramenta *QGIS*, um *software* livre com código-fonte aberto, e multiplataforma. Basicamente é um sistema de informação geográfica (SIG) que permite a visualização, edição e análise de dados georreferenciados. O *download* pode ser feito no *link*: https://qgis.org/download/. Abrindo o *QGIS*, deve-se ir em "Gerenciador da Fonte de Dados" (opção Vetor). Ao selecionar a opção "Diretório", coloca-se a codificação em "Automático", em Tipo escolhe-se a opção "Arquivo aberto GDB", e em Base de Vetores escolhe a pasta do arquivo BDGD baixado e extraído. Finalmente em *LIST_ALL_TABLES* coloca-se em "*YES*" para ser possível uma pré-visualização das camadas disponíveis e selecionar aquelas que desejar visualizar. Essa etapa é mostrada na Figura 3  . 
+Após realizado o *download*, será possível trabalhar com os arquivos. Para isso deve-se usar a ferramenta *QGIS* [^Ref-QGIS], um *software* livre com código-fonte aberto, e multiplataforma. Basicamente é um sistema de informação geográfica (SIG) que permite a visualização, edição e análise de dados georreferenciados. O *download* pode ser feito no *link*: https://qgis.org/download/. Abrindo o *QGIS*, deve-se ir em "Gerenciador da Fonte de Dados" (opção Vetor). Ao selecionar a opção "Diretório", coloca-se a codificação em "Automático", em Tipo escolhe-se a opção "Arquivo aberto GDB", e em Base de Vetores escolhe a pasta do arquivo BDGD baixado e extraído. Finalmente em *LIST_ALL_TABLES* coloca-se em "*YES*" para ser possível uma pré-visualização das camadas disponíveis e selecionar aquelas que desejar visualizar. Essa etapa é mostrada na Figura 3  . 
 
 ![fontededados_f3](https://github.com/user-attachments/assets/9bef0b68-8487-4a55-bae3-45ec3012fcf5)
 
@@ -175,23 +175,23 @@ Finalizado o processo de exportação das camadas, agora pode-se ir para os *scr
 
 ## 3 - Convertendo BDGD em *.dss* usando *Python*
 
-Para auxiliar o usuário foi disponibilizada uma rotina que lista os alimentadores presentes nos arquivos. O *script* se chama feeders.py e está aqui nesse diretório. Corresponde a primeira função presente no código. Com os dados baixados, agora é possível utilizar o *bdgd2dss* e modelar os alimentadores desejados. Para que possa criar os arquivos *.dss* necessários para a simulação deste, o único dado de entrada no programa *bdgd2dss* é o nome do alimentador e o dia de análise (DU - Dia útil, SA - Sábado e DO - Domingo). {c:red}MELHORAR: Salienta-se que foi criado um *script* que chama a biblioteca *bdgd2dss* e escolhe se os alimentadores que serão modelados, está também aqui no diretório e se chama gerarali.py, nele que será colocado os dados de entrada citados.{\c}
+Para facilitar o uso, foi disponibilizada uma rotina que lista os alimentadores presentes nos arquivos, por meio do *script feeders_list_all.py*, localizado neste diretório. Com os dados obtidos, agora é possível utilizar a biblioteca *bdgd2dss* para modelar os alimentadores desejados. Além disso, foi criada uma rotina adicional, *feeders_processing.py*, que permite modelar os alimentadores selecionados a partir da lista gerada anteriormente pelo *feeders_list_all.py*. O usuário também deverá informar o dia de análise (DU - Dia Útil, SA - Sábado, DO - Domingo) como dado de entrada.
 
-Inicialmente sugere-se ao usuário escolher uma gama de alimentadores para que possa ser verificado quais estão adequados. A Figura 11 mostra esse procedimento, onde será modelado todos os alimentadores de cidade de Uberlândia-MG.
+Inicialmente, recomenda-se que o usuário selecione um conjunto de alimentadores para verificar quais estão adequados para a modelagem. A Figura 11 ilustra esse procedimento, mostrando a modelagem de todos os alimentadores da cidade de Uberlândia-MG.
 
 ![f9_codigogerar_ali](https://github.com/user-attachments/assets/e513bddb-9a9a-4a6c-ad4b-22244f9baa31)
 
-**Figura 11: Captura de tela do Visual Code do códifo gerarali.py sendo utilizado**
+**Figura 11: Captura de tela do Visual Code do códifo *feeders_processing.py* sendo utilizado**
 
 **Fonte:** O Autor (2024).
 
 A título de demonstração de desempenho computacional, usou-se uma máquina que possui as seguintes configurações: *8th Gen Intel (R) Core (TM) i5-8500 @3.00GHz; 8 GB RAM; Windows 10 Pro and SSD NVMe*. O procedimento demorou 2822 segundos, que são aproximadamente 47 minutos, para gerar a modelagem dos 62 alimentadores da cidade de Uberlândia - Minas Gerais.
 
-Em sequência utiliza-se a segunda função do *script* nomeada *feeders.py*. Esse criará uma planilha listando os alimentadores, quais convergem, e, também, uma análise da diferença de energia medida a partir dos dados da camada *CTMT* comparados com aqueles da simulação no OpenDSS, ao longo de um ano. Desta forma, o usuário poderá escolher um alimentador mais adequado, pois devido a falta de informações ou inconsistências na criação das planilhas da *BDGD* e disponibilização no repositório, acarretando, portanto, em erros na modelagem.A Figura 12 mostra essa planilha gerada. Um limiar de 15% foi escolhido entre as medidas de energia, no intuito de considerar que o alimentador está adequado ou não para análises e estudos. 
+Em sequência utiliza-se o *script* chamado *feeders_feasibility.py*. Esse criará uma planilha listando os alimentadores, quais convergem, e, também, uma análise da diferença de energia medida a partir dos dados da camada *CTMT* comparados com aqueles da simulação no OpenDSS, ao longo de um ano. Desta forma, o usuário poderá escolher um alimentador mais adequado, pois devido a falta de informações ou inconsistências na criação das planilhas da *BDGD* e disponibilização no repositório, acarretando, portanto, em erros na modelagem.A Figura 12 mostra essa planilha gerada. Um limiar de 15% foi escolhido entre as medidas de energia, no intuito de considerar que o alimentador está adequado ou não para análises e estudos, este limiar é um dado de entrada no *script feeders_feasibility.py*. 
 
 ![planilhafeeders](https://github.com/user-attachments/assets/a7abef38-c0c1-4d13-8f5c-d2d91f0b737f)
 
-**Figura 12: Captura de tela do planilha gerada em *feeders.py* para escolha do alimentador baseado na convergência e limiar adotados**
+**Figura 12: Captura de tela do planilha gerada em *feeders_feasibility.py* para escolha do alimentador baseado na convergência e limiar adotados**
 
 **Fonte:** O Autor (2024).
 
@@ -204,7 +204,7 @@ Com o alimentador escolhido, o usuário poderá direcionar para as suas análise
 **Fonte:** O Autor (2024).
 
 > [!IMPORTANT] 
-> O arquivo *requirements.txt* lista todas as bibliotecas e as suas respectivas versões necessárias para a utilização dos *scripts* listados e disponíveis no diretório.
+> O arquivo *requirements.txt* lista todas as bibliotecas e as suas respectivas versões necessárias para a utilização dos *scripts* listados e disponíveis no diretório. Foi utilizado a versão do *python 2.8.2* [^Ref-Python] e o ambiente de simulações o Visual Studio Code [^Ref-Microsoft].
 
 ## [](#header-2)3 - Como citar esta biblioteca
 
