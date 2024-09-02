@@ -17,6 +17,8 @@ alimentadoresudia = [
     'ULAE722', 'ULAE724', 'ULAE726', 'ULAE728', 'ULAN902', 'ULAN903'
 ]
 
+atualizar = False
+
 # Filtrar o DataFrame pelos alimentadores desejados
 ctmt_filtered = ctmt[ctmt['COD_ID'].isin(alimentadoresudia)]
 
