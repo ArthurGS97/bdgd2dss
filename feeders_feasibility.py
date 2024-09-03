@@ -6,7 +6,7 @@ import os
 import pandas as pd
 import feeders_list_all
 
-limiar = 10 #Usuario define o limiar de diferença percentual entre a energia do medidor e a energia do BDGD
+limiar = 15 #Usuario define o limiar de diferença percentual entre a energia do medidor e a energia do BDGD
 
 # Obter o diretório onde o script está localizado
 script_dir = os.path.dirname(os.path.abspath(__file__))
