@@ -5,9 +5,6 @@ import dicionarios
 
 start_total = time.time()
 
-
-#alimentador = 5001990
-
 alimentadores =  ['ULAD202', 'ULAD203', 'ULAD204', 'ULAD205', 'ULAD206', 'ULAD208', 'ULAD209', 'ULAD210', 'ULAD211', 
                   'ULAD212', 'ULAD215', 'ULAD216', 'ULAD217', 'ULAD218', 'ULAD219', 'ULAE704', 'ULAE705', 'ULAE707', 
                   'ULAE708', 'ULAE709', 'ULAE712', 'ULAE713', 'ULAE714', 'ULAE716', 'ULAE718', 'ULAE721', 'ULAE722', 
