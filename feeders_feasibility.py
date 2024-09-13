@@ -6,15 +6,22 @@ import os
 import pandas as pd
 import feeders_list_all
 
-limiar = 16 #Usuario define o limiar de diferença percentual entre a energia do medidor e a energia do BDGD
+
+limiar = 15 #Usuario define o limiar de diferença percentual entre a energia do medidor e a energia do BDGD
 
 # Obter o diretório onde o script está localizado
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
 # Carregar o arquivo CSV
-ctmt = pd.read_csv(r'Inputs\CTMT_Uberlandia.csv', sep=',')
+ctmt = pd.read_csv(r'Inputs\CTMT.csv', sep=',')
 
-feeders_list = feeders_list_all.get_cod_id_list()
+# Lista de todos os feeders simulando o outro código
+feeders_list = [5001990, 5001991, 5001992, 5001993, 5001994, 5001995, 5001996, 5001997, 5001998, 
+                5002148, 5002188, 5002210, 5002211, 5002228, 5002409, 5002410, 5002411, 5002412, 
+                5002413, 5002414, 5007257, 5007258, 5007259, 5008497, 5008498, 5008499, 5008500]
+
+
+
 # Inicializa a interface do PyDSS
 dss = py_dss_interface.DSSDLL()
 
@@ -24,12 +31,13 @@ data_list = []
 def montar_planilha():
     time_start = time.time()
     for feeder in feeders_list:
-        dss.file = rf"C:\FeedersUdia\{feeder}\Master_{feeder}.dss"
+        dss.file = rf"C:\ValidandoBiblioteca\Goiania\{feeder}\Master_{feeder}.dss" #Verificar se o caminho está correto
         dss.text(f"compile {dss.file}")
 
         # Resolve o circuito
         dss.solution_solve()
 
+        #dss.text("Show Isolated")
         energymeterday = 0
         energymeterday = dss.meters_register_values()[0]
     
@@ -59,6 +67,7 @@ def montar_planilha():
             "Energy BDGD": energyBDGD,
             "Percent Difference": perc
         })
+        print(f"Feeder {feeder} processado com sucesso!")
 
     # Criar o DataFrame final com todos os feeders
     df = pd.DataFrame(data_list)

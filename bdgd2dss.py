@@ -3,86 +3,14 @@ import time
 import re
 import os
 
-# Início do tempo total de execução
-#start_total = time.time()
-
-#Extraido da rotina (name).py q lista os alimentadores do municipio buscado
-""" 
-ALIMENTADORES Uberlândia:
-- SE Uberlândia 1: ULAU01, ULAU02, ULAU03, ULAU05, ULAU11, ULAU12, ULAU13, ULAU14, ULAU15, ULAU35, ULAU36, ULAU37, ULAU38 e ULAU41
-- SE Uberlândia 2: ULAD202, ULAD203, ULAD204, ULAD205, ULAD206, ULAD208, ULAD209, ULAD210, ULAD211, ULAD212, ULAD215, ULAD216, ULAD217, ULAD218 e ULAD219
-- SE Uberlândia 6: ULAS602, ULAS603, ULAS604, ULAS606, ULAS607, ULAS609, ULAS610, ULAS612, ULAS613, ULAS614, ULAS626, ULAS627, ULAS628, ULAS629, ULAS633 e ULAS634
-- SE Uberlândia 7: ULAE704, ULAE705, ULAE707, ULAE708, ULAE709, ULAE712, ULAE713, ULAE714, ULAE716, ULAE718, ULAE721, ULAE722, ULAE724, ULAE726 e ULAE728
-- SE Uberlândia 9: ULAN902 e ULAN903
-"""
-
-################################################################ESCOLHA ALIMENTADOR
-#feeder = 'ULAS633'
-###################################################################
-
-#Colocar norma, ano (versão), pagina, sigla-significado e atributo
-dicionario_kv = {
-    3: 0.120,
-    6: 0.127,
-    10: 0.220,
-    13: 0.240,
-    23: 2.2,
-    38: 6.93,
-    39: 7.96,
-    45: 12.7,
-    49: 13.8,
-    61: 22.0,
-    62: 23.0,
-    69: 27.0,
-    71: 33.0,
-    72: 34.5,
-    77: 35.0,
-    82: 69.0,
-    94: 138.0,
-    95: 145.0
-}
-
-dicionario_kva = {
-    54:2500,
-    59:3300,
-    62:4200,
-    64:5000,
-    67:7000,
-    68:7500,
-    72:9375,
-    74:10000,
-    76:12500,
-    77:13300,
-    78:15000,
-    82:20000,
-    83:25000,
-    87:30000,
-    89:33000,
-    90:33300,
-    91:40000,
-    94:64000
-}
-
-#Dicionário de tipos de unidades de seccionamento
-dicionario_tip_unid = {
-    19: "Chave Faca",
-    20: "Chave Faca Tripolar Abertura com Carga",
-    22: "Chave Fusivel",
-    29: "Disjuntor",
-    32: "Religador",
-    33: "Seccionadora Tripolar da SE",
-    34: "Seccionadora Unipolar da SE",
-    35: "Seccionalizador"
-}
-
 
 #Função para gerar o arquivo Master.dss
 def generate_master(feeder, dicionario_kv, dicionario_kva, dia_de_analise, output_dir=None):
     start_master = time.time()
 
     eqtrat = pd.read_csv(r'Inputs\EQTRAT.csv', sep=',')
-    untrat = pd.read_csv(r'Inputs\UNTRAT_Uberlandia.csv', sep=',')
-    ctmt = pd.read_csv(r'Inputs\CTMT_Uberlandia.csv', sep=',')
+    untrat = pd.read_csv(r'Inputs\UNTRAT.csv', sep=',')
+    ctmt = pd.read_csv(r'Inputs\CTMT.csv', sep=',')
     if output_dir is None:
         output_dir = os.getcwd()
     output_file_path = os.path.join(output_dir, f'Master_{feeder}.dss')
@@ -109,7 +37,7 @@ def generate_master(feeder, dicionario_kv, dicionario_kva, dia_de_analise, outpu
         # Escrever no arquivo
         conteudo = [
             "Clear\n\n",
-            f"New circuit.{feeder} bus1=source.1.2.3 basekv=138 pu={tape} angle=0 phases=3 frequency=60 mvasc3=5777.8 mvasc1=5794.4\n\n",
+            f"New circuit.{feeder} bus1=source.1.2.3 basekv={kv1} pu={tape} angle=0 phases=3 frequency=60 mvasc3=5777.8 mvasc1=5794.4\n\n",
             f"New transformer.SUB windings=2.0 %loadloss={loadloss} %noloadloss={noloadloss} sub=yes\n",
             f"~ wdg=1 bus=source.1.2.3 kv={kv1} kva={pot} conn=delta\n",
             f"~ wdg=2 bus={pac_ini}.1.2.3 kv={kv2} kva={pot} conn=delta\n\n",
@@ -212,6 +140,20 @@ def generate_linecode(output_dir=None):
     output_file_path = os.path.join(output_dir, 'linecode.dss')   
 
     with open(output_file_path, 'w') as arquivo:
+
+        linecodes_unsemt = [
+            "New linecode.CAB108_3_1 nphases=1 basefreq=60.0 units=km\n",
+            "~ r1=0.2006 x1=0.7049 c1=0.0 c0=0.0\n",
+            "!~ cnom=576.0 cmax=748.8\n\n",
+            "New linecode.CAB108_3_2 nphases=2 basefreq=60.0 units=km\n",
+            "~ r1=0.2006 x1=0.7049 c1=0.0 c0=0.0\n",
+            "!~ cnom=576.0 cmax=748.8\n\n",
+            "New linecode.CAB108_3_3 nphases=3 basefreq=60.0 units=km\n",
+            "~ r1=0.2006 x1=0.7049 c1=0.0 c0=0.0\n",
+            "!~ cnom=576.0 cmax=748.8\n\n",
+        ]
+        arquivo.writelines(linecodes_unsemt) #garantir os linecodes configurados para o unsemt
+
         for index, linha in segcon.iterrows():
             cod_id = linha["COD_ID"]
             r1 = linha["R1"]
@@ -239,7 +181,7 @@ def generate_linecode(output_dir=None):
 
 def generate_ssdmt(feeder, output_dir=None):
     start_ssdmt = time.time()
-    ssdMT = pd.read_csv(r'Inputs\SSDMT_Uberlandia.csv', sep=',')
+    ssdMT = pd.read_csv(r'Inputs\SSDMT.csv', sep=',')
     # Filtrar apenas as linhas que pertencem ao alimentador escolhido
     ssdMT_filtered = ssdMT[ssdMT['CTMT'] == feeder]
     if output_dir is None:
@@ -265,10 +207,10 @@ def generate_ssdmt(feeder, output_dir=None):
         end_ssdmt = time.time()
         print(f"Linhas de Média Finalizadas! - Tempo: {end_ssdmt - start_ssdmt:.2f} s")
 
-def generate_trafosMT(feeder, output_dir=None):
+def generate_trafosMT(feeder, dicionario_kv, mapeamento_conex, lig_trafo, output_dir=None):
     start_trafos = time.time()
-    trafosMT = pd.read_csv(r'Inputs\UNTRMT_Uberlandia.csv', sep=',')
-    eqtrmt = pd.read_csv(r'Inputs\EQTRMT_Uberlandia.csv', sep=',')
+    trafosMT = pd.read_csv(r'Inputs\UNTRMT.csv', sep=',')
+    eqtrmt = pd.read_csv(r'Inputs\EQTRMT.csv', sep=',')
 
     trafosMT = trafosMT[trafosMT['CTMT'] == feeder] 
     if output_dir is None:
@@ -278,57 +220,34 @@ def generate_trafosMT(feeder, output_dir=None):
     with open(output_file_path, 'w') as arquivo:
         for index, linha in trafosMT.iterrows():
             cod_id = str(linha["COD_ID"])  # Convertendo para string para garantir compatibilidade
-            eqtrmt_linha = eqtrmt[eqtrmt['COD_ID'].astype(str) == cod_id]  # Convertendo também para string
-            
-            if not eqtrmt_linha.empty:
-                xhl = eqtrmt_linha['XHL'].iloc[0]
-                r = eqtrmt_linha['R'].iloc[0]
-                cod_ten_pri = eqtrmt_linha['TEN_PRI'].iloc[0]
-                cod_ten_sec = eqtrmt_linha['TEN_SEC'].iloc[0]
-                cod_ten_ter = eqtrmt_linha['TEN_TER'].iloc[0]
-                lig = eqtrmt_linha['LIG'].iloc[0]
+            eqtrmt_linha = eqtrmt[eqtrmt['UNI_TR_MT'].astype(str) == cod_id]  # Convertendo também para string
 
-                cod_lig_pri = eqtrmt_linha['LIG_FAS_P'].iloc[0]
-                cod_lig_sec = eqtrmt_linha['LIG_FAS_S'].iloc[0]
-                cod_lig_ter = eqtrmt_linha['LIG_FAS_T'].iloc[0]
+            #if not eqtrmt_linha.empty:
+            xhl = eqtrmt_linha['XHL'].iloc[0]
+            r = eqtrmt_linha['R'].iloc[0]
+            cod_ten_pri = eqtrmt_linha['TEN_PRI'].iloc[0]
+            cod_ten_sec = eqtrmt_linha['TEN_SEC'].iloc[0]
+            cod_ten_ter = eqtrmt_linha['TEN_TER'].iloc[0]
+            cod_lig_pri = eqtrmt_linha['LIG_FAS_P'].iloc[0]
+            cod_lig_sec = eqtrmt_linha['LIG_FAS_S'].iloc[0]
+            cod_lig_ter = eqtrmt_linha['LIG_FAS_T'].iloc[0]
 
+            lig = eqtrmt_linha['LIG'].iloc[0]
+            conn1, conn2 = lig_trafo.get(lig, ("delta", "wye"))
 
-            mapeamento_conex = {
-        "A": ".1",
-        "B": ".2",
-        "C": ".3",
-        "AB": ".1.2",
-        "BC": ".2.3",
-        "CA": ".3.1",
-        "AN": ".1.0",
-        "BN": ".2.0",
-        "CN": ".3.0",
-        "ABC": ".1.2.3",
-        "ABCN": ".1.2.3.0"
-    }
-            if lig == 2:
-                conn1 = 'delta'
-                conn2 = 'wye'
-            if lig == 4:
-                conn1 = 'wye'
-                conn2 = 'wye'
-     
             
             loadloss = 100 * (linha["PER_TOT"]) / (1000 * linha["POT_NOM"])
             noloadloss = 100 * (linha["PER_FER"]) / (1000 * linha["POT_NOM"])
 
-
             kva = linha["POT_NOM"]
-            conn1 = 'delta'  
-            conn2 = 'wye'
 
             windings = 2 
             bus1 = linha["PAC_1"]
             bus2 = linha["PAC_2"]
             bus3 = linha["PAC_3"]
 
-            if bus3.isdigit() or bus3 == "0":
-                windings = 3    
+            #if bus3.isdigit() or bus3 == "0": #comentei essa linha para que o código não dê erro, mas não tenho certeza se está correto
+                #windings = 3    
 
             if windings==2:
                 arquivo.write(f"New transformer.{cod_id} xhl={xhl} %r={r} windings={windings} %loadloss={loadloss} %noloadloss={noloadloss}\n")
@@ -339,16 +258,16 @@ def generate_trafosMT(feeder, output_dir=None):
                 arquivo.write(f"New transformer.{cod_id} xhl={xhl} %r={r} windings={windings} %loadloss={loadloss} %noloadloss={noloadloss}\n")
                 arquivo.write(f"~ wdg=1 bus={bus1}{mapeamento_conex.get(cod_lig_pri)} kv={dicionario_kv.get(cod_ten_pri, 0)} kva={kva} conn={conn1}\n")
                 arquivo.write(f"~ wdg=2 bus={bus2}{mapeamento_conex.get(cod_lig_sec)} kv={dicionario_kv.get(cod_ten_sec, 0)} kva={kva} conn={conn2}\n")
-                arquivo.write(f"~ wdg=3 bus={bus3}{mapeamento_conex.get(cod_lig_ter)} kv={dicionario_kv.get(cod_ten_sec, 0)} kva={kva} conn={conn2}\n\n")
+                arquivo.write(f"~ wdg=3 bus={bus3}{mapeamento_conex.get(cod_lig_ter)} kv={dicionario_kv.get(cod_ten_ter, 0)} kva={kva} conn={conn2}\n\n")
 
             
         end_trafos = time.time()
 
         print(f"Tranformadores de Média Finalizados! - Tempo:{end_trafos - start_trafos:.2f} s")
 
-def generate_ssdBT(feeder, output_dir=None):
+def generate_ssdBT(feeder, mapeamento_conex, mapeamento_phases, output_dir=None):
     start_ssdbt = time.time()
-    ssdBT = pd.read_csv(r'Inputs\SSDBT_Uberlandia.csv', sep=',')
+    ssdBT = pd.read_csv(r'Inputs\SSDBT.csv', sep=',')
     ssdBT_filtered = ssdBT[ssdBT['CTMT'] == feeder]
     
     if output_dir is None:
@@ -364,27 +283,17 @@ def generate_ssdBT(feeder, output_dir=None):
             linecode = linha["TIP_CND"]
             fases = linha["FAS_CON"]
 
-            if fases == "ABN":
-                conex = ".1.2.0"
-                phases = 2
-            elif fases == "BCN":
-                conex = ".2.3.0"
-                phases = 2
-            elif fases == "CAN":
-                conex = ".3.1.0"
-                phases = 2
-            elif fases == "ABCN":
-                conex = ".1.2.3.0"
-                phases = 3
+            conex = mapeamento_conex.get(fases, ".1")
+            phases = mapeamento_phases.get(fases, 1)
 
             arquivo.write(f"New line.bt{cod_id} phases={phases} bus1={bus1}{conex} bus2={bus2}{conex} length={length} units=km linecode={linecode}\n")
         
         end_ssdbt = time.time()
         print(f"Linhas de Baixa Finalizadas! - Tempo: {end_ssdbt - start_ssdbt:.2f} s")
 
-def generate_ucmt(feeder, output_dir=None):
+def generate_ucmt(feeder, mapeamento_conex, dicionario_kv, output_dir=None):
     start_ucmt = time.time()
-    ucmt = pd.read_csv(r'Inputs\UCMT_Uberlandia.csv', sep=',')
+    ucmt = pd.read_csv(r'Inputs\UCMT.csv', sep=',')
     ucmt_filtered = ucmt[ucmt['CTMT'] == feeder]
 
     if output_dir is None:
@@ -399,21 +308,21 @@ def generate_ucmt(feeder, output_dir=None):
             potencia = sum(linha[f"ENE_{i:02}"] for i in range(1, 13)) / (365 * 24)
             curvacarga = linha["TIP_CC"]
 
-            mapeamento_conex = {
-        "ABN": ".1.2.0",
-        "BCN": ".2.3.0",
-        "CAN": ".3.1.0",
-        "ABC": ".1.2.3",
-        "ABCN": ".1.2.3.0"
-    }
+
             lig = linha["FAS_CON"]
 
-            if lig == "ABN" or lig == "BCN" or lig == "CAN": phases = 2
-            else: phases = 3
+            if lig == "ABN" or lig == "BCN" or lig == "CAN": 
+                phases = 2
+                conn = 'wye'
+            if lig == "ABCN": 
+                phases = 3
+                conn = 'wye' 
+            else: 
+                phases = 3
+                conn = 'delta'
 
             model = 1
-            kv = 13.8
-            conn = 'wye'
+            kv = dicionario_kv.get(linha["TEN_FORN"], 13.8)
             fp = 0.92
 
             arquivo.write(f"New load.mt{cod_id} phases={phases} bus={bus}{mapeamento_conex.get(lig)} model={model} kv={kv} kw={potencia} pf={fp} conn={conn} daily={curvacarga}\n")
@@ -421,9 +330,9 @@ def generate_ucmt(feeder, output_dir=None):
         end_ucmt = time.time()
         print(f"Unidades Consumidoras de Média Finalizadas! - Tempo: {end_ucmt - start_ucmt:.2f} s")
 
-def generate_ucbt(feeder, output_dir=None):
+def generate_ucbt(feeder, dicionario_kv, mapeamento_phases, mapeamento_conex, mapeamento_conn, output_dir=None):
     start_ucbt = time.time()
-    ucbt = pd.read_csv(r'Inputs\UCBT_Uberlandia.csv', sep=',')
+    ucbt = pd.read_csv(r'Inputs\UCBT.csv', sep=',')
     ucbt_filtered = ucbt[ucbt['CTMT'] == feeder]
 
     if output_dir is None:
@@ -437,28 +346,13 @@ def generate_ucbt(feeder, output_dir=None):
             bus = linha["PAC"]
             fases = linha["FAS_CON"]
 
-            # Mapeamento de fases para número de fases e conexão
-            fases_mapping = {
-                "A": (1, "wye", ".1"),
-                "B": (1, "wye", ".2"),
-                "C": (1, "wye", ".3"),
-                "AN": (1, "wye", ".1.0"),
-                "BN": (1, "wye", ".2.0"),
-                "CN": (1, "wye", ".3.0"),
-                "AB": (2, "delta", ".1.2"),
-                "BC": (2, "delta", ".2.3"),
-                "CA": (2, "delta", ".3.1"),
-                "ABN": (2, "wye", ".1.2.0"),
-                "BCN": (2, "wye", ".2.3.0"),
-                "CAN": (2, "wye", ".3.1.0"),
-                "ABC": (3, "delta", ".1.2.3"),
-                "ABCN": (3, "wye", ".1.2.3.0")
-            }
-            phases, conn, conex = fases_mapping.get(fases, (0, "", ""))
+            phases = mapeamento_phases.get(fases, 1)
+            conex = mapeamento_conex.get(fases, ".1")
+            conn = mapeamento_conn.get(fases, "wye")
 
             # Mapeamento de codkv para kv
             codkv = linha["TEN_FORN"]
-            kv = dicionario_kv.get(codkv, 0)
+            kv = dicionario_kv.get(codkv, 0.22)
 
             # Cálculo da potência média diária
             potencia = sum(linha[f"ENE_{i:02}"] for i in range(1, 13)) / (365 * 24)
@@ -474,9 +368,9 @@ def generate_ucbt(feeder, output_dir=None):
         print(f"Unidades Consumidoras de Baixa Finalizadas! - Tempo: {end_ucbt - start_ucbt:.2f} s")
 
 
-def generate_pip(feeder, output_dir=None):
+def generate_pip(feeder, dicionario_kv, mapeamento_phases, mapeamento_conex, mapeamento_conn, output_dir=None):
     start_pip = time.time()
-    pip = pd.read_csv(r'Inputs\PIP_Uberlandia.csv', sep=',')
+    pip = pd.read_csv(r'Inputs\PIP.csv', sep=',')
     pip_filtered = pip[pip['CTMT'] == feeder]
 
     if output_dir is None:
@@ -489,26 +383,13 @@ def generate_pip(feeder, output_dir=None):
             bus = linha["PAC"]
             fases = linha["FAS_CON"]
 
-            # Mapeamento de fases para número de fases e conexão
-            fases_mapping = {
-                "A": (1, "wye", ".1"),
-                "B": (1, "wye", ".2"),
-                "C": (1, "wye", ".3"),
-                "AN": (1, "wye", ".1.0"),
-                "BN": (1, "wye", ".2.0"),
-                "CN": (1, "wye", ".3.0"),
-                "AB": (2, "delta", ".1.2"),
-                "BC": (2, "delta", ".2.3"),
-                "CA": (2, "delta", ".3.1"),
-                "ABN": (2, "wye", ".1.2.0"),
-                "BCN": (2, "wye", ".2.3.0"),
-                "CAN": (2, "wye", ".3.1.0"),
-                "ABC": (3, "delta", ".1.2.3"),
-                "ABCN": (3, "wye", ".1.2.3.0")
-            }
-            phases, conn, conex = fases_mapping.get(fases, (0, "", ""))
+            phases = mapeamento_phases.get(fases, 1)
+            conex = mapeamento_conex.get(fases, ".1")
+            conn = mapeamento_conn.get(fases, "wye")
 
-            kv = 0.22  # Valor fixo conforme lógica especificada
+
+            codkv = linha["TEN_FORN"]
+            kv = dicionario_kv.get(codkv, 0.22)
 
             # Cálculo da potência média diária
             potencia = sum(linha[f"ENE_{i:02}"] for i in range(1, 13)) / (365 * 24)
@@ -522,9 +403,9 @@ def generate_pip(feeder, output_dir=None):
         end_pip = time.time()
         print(f"Ponto de Iluminação Pública Finalizadas! - Tempo: {end_pip - start_pip:.2f} s")
 
-def generate_ssdunsemt(dicionario_tip_unid,feeder, output_dir=None):
+def generate_ssdunsemt(feeder, dicionario_tip_unid, output_dir=None):
     start_ssdunsemt = time.time()
-    ssdUNSEMT = pd.read_csv(r'Inputs\UNSEMT_Uberlandia.csv', sep=',')
+    ssdUNSEMT = pd.read_csv(r'Inputs\UNSEMT.csv', sep=',')
     ssdUNSEMT_filtered = ssdUNSEMT[ssdUNSEMT['CTMT'] == feeder]
 
     if output_dir is None:
@@ -560,18 +441,10 @@ def generate_ssdunsemt(dicionario_tip_unid,feeder, output_dir=None):
         end_ssdunsemt = time.time()
         print(f"SSDUNSEMT Finalizada! - Tempo: {end_ssdunsemt - start_ssdunsemt:.2f} s")
 
-def generate_ramlig(feeder, output_dir=None):
+def generate_ramlig(feeder, mapeamento_phases, mapeamento_conex, output_dir=None):
     start_ramlig = time.time()
-    ramlig = pd.read_csv(r'Inputs\RAMLIG_Uberlandia.csv', sep=',')
+    ramlig = pd.read_csv(r'Inputs\RAMLIG.csv', sep=',')
     ramlig = ramlig[ramlig['CTMT'] == feeder]
-
-    fases_conex_dict = {
-        "A": (".1", 1), "B": (".2", 1), "C": (".3", 1),
-        "AN": (".1.0", 1), "BN": (".2.0", 1), "CN": (".3.0", 1),
-        "AB": (".1.2", 2), "BC": (".2.3", 2), "CA": (".3.1", 2),
-        "ABN": (".1.2.0", 2), "BCN": (".2.3.0", 2), "CAN": (".3.1.0", 2),
-        "ABC": (".1.2.3", 3), "ABCN": (".1.2.3.0", 3)
-    }
 
     if output_dir is None:
         output_dir = os.getcwd()
@@ -582,11 +455,12 @@ def generate_ramlig(feeder, output_dir=None):
             cod_id = linha["COD_ID"]
             bus1 = linha["PAC_1"]
             bus2 = linha["PAC_2"]
-            length = 16.5 / 1000
+            length = (linha["COMP"]) / 1000
             linecode = linha["TIP_CND"]
             fases = linha["FAS_CON"]
             
-            conex, phases = fases_conex_dict.get(fases, (".1", 1))
+            phases = mapeamento_phases.get(fases, 1)
+            conex = mapeamento_conex.get(fases, ".1")
             
             arquivo.write(f"New line.ram{cod_id} phases={phases} bus1={bus1}{conex} bus2={bus2}{conex} length={length} units=km linecode={linecode}\n")
     
@@ -594,24 +468,13 @@ def generate_ramlig(feeder, output_dir=None):
 
     print(f"Ramal de Ligação Finalizado! - Tempo: {end_ramlig - start_ramlig:.2f} s")
 
-def generate_gds(feeder, output_dir=None):
+def generate_gds(feeder, dicionario_kv, mapeamento_phases, mapeamento_conex, mapeamento_conn, output_dir=None):
     start_gds = time.time()
-    ugmt = pd.read_csv(r'Inputs\UGMT_Uberlandia.csv', sep=',')
-    ugbt = pd.read_csv(r'Inputs\UGBT_Uberlandia.csv', sep=',')
+    ugmt = pd.read_csv(r'Inputs\UGMT.csv', sep=',')
+    ugbt = pd.read_csv(r'Inputs\UGBT.csv', sep=',')
     ugmt_filtered = ugmt[ugmt['CTMT'] == feeder]
     ugbt_filtered = ugbt[ugbt['CTMT'] == feeder]
-
-    # Mapeamento de conexões, fases e configurações
-    conex_map = {
-        "A": ".1", "B": ".2", "C": ".3",
-        "AN": ".1.0", "BN": ".2.0", "CN": ".3.0",
-        "AB": ".1.2", "BC": ".2.3", "CA": ".3.1",
-        "ABN": ".1.2.0", "BCN": ".2.3.0", "CAN": ".3.1.0",
-        "ABC": ".1.2.3", "ABCN": ".1.2.3.0"
-    }
-    phases_map = {"A": 1, "B": 1, "C": 1, "AN": 1, "BN": 1, "CN": 1, "AB": 2, "BC": 2, "CA": 2, "ABN": 2, "BCN": 2, "CAN": 2, "ABC": 3, "ABCN": 3}
-    conn_map = {"A": "wye", "B": "wye", "C": "wye", "AN": "wye", "BN": "wye", "CN": "wye", "AB": "delta", "BC": "delta", "CA": "delta", "ABN": "wye", "BCN": "wye", "CAN": "wye", "ABC": "delta", "ABCN": "wye"}
-
+    
     if output_dir is None:
         output_dir = os.getcwd()
     output_file_path = os.path.join(output_dir, 'gds.dss') 
@@ -625,28 +488,32 @@ def generate_gds(feeder, output_dir=None):
         for index, linha in ugmt_filtered.iterrows():
             cod_id = linha["OBJECTID"]
             bus = linha["PAC"]
-            kv = 13.8  # Desenvolver lógica depois
-            potencia = 50  # Verificar valores e ajustar código
-            fp = 1  # Desenvolver lógica depois
+            kv = dicionario_kv.get(linha["TEN_CON"], 13.8)
+            potencia = linha["POT_INST"]
+
+            if potencia <= 1: potencia = 10 #Muitos UGMT de Uberlândia não possuem a potência instalada correta, então foi feito um tratamento para que a potência seja 10kVA
+            
+            fp = 1  # Fator de potência da maioria dos inversores do Brasil
             fases = linha["FAS_CON"]
 
-            conex = conex_map.get(fases, "")
-            phases = phases_map.get(fases, 0)
-            conn = conn_map.get(fases, "")
+            phases = mapeamento_phases.get(fases, 2)
+            conex = mapeamento_conex.get(fases, ".1.2")
+            conn = mapeamento_conn.get(fases, "delta")
+
 
             arquivo.write(f"New PVSystem.MT{cod_id} bus1={bus}{conex} phases={phases} conn={conn} kv={kv} kva={potencia} pf={fp} irrad=0.84 pmpp=5.1 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp \n\n")
 
         for index, linha in ugbt_filtered.iterrows():
             cod_id = linha["OBJECTID"]
             bus = linha["PAC"]
-            kv = 0.22  # Desenvolver lógica depois
+            kv = dicionario_kv.get(linha["TEN_CON"], 0.22)
             potencia = linha["POT_INST"]
-            fp = 1  # Desenvolver lógica depois
+            fp = 1  # Fator de potência da maioria dos inversores do Brasil
             fases = linha["FAS_CON"]
 
-            conex = conex_map.get(fases, "")
-            phases = phases_map.get(fases, 0)
-            conn = conn_map.get(fases, "")
+            phases = mapeamento_phases.get(fases, 2)
+            conex = mapeamento_conex.get(fases, ".1.2")
+            conn = mapeamento_conn.get(fases, "delta")
 
             arquivo.write(f"New PVSystem.BT{cod_id} bus1={bus}{conex} phases={phases} conn={conn} kv={kv} kva={potencia} pf={fp} irrad=0.84 pmpp=5.1 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp \n")
 
@@ -655,7 +522,7 @@ def generate_gds(feeder, output_dir=None):
 
 def generate_coordenadas(feeder, output_dir=None):
     start_coord = time.time()
-    coord = pd.read_csv(r'Inputs\Coord_Uberlandia.csv', sep=';')
+    coord = pd.read_csv(r'Inputs\Coord.csv', sep=';')
     coord_filtered = coord[coord['CTMT'] == feeder]
     # Conjunto para armazenar pontos únicos
     pontos_unicos = set()
@@ -684,9 +551,9 @@ def generate_coordenadas(feeder, output_dir=None):
         end_coord = time.time()
         print(f"Coordenadas Finalizadas! - Tempo:{end_coord - start_coord:.2f} s")
 
-def generate_capacitores(feeder, output_dir=None):
+def generate_capacitores(feeder, dicionario_capacitores, output_dir=None):
     start_cap = time.time()
-    cap = pd.read_csv(r'Inputs\UNCRMT_Uberlandia.csv', sep=',')
+    cap = pd.read_csv(r'Inputs\UNCRMT.csv', sep=',')
     cap_filtered = cap[cap['CTMT'] == feeder]
 
     if output_dir is None:
@@ -698,31 +565,9 @@ def generate_capacitores(feeder, output_dir=None):
             cod_id = linha["COD_ID"]
             fases = 3 
             pac1 = linha["PAC_1"]
-
-            cod_kvar = linha["POT_NOM"]
-            kvar = -100 if cod_kvar == 3 else (-300 if cod_kvar == 6 else -600)
+            kvar = dicionario_capacitores.get(linha["POT_NOM"], 100)
 
             arquivo.write(f"new load.cap{cod_id} phases={fases} model=1 bus1={pac1}.1.2.3 kvar={kvar}\n")
 
         end_cap = time.time()
         print(f"Capacitores Finalizados! - Tempo:{end_cap - start_cap:.2f} s")
-
-# Chamada das funções
-#generate_master(feeder, dicionario_kv, dicionario_kva)
-#generate_crvcrg()
-#generate_linecode()
-#generate_ssdmt(feeder)
-#generate_trafosMT(feeder)
-#generate_ssdBT(feeder)
-#generate_ucmt(feeder)
-#generate_ucbt(feeder)
-#generate_pip(feeder)
-#generate_ssdunsemt(dicionario_tip_unid, feeder)
-#generate_ramlig(feeder)
-#generate_gds(feeder)
-#generate_coordenadas(feeder)
-#generate_capacitores(feeder)
-
-#end_total = time.time()
-
-#print(f"\nSimulação total demorou: {end_total - start_total} s")

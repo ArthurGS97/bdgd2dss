@@ -5,7 +5,7 @@ import os
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
 # Carregar o arquivo CSV
-ctmt = pd.read_csv(r'Inputs\CTMT_Uberlandia.csv', sep=',')
+ctmt = pd.read_csv(r'Inputs\CTMT.csv', sep=',')
 
 
     # Lista de todos os feeders
@@ -17,5 +17,5 @@ def get_cod_id_list():
 
 
 # Chamar a função para obter a lista de feeders
-#cod_id_list = get_cod_id_list()
-#print(cod_id_list)
+cod_id_list = get_cod_id_list()
+print(cod_id_list)
