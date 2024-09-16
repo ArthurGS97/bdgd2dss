@@ -227,7 +227,7 @@ def generate_trafosMT(feeder, dicionario_kv, mapeamento_conex, lig_trafo, output
             r = eqtrmt_linha['R'].iloc[0]
             cod_ten_pri = eqtrmt_linha['TEN_PRI'].iloc[0]
             cod_ten_sec = eqtrmt_linha['TEN_SEC'].iloc[0]
-            cod_ten_ter = eqtrmt_linha['TEN_TER'].iloc[0]
+            
             cod_lig_pri = eqtrmt_linha['LIG_FAS_P'].iloc[0]
             cod_lig_sec = eqtrmt_linha['LIG_FAS_S'].iloc[0]
             cod_lig_ter = eqtrmt_linha['LIG_FAS_T'].iloc[0]
@@ -246,8 +246,8 @@ def generate_trafosMT(feeder, dicionario_kv, mapeamento_conex, lig_trafo, output
             bus2 = linha["PAC_2"]
             bus3 = linha["PAC_3"]
 
-            #if bus3.isdigit() or bus3 == "0": #comentei essa linha para que o código não dê erro, mas não tenho certeza se está correto
-                #windings = 3    
+            if bus3.isdigit() or bus3 == "0": 
+                windings = 3    
 
             if windings==2:
                 arquivo.write(f"New transformer.{cod_id} xhl={xhl} %r={r} windings={windings} %loadloss={loadloss} %noloadloss={noloadloss}\n")
@@ -255,10 +255,14 @@ def generate_trafosMT(feeder, dicionario_kv, mapeamento_conex, lig_trafo, output
                 arquivo.write(f"~ wdg=2 bus={bus2}{mapeamento_conex.get(cod_lig_sec)} kv={dicionario_kv.get(cod_ten_sec, 0)} kva={kva} conn={conn2}\n\n")
 
             if windings==3:
-                arquivo.write(f"New transformer.{cod_id} xhl={xhl} %r={r} windings={windings} %loadloss={loadloss} %noloadloss={noloadloss}\n")
+                xht = eqtrmt_linha['XHT'].iloc[0]
+                xlt = eqtrmt_linha['XLT'].iloc[0]
+
+
+                arquivo.write(f"New transformer.{cod_id} xhl={xhl} xht={xht} xlt= {xlt} %r={r} windings={windings} %loadloss={loadloss} %noloadloss={noloadloss}\n")
                 arquivo.write(f"~ wdg=1 bus={bus1}{mapeamento_conex.get(cod_lig_pri)} kv={dicionario_kv.get(cod_ten_pri, 0)} kva={kva} conn={conn1}\n")
                 arquivo.write(f"~ wdg=2 bus={bus2}{mapeamento_conex.get(cod_lig_sec)} kv={dicionario_kv.get(cod_ten_sec, 0)} kva={kva} conn={conn2}\n")
-                arquivo.write(f"~ wdg=3 bus={bus3}{mapeamento_conex.get(cod_lig_ter)} kv={dicionario_kv.get(cod_ten_ter, 0)} kva={kva} conn={conn2}\n\n")
+                arquivo.write(f"~ wdg=3 bus={bus3}{mapeamento_conex.get(cod_lig_ter)} kv={dicionario_kv.get(cod_ten_sec, 0)} kva={kva} conn={conn2}\n\n")
 
             
         end_trafos = time.time()
