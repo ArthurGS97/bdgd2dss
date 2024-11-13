@@ -87,7 +87,6 @@ Escolhendo o arquivo correspondente, basta baixar como mostra a Figura 2. Alerta
 
 ![download_f2](/Prints_git/download_f2.png "download_f2").
 
-
 **Figura 2: Captura de tela de *download* dos dados da BDGD.**
 
 **Fonte:** Adaptado de ANEEL (2024) [^Ref-BDGD].
@@ -106,10 +105,9 @@ Após realizado o *download*, será possível trabalhar com os arquivos. Para is
 
 ### 2.2 - Escolha das Camadas
 
-Já na Figura 4 são mostradas as camadas das Tabelas 1 e 2. Selecione aquelas com realce em azul, são elas: CRVCRG, CTMT, EQTRAT, EQTRMT, PIP, RAMLIG, SEGCON, SSDBT, SSDMT, SUB, UCBT, UCMT, UGBT, UGMT, UNCRMT, UNSEMT, UNTRAT e UNTRMT. Elas serão utilizadas para a realização da modelagem dos alimentadores. 
+Já na Figura 4 são mostradas as camadas das Tabelas 1 e 2. Selecione as terminadas em: CRVCRG, EQRE, CTMT, EQTRMT, PIP, RAMLIG, SEGCON, SSDBT, SSDMT, SUB, UCBT, UCMT, UGBT, UGMT, UNCRMT, UNSEMT, UNREMT e UNTRMT, sendo 18 no total. Elas serão utilizadas para a realização da modelagem dos alimentadores. 
 
 ![tabelacamadas_f4](/Prints_git/tabelacamadas_f4.png "tabelacamadas_f4").
-
 
 **Figura 4: Captura de tela do *QGIS* mostrando as camadas da BDGD**
 
@@ -117,7 +115,7 @@ Já na Figura 4 são mostradas as camadas das Tabelas 1 e 2. Selecione aquelas c
 
 ### 2.3 - Escolha da Zona Específica a Ser Estudada
 
-Para otimizar as simulações e reduzir a quantidade de dados, é recomendável focar em uma área / região / zona específica, em vez de utilizar todos os dados da distribuidora. Por exemplo, pode-se escolher um município, como Uberlândia - Minas Gerais (ou outro à escolha do usuário), e trabalhar apenas com as informações dessa cidade. Para isso, é necessário filtrar as camadas, mantendo apenas os dados relevantes ao município. Uma maneira eficaz de fazer isso é identificar as subestações correspondentes e realizar o filtro em todas as camadas, já que todas possuem o atributo referente a uma subestação (SE). Para localizar as subestações e obter o código correspondente, clique com o botão direito na camada das SEs, e selecione a opção "Abrir tabela de atributos". A Figura 5 mostra essa etapa.
+Para otimizar as simulações e reduzir a quantidade de dados, é recomendável focar em uma área / região / zona específica, em vez de utilizar todos os dados da distribuidora. Por exemplo, pode-se escolher um município, como Uberlândia - Minas Gerais (ou outro à escolha do usuário), e trabalhar apenas com as informações dessa cidade. Para isso, é necessário filtrar as camadas, mantendo apenas os dados relevantes ao município. Uma maneira eficaz de fazer isso é identificar as subestações correspondentes e realizar o filtro em todas as camadas, já que quase todas possuem o atributo referente a uma subestação (SE). Para localizar as subestações e obter o código correspondente, clique com o botão direito na camada das SEs, e selecione a opção "Abrir tabela de atributos". A Figura 5 mostra essa etapa.
 
 ![atributos_f5](/Prints_git/atributos_f5.png "atributos_f5").
 
@@ -135,43 +133,20 @@ Com a Tabela de atributos aberta, deve-se localizar as subestações de Uberlân
 
 ### 2.4 - Filtragem das Camadas e Exportando Planilhas
 
-Com essa informação, agora será possível ir em todas as camadas e realizar a filtragem. Para tal, ao clicar com o botão direito do mouse, escolha a opção "Filtrar", aparecerá uma caixa de texto que deve ser escrita seguindo uma lógica simples de programação para realizar o filtro. A Figura 7 mostra essa etapa.
+Com essas informações, será possível acessar todas as camadas e aplicar a filtragem necessária. Para isso, utilizaremos um código em *Python* no *QGIS* para realizar o filtro, gerar um arquivo com as coordenadas e exportar as camadas em arquivos *.csv*, que serão utilizados na modelagem. A Figura 7 ilustra o procedimento para abrir o terminal Python no QGIS. Após abrir o terminal, deve-se selecionar a opção "Abrir Editor".
 
-![filtrar_f7](/Prints_git/filtrar_f7.png "filtrar_f7").
+![terminal_py](/Prints_git/terminal_py.png "terminal_py").
+**Figura 7: Captura de tela do *QGIS* para abrir o terminal *python***
 
-**Figura 7: Captura de tela do *QGIS* do processo de filtragem das camadas.**
+Com o editor aberto deve-se abrir o código que está nesse diretório chamado: exportar_qgis.py. A Figura 8 mostra a opção.
 
-**Fonte:** O Autor (2024).
+![abrir_script](/Prints_git/abrir_script.png "abrir_script").
+**Figura 8: Captura de tela do *QGIS* para abrir o script**
 
-Em sequência, repete-se o processo para todas as outras camadas. Deve-se copiar o filtro anterior e aplicar para todas as camadas que tem o atributo SUB. Assim, finalmente, pode-se fazer a exportação de todas as camadas para arquivos *.csv*, que serão utilizadas no arquivo *Python* para a modelagem do alimentador. Com o botão direito do *mouse*, sobre a camada, vá na opção "Exportar" -> "Guardar elementos como...". A seguir, selecione o formato desejado (*.csv*), o local que deseja salvar e desmarque a opção "Adicionar arquivo salvo ao mapa". É aconselhável que dentro da mesma pasta que foi salvo o arquivo *bdgd2dss* (e outros *scripts* que serão citados), crie-se uma pasta chamada "*Inputs*" e salve as exportações que forem realizadas dentro do *QGIS* de todas as camadas. A Figura 8 mostra esse processo.
+Com o script aberto, podemos agora realizar a filtragem das subestações e exportar os dados. A Figura 9 apresenta o código, que contém três campos configuráveis pelo usuário: o caminho onde deseja salvar os arquivos exportados, o prefixo da base de dados, que está localizado no nome das camadas, e o campo onde deve ser aplicado o *COD_ID* das subestações, conforme indicado. Após preencher esses campos, basta executar o script. Vale notar que essa etapa pode demorar, durante a qual o QGIS poderá ficar temporariamente travado; isso é esperado, então é necessário aguardar até a finalização do processo. Por exemplo, nos testes com todas as subestações de Uberlândia, esse procedimento levou cerca de 30 minutos em uma máquina com as seguintes especificações: *Intel Core i5-8500 de 8ª geração @ 3.00GHz, 8 GB de RAM, Windows 10 Pro e SSD NVMe*. Quanto maior a base de dados e o volume de dados a serem exportados, maior será o tempo de execução.
 
-![exportar_f8](/Prints_git/exportar_f8.png "exportar_f8").
-
-**Figura 8: Captura de tela do *QGIS* do processo exportação das camadas em arquivos *.csv***
-
-**Fonte:** O Autor (2024).
-
-<!-- Explique aqui sobre "Adicionar arquivo salvo ao mapa"-->
-> [!WARNING]
-> Se "Adicionar arquivo salvo ao mapa" for selecionado, então...
-
-Para exportar as coordenadas das barras, o processo é um pouco diferente. Deve-se abrir a Tabela de Atributos da camada SSDMT. A seguir, é adequado esperar carregá-la, visto que pode demorar um pouco. A seguir, aperte as teclas *CTRL*+A (selecionando todos os dados), aperte *CTRL*+C, e cole esses dados numa planilha *.xlsx*. As Figuras 9 e 10 mostram essas etapas.
-
-![atributos_coordenadas](/Prints_git/atributos_coordenadas.png "atributos_coordenadas").
-
-**Figura 9: Captura de tela do *QGIS* do processo de copiar os dados da camada SSDMT para gerar posteriormente as coordenadas**
-
-**Fonte:** O Autor (2024).
-
-![coordenadasplanilha](/Prints_git/coordenadasplanilha.png "coordenadasplanilha").
-
-**Figura 10: Captura de tela do *QGIS* do processo de colar os dados da camada SSDMT para gerar posteriormente as coordenadas**
-
-**Fonte:** O Autor (2024).
-
-Agora é só salvar a planilha em arquivo *.csv* dentro do próprio *Microsoft Excel*, sendo na mesma pasta dos arquivos que foram exportados anteriormente.
-
-! OBS: Há outras maneiras de trabalhar com esses dados sem utilizar o *QGIS*, e direcionando as informações diretamente para o *Python*, mas usando o *QGIS*, o processo demonstrou bem mais eficiente e rápido. 
+![dados_entrada](/Prints_git/dados_entrada.png "dados_entrada").
+**Figura 9: Captura de tela do *QGIS* do script com o foco nas variáveis de entrada do usuário**
 
 Finalizado o processo de exportação das camadas, agora pode-se ir para os *scripts* em *Python* que realizarão a modelagem de alimentadores, verificação de convergência e validação dos mesmos.
 
@@ -179,29 +154,29 @@ Finalizado o processo de exportação das camadas, agora pode-se ir para os *scr
 
 Para facilitar o uso, foi disponibilizada uma rotina que lista os alimentadores presentes nos arquivos, por meio do *script feeders_list_all.py*, localizado neste diretório. Com os dados obtidos, agora é possível utilizar a biblioteca *bdgd2dss* para modelar os alimentadores desejados. Além disso, foi criada uma rotina adicional, *feeders_processing.py*, que permite modelar os alimentadores selecionados a partir da lista gerada anteriormente pelo *feeders_list_all.py*. O usuário também deverá informar o dia de análise (DU - Dia Útil, SA - Sábado, DO - Domingo) como dado de entrada.
 
-Inicialmente, recomenda-se que o usuário selecione um conjunto de alimentadores para verificar quais estão adequados para a modelagem. A Figura 11 ilustra esse procedimento, mostrando a modelagem de todos os alimentadores da cidade de Uberlândia-MG.
+Inicialmente, recomenda-se que o usuário selecione um conjunto de alimentadores para verificar quais estão adequados para a modelagem. A Figura 10 ilustra esse procedimento, mostrando a modelagem de todos os alimentadores da cidade de Uberlândia-MG.
 
 ![f9_codigogerar_ali](/Prints_git/f9_codigogerar_ali.png "f9_codigogerar_ali").
 
-**Figura 11: Captura de tela do Visual Code do códifo *feeders_processing.py* sendo utilizado**
+**Figura 10: Captura de tela do Visual Code do códifo *feeders_processing.py* sendo utilizado**
 
 **Fonte:** O Autor (2024).
 
 A título de demonstração de desempenho computacional, usou-se uma máquina que possui as seguintes configurações: *8th Gen Intel (R) Core (TM) i5-8500 @3.00GHz; 8 GB RAM; Windows 10 Pro and SSD NVMe*. O procedimento demorou 2822 segundos, que são aproximadamente 47 minutos, para gerar a modelagem dos 62 alimentadores da cidade de Uberlândia - Minas Gerais.
 
-Em sequência utiliza-se o *script* chamado *feeders_feasibility.py*. Esse criará uma planilha listando os alimentadores, quais convergem, e, também, uma análise da diferença de energia medida a partir dos dados da camada *CTMT* comparados com aqueles da simulação no OpenDSS, ao longo de um ano. Desta forma, o usuário poderá escolher um alimentador mais adequado, pois devido a falta de informações ou inconsistências na criação das planilhas da *BDGD* e disponibilização no repositório, acarretando, portanto, em erros na modelagem.A Figura 12 mostra essa planilha gerada. Um limiar de 15% foi escolhido entre as medidas de energia, no intuito de considerar que o alimentador está adequado ou não para análises e estudos, este limiar é um dado de entrada no *script feeders_feasibility.py*. 
+Em sequência utiliza-se o *script* chamado *feeders_feasibility.py*. Esse criará uma planilha listando os alimentadores, quais convergem, e, também, uma análise da diferença de energia medida a partir dos dados da camada *CTMT* comparados com aqueles da simulação no OpenDSS, ao longo de um ano. Desta forma, o usuário poderá escolher um alimentador mais adequado, pois devido a falta de informações ou inconsistências na criação das planilhas da *BDGD* e disponibilização no repositório, acarretando, portanto, em erros na modelagem.A Figura 11 mostra essa planilha gerada. Um limiar de 15% foi escolhido entre as medidas de energia, no intuito de considerar que o alimentador está adequado ou não para análises e estudos, este limiar é um dado de entrada no *script feeders_feasibility.py*. 
 
 ![planilhafeeders](/Prints_git/planilhafeeders.png "planilhafeeders").
 
-**Figura 12: Captura de tela do planilha gerada em *feeders_feasibility.py* para escolha do alimentador baseado na convergência e limiar adotados**
+**Figura 11: Captura de tela do planilha gerada em *feeders_feasibility.py* para escolha do alimentador baseado na convergência e limiar adotados**
 
 **Fonte:** O Autor (2024).
 
-Com o alimentador escolhido, o usuário poderá direcionar para as suas análises e estudos. Algo importante a ser comentado é que para simular o alimentador, deve-se entrar no arquivo *Master* dele, e colocar o *solve* no fim do arquivo, e o arquivo das coordenadas para ser possível visualizar o circuito dentro do *OpenDSS*. Essa tarefa pode ser feita dentro do *OpenDSS* ou no ambiente *Python* com o auxilio da biblioteca *pydss*, que inclusive já foi utilizada anteriormente nos códigos. No diretório foi disponibilizada uma rotina para simular o alimentador e colher os dados desejados, chamado *solvedss.py*. o usuário apenas deverá entrar com o nome do alimentador em questão. Por fim, a Figura 13 mostra parte desse código. 
+Com o alimentador escolhido, o usuário poderá direcionar para as suas análises e estudos. Algo importante a ser comentado é que para simular o alimentador, deve-se entrar no arquivo *Master* dele, e colocar o *solve* no fim do arquivo, e o arquivo das coordenadas para ser possível visualizar o circuito dentro do *OpenDSS*. Essa tarefa pode ser feita dentro do *OpenDSS* ou no ambiente *Python* com o auxilio da biblioteca *pydss*, que inclusive já foi utilizada anteriormente nos códigos. No diretório foi disponibilizada uma rotina para simular o alimentador e colher os dados desejados, chamado *solvedss.py*. o usuário apenas deverá entrar com o nome do alimentador em questão. Por fim, a Figura 12 mostra parte desse código. 
 
 ![solvedss](/Prints_git/solvedss.png "solvedss").
 
-**Figura 13: Captura de tela do *script solvedss.py***
+**Figura 12: Captura de tela do *script solvedss.py***
 
 **Fonte:** O Autor (2024).
 
