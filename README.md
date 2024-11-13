@@ -76,7 +76,8 @@ Inicialmente, os dados da BDGD são classificados como entidades geográficas e 
 
 Para realizar o *download* dos dados de uma distribuidora, basta acessar o link: https://dadosabertos-aneel.opendata.arcgis.com/search?tags=distribuicao [^Ref-BDGD] e pesquisá-la. Assim sendo, aparecerá mais de um arquivo, correspondente a cada ano. A Figura 1 mostra essa etapa.
 
-![dadosabertos_f1](https://github.com/user-attachments/assets/7a004291-d5ac-41c0-a7e1-31eacc8aa05d)
+![dadosabertos_f1](/Prints_git/dadosabertos_f1.png "dadosabertos_f1").
+
 
 **Figura 1: Captura de tela dos dados da BDGD.**
 
@@ -84,7 +85,8 @@ Para realizar o *download* dos dados de uma distribuidora, basta acessar o link:
 
 Escolhendo o arquivo correspondente, basta baixar como mostra a Figura 2. Alerta-se que essa etapa pode demorar um pouco. 
 
-![download_f2](https://github.com/user-attachments/assets/0af2394f-d911-43b9-bba1-208eba72b2da)
+![download_f2](/Prints_git/download_f2.png "download_f2").
+
 
 **Figura 2: Captura de tela de *download* dos dados da BDGD.**
 
@@ -96,7 +98,7 @@ Escolhendo o arquivo correspondente, basta baixar como mostra a Figura 2. Alerta
 
 Após realizado o *download*, será possível trabalhar com os arquivos. Para isso deve-se usar a ferramenta *QGIS* [^Ref-QGIS], um *software* livre com código-fonte aberto, e multiplataforma. Basicamente é um sistema de informação geográfica (SIG) que permite a visualização, edição e análise de dados georreferenciados. O *download* pode ser feito no *link*: https://qgis.org/download/. Abrindo o *QGIS*, deve-se ir em "Gerenciador da Fonte de Dados" (opção Vetor). Ao selecionar a opção "Diretório", coloca-se a codificação em "Automático", em Tipo escolhe-se a opção "Arquivo aberto GDB", e em Base de Vetores escolhe a pasta do arquivo BDGD baixado e extraído. Finalmente em *LIST_ALL_TABLES* coloca-se em "*YES*" para ser possível uma pré-visualização das camadas disponíveis e selecionar aquelas que desejar visualizar. Essa etapa é mostrada na Figura 3  . 
 
-![fontededados_f3](https://github.com/user-attachments/assets/9bef0b68-8487-4a55-bae3-45ec3012fcf5)
+![fontededados_f3](/Prints_git/fontededados_f3.png "fontededados_f3").
 
 **Figura 3: Captura de tela do carregamento dos dados no *QGIS*.**
 
@@ -106,7 +108,8 @@ Após realizado o *download*, será possível trabalhar com os arquivos. Para is
 
 Já na Figura 4 são mostradas as camadas das Tabelas 1 e 2. Selecione aquelas com realce em azul, são elas: CRVCRG, CTMT, EQTRAT, EQTRMT, PIP, RAMLIG, SEGCON, SSDBT, SSDMT, SUB, UCBT, UCMT, UGBT, UGMT, UNCRMT, UNSEMT, UNTRAT e UNTRMT. Elas serão utilizadas para a realização da modelagem dos alimentadores. 
 
-![tabelacamadas_f4](https://github.com/user-attachments/assets/93f402db-9ddf-4d44-8833-91cf1d1241b0)
+![tabelacamadas_f4](/Prints_git/tabelacamadas_f4.png "tabelacamadas_f4").
+
 
 **Figura 4: Captura de tela do *QGIS* mostrando as camadas da BDGD**
 
@@ -116,7 +119,7 @@ Já na Figura 4 são mostradas as camadas das Tabelas 1 e 2. Selecione aquelas c
 
 Para otimizar as simulações e reduzir a quantidade de dados, é recomendável focar em uma área / região / zona específica, em vez de utilizar todos os dados da distribuidora. Por exemplo, pode-se escolher um município, como Uberlândia - Minas Gerais (ou outro à escolha do usuário), e trabalhar apenas com as informações dessa cidade. Para isso, é necessário filtrar as camadas, mantendo apenas os dados relevantes ao município. Uma maneira eficaz de fazer isso é identificar as subestações correspondentes e realizar o filtro em todas as camadas, já que todas possuem o atributo referente a uma subestação (SE). Para localizar as subestações e obter o código correspondente, clique com o botão direito na camada das SEs, e selecione a opção "Abrir tabela de atributos". A Figura 5 mostra essa etapa.
 
-![atributos_f5](https://github.com/user-attachments/assets/e8aff2fb-a32f-438a-975a-f0d994fecf75)
+![atributos_f5](/Prints_git/atributos_f5.png "atributos_f5").
 
 **Figura 5: Captura de tela do *QGIS* para abrir a Tabela de Atributos.**
 
@@ -124,7 +127,7 @@ Para otimizar as simulações e reduzir a quantidade de dados, é recomendável 
 
 Com a Tabela de atributos aberta, deve-se localizar as subestações de Uberlândia (município escolhido para a realização dos testes), e salvar os COD_ID delas, como mostra a Figura 6 em sequência.
 
-![SEs_f6](https://github.com/user-attachments/assets/915d960b-1f56-458a-a3a4-5344a1a0d610)
+![SEs_f6](/Prints_git/SEs_f6.png "SEs_f6").
 
 **Figura 6: Captura de tela do *QGIS* pra identificação das subestações**
 
@@ -134,7 +137,7 @@ Com a Tabela de atributos aberta, deve-se localizar as subestações de Uberlân
 
 Com essa informação, agora será possível ir em todas as camadas e realizar a filtragem. Para tal, ao clicar com o botão direito do mouse, escolha a opção "Filtrar", aparecerá uma caixa de texto que deve ser escrita seguindo uma lógica simples de programação para realizar o filtro. A Figura 7 mostra essa etapa.
 
-![filtrar_f7](https://github.com/user-attachments/assets/29b8f9f6-6d7d-4363-88bd-8dfce0b03dcb)
+![filtrar_f7](/Prints_git/filtrar_f7.png "filtrar_f7").
 
 **Figura 7: Captura de tela do *QGIS* do processo de filtragem das camadas.**
 
@@ -142,7 +145,7 @@ Com essa informação, agora será possível ir em todas as camadas e realizar a
 
 Em sequência, repete-se o processo para todas as outras camadas. Deve-se copiar o filtro anterior e aplicar para todas as camadas que tem o atributo SUB. Assim, finalmente, pode-se fazer a exportação de todas as camadas para arquivos *.csv*, que serão utilizadas no arquivo *Python* para a modelagem do alimentador. Com o botão direito do *mouse*, sobre a camada, vá na opção "Exportar" -> "Guardar elementos como...". A seguir, selecione o formato desejado (*.csv*), o local que deseja salvar e desmarque a opção "Adicionar arquivo salvo ao mapa". É aconselhável que dentro da mesma pasta que foi salvo o arquivo *bdgd2dss* (e outros *scripts* que serão citados), crie-se uma pasta chamada "*Inputs*" e salve as exportações que forem realizadas dentro do *QGIS* de todas as camadas. A Figura 8 mostra esse processo.
 
-![exportar_f8](https://github.com/user-attachments/assets/859c9268-d8b1-43bb-a9db-be0b84fe3d01)
+![exportar_f8](/Prints_git/exportar_f8.png "exportar_f8").
 
 **Figura 8: Captura de tela do *QGIS* do processo exportação das camadas em arquivos *.csv***
 
@@ -154,14 +157,13 @@ Em sequência, repete-se o processo para todas as outras camadas. Deve-se copiar
 
 Para exportar as coordenadas das barras, o processo é um pouco diferente. Deve-se abrir a Tabela de Atributos da camada SSDMT. A seguir, é adequado esperar carregá-la, visto que pode demorar um pouco. A seguir, aperte as teclas *CTRL*+A (selecionando todos os dados), aperte *CTRL*+C, e cole esses dados numa planilha *.xlsx*. As Figuras 9 e 10 mostram essas etapas.
 
-![atributos_coordenadas](https://github.com/user-attachments/assets/2c9822c7-29f5-461b-ae2d-845b22050c08)
+![atributos_coordenadas](/Prints_git/atributos_coordenadas.png "atributos_coordenadas").
 
 **Figura 9: Captura de tela do *QGIS* do processo de copiar os dados da camada SSDMT para gerar posteriormente as coordenadas**
 
 **Fonte:** O Autor (2024).
 
-![coordenadasplanilha](https://github.com/user-attachments/assets/7dd8f421-4d99-4c9f-8a2a-bd75b3beda8d)
-
+![coordenadasplanilha](/Prints_git/coordenadasplanilha.png "coordenadasplanilha").
 
 **Figura 10: Captura de tela do *QGIS* do processo de colar os dados da camada SSDMT para gerar posteriormente as coordenadas**
 
@@ -179,7 +181,7 @@ Para facilitar o uso, foi disponibilizada uma rotina que lista os alimentadores 
 
 Inicialmente, recomenda-se que o usuário selecione um conjunto de alimentadores para verificar quais estão adequados para a modelagem. A Figura 11 ilustra esse procedimento, mostrando a modelagem de todos os alimentadores da cidade de Uberlândia-MG.
 
-![f9_codigogerar_ali](https://github.com/user-attachments/assets/e513bddb-9a9a-4a6c-ad4b-22244f9baa31)
+![f9_codigogerar_ali](/Prints_git/f9_codigogerar_ali.png "f9_codigogerar_ali").
 
 **Figura 11: Captura de tela do Visual Code do códifo *feeders_processing.py* sendo utilizado**
 
@@ -189,7 +191,7 @@ A título de demonstração de desempenho computacional, usou-se uma máquina qu
 
 Em sequência utiliza-se o *script* chamado *feeders_feasibility.py*. Esse criará uma planilha listando os alimentadores, quais convergem, e, também, uma análise da diferença de energia medida a partir dos dados da camada *CTMT* comparados com aqueles da simulação no OpenDSS, ao longo de um ano. Desta forma, o usuário poderá escolher um alimentador mais adequado, pois devido a falta de informações ou inconsistências na criação das planilhas da *BDGD* e disponibilização no repositório, acarretando, portanto, em erros na modelagem.A Figura 12 mostra essa planilha gerada. Um limiar de 15% foi escolhido entre as medidas de energia, no intuito de considerar que o alimentador está adequado ou não para análises e estudos, este limiar é um dado de entrada no *script feeders_feasibility.py*. 
 
-![planilhafeeders](https://github.com/user-attachments/assets/a7abef38-c0c1-4d13-8f5c-d2d91f0b737f)
+![planilhafeeders](/Prints_git/planilhafeeders.png "planilhafeeders").
 
 **Figura 12: Captura de tela do planilha gerada em *feeders_feasibility.py* para escolha do alimentador baseado na convergência e limiar adotados**
 
@@ -197,7 +199,7 @@ Em sequência utiliza-se o *script* chamado *feeders_feasibility.py*. Esse criar
 
 Com o alimentador escolhido, o usuário poderá direcionar para as suas análises e estudos. Algo importante a ser comentado é que para simular o alimentador, deve-se entrar no arquivo *Master* dele, e colocar o *solve* no fim do arquivo, e o arquivo das coordenadas para ser possível visualizar o circuito dentro do *OpenDSS*. Essa tarefa pode ser feita dentro do *OpenDSS* ou no ambiente *Python* com o auxilio da biblioteca *pydss*, que inclusive já foi utilizada anteriormente nos códigos. No diretório foi disponibilizada uma rotina para simular o alimentador e colher os dados desejados, chamado *solvedss.py*. o usuário apenas deverá entrar com o nome do alimentador em questão. Por fim, a Figura 13 mostra parte desse código. 
 
-![solvedss](https://github.com/user-attachments/assets/124d9dae-863a-4cef-9277-c04ffb378fdb)
+![solvedss](/Prints_git/solvedss.png "solvedss").
 
 **Figura 13: Captura de tela do *script solvedss.py***
 
