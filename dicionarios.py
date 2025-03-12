@@ -2,6 +2,7 @@
 
 
 dicionario_kv = {
+    0: 0.0,
     1: 0.110,
     2: 0.115,
     3: 0.120,
@@ -217,6 +218,7 @@ dicionario_kva = {
 dicionario_tip_unid = {
     19: "Chave Faca",
     20: "Chave Faca Tripolar Abertura com Carga",
+    21: "Chave faca unipolar abertura com carga",
     22: "Chave Fusivel",
     29: "Disjuntor",
     32: "Religador",
@@ -225,7 +227,34 @@ dicionario_tip_unid = {
     35: "Seccionalizador"
 }
 
-mapeamento_conex = {
+conex_fios = {
+    "A": ".1",
+    "B": ".2",
+    "C": ".3",
+    "AB": ".1.2",
+    "BC": ".2.3",
+    "CA": ".3.1",
+    "AC": ".1.3",
+    "BA": ".2.1",
+    "CB": ".3.2",
+    "AN": ".1.4",
+    "BN": ".2.4",
+    "CN": ".3.4",
+    "ABN": ".1.2.4",
+    "BCN": ".2.3.4",
+    "CAN": ".3.1.4",
+    "BAN": ".2.1.4",
+    "CBN": ".3.2.4",
+    "ACN": ".1.3.4",
+    "ABC": ".1.2.3",
+    "ABCN": ".1.2.3.4",
+    "AX": ".1.4.0",
+    "BX": ".2.4.0",
+    "CX": ".3.4.0",
+    "N": ".4"
+    }
+
+conex_fios_prim = {
     "A": ".1",
     "B": ".2",
     "C": ".3",
@@ -246,9 +275,38 @@ mapeamento_conex = {
     "ACN": ".1.3.0",
     "ABC": ".1.2.3",
     "ABCN": ".1.2.3.0"
-    }
+}
 
-mapeamento_phases = {
+conex_fios_sec = {
+    "A": ".1",
+    "B": ".2",
+    "C": ".3",
+    "AB": ".1.2",
+    "BC": ".2.3",
+    "CA": ".3.1",
+    "AC": ".1.3",
+    "BA": ".2.1",
+    "CB": ".3.2",
+    "AN": ".1.4",
+    "BN": ".2.4",
+    "CN": ".3.4",
+    "ABN": ".1.2.4",
+    "BCN": ".2.3.4",
+    "CAN": ".3.1.4",
+    "BAN": ".2.1.4",
+    "CBN": ".3.2.4",
+    "ACN": ".1.3.4",
+    "ABC": ".1.2.3",
+    "ABCN": ".1.2.3.4"
+}
+
+conex_fios_terc = {
+    "AN": ".4.1",
+    "BN": ".4.2",
+    "CN": ".4.3"
+}
+
+n_phases = {
     "A": 1,
     "B": 1,
     "C": 1,
@@ -268,10 +326,91 @@ mapeamento_phases = {
     "CBN": 2,
     "ACN": 2,
     "ABC": 3,
+    "ABCN": 3,
+    "AX": 1,
+    "BX": 1,
+    "CX": 1,
+    "N": 0
+}
+
+n_phases_trafo = {
+    "A": 1,
+    "B": 1,
+    "C": 1,
+    "AN": 1,
+    "BN": 1,
+    "CN": 1,
+    "AB": 1,
+    "BC": 1,
+    "CA": 1,
+    "AC": 1,
+    "BA": 1,
+    "CB": 1,
+    "ABN": 1,
+    "BCN": 1,
+    "CAN": 1,
+    "BAN": 1,
+    "CBN": 1,
+    "ACN": 1,
+    "ABC": 3,
     "ABCN": 3
-    }
+}
+
+n_phases_load = {
+    "A": 1,
+    "B": 1,
+    "C": 1,
+    "AN": 1,
+    "BN": 1,
+    "CN": 1,
+    "AB": 1,
+    "BC": 1,
+    "CA": 1,
+    "AC": 1,
+    "BA": 1,
+    "CB": 1,
+    "ABN": 1,
+    "BCN": 1,
+    "CAN": 1,
+    "BAN": 1,
+    "CBN": 1,
+    "ACN": 1,
+    "ABC": 3,
+    "ABCN": 3
+}
+
+
+quant_fios = {
+    "A": 1,
+    "B": 1,
+    "C": 1,
+    "AN": 2,
+    "BN": 2,
+    "CN": 2,
+    "AB": 2,
+    "BC": 2,
+    "CA": 2,
+    "AC": 2,
+    "BA": 2,
+    "CB": 2,
+    "ABN": 3,
+    "BCN": 3,
+    "CAN": 3,
+    "BAN": 3,
+    "CBN": 3,
+    "ACN": 3,
+    "ABC": 3,
+    "ABCN": 4,
+    "AX": 3,
+    "BX": 3,
+    "CX": 3,
+    "N": 1
+}
 
 mapeamento_conn ={
+    "A": "Wye",
+    "B": "Wye",
+    "C": "Wye",
     "AB": "delta",
     "BC": "delta",
     "CA": "delta",
@@ -288,7 +427,31 @@ mapeamento_conn ={
     "CBN": "wye",
     "ACN": "wye",
     "ABC": "delta",
-    "ABCN": "wye"
+    "ABCN": "wye",
+    "AX": "wye",
+    "BX": "wye",
+    "CX": "wye",
+    "N": "wye"
+}
+
+mapeamento_conn_load ={
+    "A": "Wye",
+    "B": "Wye",
+    "C": "Wye",
+    "AB": "delta",
+    "BC": "delta",
+    "CA": "delta",
+    "AC": "delta",
+    "BA": "delta",
+    "CB": "delta",
+    "AN": "wye",
+    "BN": "wye",
+    "CN": "wye",
+    "ABN": "delta",
+    "BCN": "delta",
+    "CAN": "delta",
+    "ABC": "delta",
+    "ABCN": "delta"
 }
 
 dicionario_capacitores = {
@@ -325,7 +488,7 @@ dicionario_capacitores = {
 lig_trafo = {
     1: ("wye", "wye"),                          # Estrela / Estrela Aterrado
     2: ("delta", "wye"),                        # Delta / Estrela Aterrado
-    3: ("wye",),                               # Estrela Aterrado
+    3: ("wye","teste"),                               # Estrela Aterrado
     4: ("wye", "wye"),                          # Estrela Aterrado / Estrela Aterrado
     5: ("delta", "wye"),                        # Delta / Estrela
     6: ("delta", "delta"),                      # H Simples / X Simples Derivação
@@ -334,5 +497,25 @@ lig_trafo = {
     9: ("phase", "phase"),                      # Fase Fase
     10: ("wye", "wye", "delta"),                # Estrela / Estrela Aterrado / Delta
     11: ("wye", "delta"),                       # Estrela / Delta
-    12: ("delta",)                              # Delta
+    12: ("delta", "teste")                              # Delta
+}
+
+rel_tp = {
+    1: 1200.0,
+    2: 600.0,
+    3: 300.0,
+    4: 217.39,
+    5: 103.75,
+    6: 200.0,
+    7: 113.39,
+    8: 116.13,
+    9: 120.0,
+    10: 125.22,
+    11: 108.66,
+    12: 111.29,
+    13: 115.0,
+    14: 116.95,
+    15: 120.0,
+    16: 63.33,
+    17: 66.09
 }
