@@ -6,6 +6,34 @@
 
 Conjunto de arquivos referente a biblioteca **bdgd2dss** desenvolvida na linguagem *Python*, que transforma as planilhas oriundas da Base de Dados Geográfica da Distribuidora (BDGD) em arquivos *.dss* para simulação e estudos de alimentadores de sistemas de distribuição de energia elétrica no ambiente *OpenDSS*. A ferramenta em questão foi criada pelo Mestrando em Engenharia Elétrica Arthur Gomes de Souza que desenvolve pesquisas com o foco em proteção de sistemas elétricos de potência, sob orientação do prof. Dr. Wellington Maycon Santos Bernardes (Universidade Federal de Uberlândia).
 
+Installation
+------------
+
+Para instalar e utilizar a biblioteca **bdgd2dss**, siga os passos abaixo. Recomenda-se iniciar criando um ambiente virtual no terminal do VSCode para isolar as dependências do projeto.
+
+1. Criando ambiente virtual:
+
+    .. code-block:: bash
+
+        python -m venv .venv
+
+2. Ativando Ambiente:
+
+    .. code-block:: bash
+
+        .venv\Scripts\Activate
+
+3. Clonando Repositório:
+
+    .. code-block:: bash
+
+        git clone https://github.com/ArthurGS97/bdgd2dss.git
+
+4. Instalando Bibliotecas do requirements.txt:
+
+    .. code-block:: bash
+
+        pip install -r bdgd2dss/requirements.txt
 
 ## 1 - Base de Dados Geográfica da Distribuidora - BDGD
 
