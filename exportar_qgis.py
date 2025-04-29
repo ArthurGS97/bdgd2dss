@@ -2,89 +2,84 @@ import os
 import time
 import csv
 
-
 inicio = time.time()
 
-# Defina o diretório onde os arquivos CSV serão salvos
-output_dir = "C:/0411/PB/Inputs"  # Substitua com o caminho onde deseja salvar os arquivos CSV
+# Diretório onde os CSVs serão salvos
+output_dir = "C:/abril/bdgd2dss/Inputs"  # Ajuste conforme necessário
 
-pref = "Energisa_PB_6600_2022-12-31_V11_20230919-0837"
+# Definir os sufixos das camadas que serão exportadas
+layers_to_export = ['CRVCRG', 'CTMT', 'EQRE', 'EQTRMT', 'PIP', 'RAMLIG', 'SEGCON', 'SSDBT', 'SSDMT', 'UCBT_tab', 'UCMT_tab', 'UGBT_tab', 'UGMT_tab', 'UNCRMT', 'UNREMT', 'UNSEBT', 'UNSEMT', 'UNTRMT']
 
-# Definir a lista de valores para o campo 'SUB'
-sub_values = ('12873414', '12873483', '12873416', '12873415', '12873479')
+# Definir valores de 'SUB' para filtro
+sub_values = ('12873414', '')  # Defina os valores necessários
 
 
+# Extrair o prefixo 'pref' automaticamente
+all_layers = list(QgsProject.instance().mapLayers().values())
 
-# Iterar sobre todas as camadas carregadas no projeto
-for layer in QgsProject.instance().mapLayers().values():
-    # Verificar se a camada é do tipo vetorial
+if not all_layers:
+    raise Exception("Nenhuma camada carregada no projeto.")
+
+first_layer_name = all_layers[0].name()
+pref = first_layer_name.split(' — ')[0]  # Pega tudo antes do primeiro ' — '
+print(f"Prefixo extraído: {pref}")
+
+# Definir valores de 'SUB' para filtro
+sub_values = ('12873414', '')  # Defina os valores necessários
+
+# Filtrar as camadas
+for layer in all_layers:
     if layer.type() == QgsMapLayer.VectorLayer:
-        # Verificar se a camada tem o atributo "SUB"
         if 'SUB' in [field.name() for field in layer.fields()]:
-            # Aplicar filtro com múltiplos valores usando a cláusula IN
             filter_expression = f"SUB IN {sub_values}"
             layer.setSubsetString(filter_expression)
             print(f"Camada {layer.name()} filtrada com SUB em {sub_values}.")
 
-
-
-
-ssdmt = QgsProject.instance().mapLayersByName(f"{pref} — SSDMT")[0] 
-
-# Verifique se o diretório existe, caso contrário, crie-o
+# Garantir que o diretório existe
 if not os.path.exists(output_dir):
     os.makedirs(output_dir)
 
-# Iterar sobre todas as camadas carregadas no projeto
-for layer in QgsProject.instance().mapLayers().values():
-    # Definir o nome do arquivo CSV para a camada
-    csv_filename = os.path.join(output_dir, f"{layer.name()}.csv")
+# Exportar apenas as camadas especificadas
+for layer in all_layers:
+    if any(layer.name().endswith(f' — {suffix}') for suffix in layers_to_export):
+        csv_filename = os.path.join(output_dir, f"{layer.name()}.csv")
+        error = QgsVectorFileWriter.writeAsVectorFormat(layer, csv_filename, "utf-8", layer.crs(), "CSV")
+        if error[0] == QgsVectorFileWriter.NoError:
+            print(f"Camada {layer.name()} exportada com sucesso para {csv_filename}.")
+        else:
+            print(f"Erro ao exportar camada {layer.name()}.")
+
+# Gerar o arquivo de coordenadas baseado na camada SSDMT
+ssdmt_layer_name = f"{pref} — SSDMT"
+ssdmt_layers = QgsProject.instance().mapLayersByName(ssdmt_layer_name)
+
+if not ssdmt_layers:
+    raise Exception(f"Camada '{ssdmt_layer_name}' não encontrada.")
     
-    # Exportar a camada para CSV
-    error = QgsVectorFileWriter.writeAsVectorFormat(layer, csv_filename, "utf-8", layer.crs(), "CSV")
+ssdmt = ssdmt_layers[0]
 
-file_path = os.path.join(output_dir, "coordenadas.csv")
+file_path = os.path.join(output_dir, f"{pref} — Coordenadas.csv")
 
-    # Abrindo o arquivo CSV para escrita
 with open(file_path, mode='w', newline='') as csvfile:
     writer = csv.writer(csvfile)
-    
     writer.writerow(["CTMT", "PAC1", "Coord1", "PAC2", "Coord2"])
 
-    
-    # Iterando sobre as features (linhas) da camada
     for feature in ssdmt.getFeatures():
-        # Pegando os valores dos atributos PAC_1 e PAC_2
         ctmt = feature["CTMT"]
         pac_1 = feature["PAC_1"]
         pac_2 = feature["PAC_2"]
-        
-        # Obtendo a geometria da linha
         geom = feature.geometry()
-        
-        # Verificando se a geometria é MultiLineString ou LineString
+
         if geom.isMultipart():
-            # Se for MultiLineString, pegamos a primeira linha do conjunto
             line = geom.asMultiPolyline()[0]
         else:
-            # Se for uma LineString simples, pegamos a linha diretamente
             line = geom.asPolyline()
-        
-        # Verificando se a linha tem ao menos dois pontos
+
         if len(line) >= 2:
-            # Ponto inicial e ponto final da linha
-            coord_1 = line[0]  # Coordenada inicial
-            coord_2 = line[-1] # Coordenada final
-            
-            # Formatando as coordenadas como strings
-            coord_1_str = f"{coord_1.x()}, {coord_1.y()}"
-            coord_2_str = f"{coord_2.x()}, {coord_2.y()}"
-            
-            # Escrevendo a linha no CSV
-            writer.writerow([ctmt,pac_1, coord_1_str, pac_2, coord_2_str])
+            coord_1_str = f"{line[0].x()}, {line[0].y()}"
+            coord_2_str = f"{line[-1].x()}, {line[-1].y()}"
+            writer.writerow([ctmt, pac_1, coord_1_str, pac_2, coord_2_str])
 
 fim = time.time()
-print("Arquivo coordenadas gerado com sucesso!")
-print (fim - inicio)
-
-    
+print("Arquivo coordenadas.csv gerado com sucesso!")
+print(f"Tempo de execução: {fim - inicio:.2f} segundos.")

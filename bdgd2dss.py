@@ -4,15 +4,25 @@ import os
 import py_dss_interface
 import dicionarios as dic
 from multiprocessing import Pool
+import re
 
 
 # Função que lista todos os alimentadores
-#script_dir = os.path.dirname(os.path.abspath(__file__))
+script_dir = os.path.dirname(os.path.abspath(__file__))
 
-def feeders_list(pref):
-    pref = pref.split('.')[0] # Retira a extensão do arquivo 
+
+def prefixo_bdgd():
+    for nome_arquivo in os.listdir(os.path.join(script_dir, 'Inputs')):
+        if nome_arquivo.endswith('— SEGCON.csv'):  # usa o travessão (não o hífen!)
+            pref = nome_arquivo.replace(' — SEGCON.csv', '')  # remove o final para obter o prefixo
+            return pref
+    raise FileNotFoundError("Nenhum arquivo com sufixo '— SEGCON.csv' foi encontrado na pasta.")
+
+pref = prefixo_bdgd()
+
+def feeders_list():
     # Carregar o arquivo CSV
-    ctmt = pd.read_csv(rf'Inputs\{pref} — CTMT.csv', sep=',')
+    ctmt = pd.read_csv(rf'{script_dir}\Inputs\{pref} — CTMT.csv', sep=',')
 
 
     feeders_list = ctmt['COD_ID'].tolist()
@@ -21,10 +31,10 @@ def feeders_list(pref):
     return feeders_list
 
 #Função para gerar o arquivo Master.dss
-def generate_master(x, y, z, w, pref, feeder, dicionario_kv, dia_de_analise, mvasc1, mvasc3, output_dir=None):
+def generate_master(x, y, z, w, feeder, dicionario_kv, dia_de_analise, mvasc1, mvasc3, output_dir=None):
     start_master = time.time()
 
-    ctmt = pd.read_csv(rf'Inputs\{pref} — CTMT.csv', sep=',', low_memory=False)
+    ctmt = pd.read_csv(rf'{script_dir}\Inputs\{pref} — CTMT.csv', sep=',', low_memory=False)
 
     if output_dir is None:
         output_dir = os.getcwd()
@@ -83,9 +93,9 @@ def generate_master(x, y, z, w, pref, feeder, dicionario_kv, dia_de_analise, mva
         print(f"Master{feeder}_{dia_de_analise} Finalizado! - Tempo: {end_master - start_master:.2f} s")
 
 
-def generate_crvcrg(pref, output_dir=None):
+def generate_crvcrg(output_dir=None):
     start_crvcrg = time.time()
-    crvcrg = pd.read_csv(rf'Inputs\{pref} — CRVCRG.csv', sep=',', low_memory=False)
+    crvcrg = pd.read_csv(rf'{script_dir}\Inputs\{pref} — CRVCRG.csv', sep=',', low_memory=False)
 
     if output_dir is None:
         output_dir = os.getcwd()
@@ -186,9 +196,9 @@ def generate_crvcrg(pref, output_dir=None):
 
 
 
-def generate_linecode(pref, output_dir=None):
+def generate_linecode(output_dir=None):
     start_linecode = time.time()
-    segcon = pd.read_csv(rf'Inputs\{pref} — SEGCON.csv', sep=',', low_memory=False) 
+    segcon = pd.read_csv(rf'{script_dir}\Inputs\{pref} — SEGCON.csv', sep=',', low_memory=False) 
     if output_dir is None:
         output_dir = os.getcwd()
     output_file_path = os.path.join(output_dir, 'linecode.dss')   
@@ -212,9 +222,9 @@ def generate_linecode(pref, output_dir=None):
         end_linecode = time.time()
         print(f"Linecodes Finalizados! - Tempo: {end_linecode - start_linecode:.2f} s")
 
-def generate_ssdmt(pref, feeder, quant_fios, conex_fios, output_dir=None): #modificado n_phases para quant_fios (12/12)
+def generate_ssdmt(feeder, quant_fios, conex_fios, output_dir=None): #modificado n_phases para quant_fios (12/12)
     start_ssdmt = time.time()
-    ssdMT = pd.read_csv(rf'Inputs\{pref} — SSDMT.csv', sep=',', low_memory=False)
+    ssdMT = pd.read_csv(rf'{script_dir}\Inputs\{pref} — SSDMT.csv', sep=',', low_memory=False)
     # Filtrar apenas as linhas que pertencem ao alimentador escolhido
     ssdMT_filtered = ssdMT[ssdMT['CTMT'] == feeder]
     if output_dir is None:
@@ -239,10 +249,10 @@ def generate_ssdmt(pref, feeder, quant_fios, conex_fios, output_dir=None): #modi
         end_ssdmt = time.time()
         print(f"Linhas de Média do alimentador {feeder} Finalizadas! - Tempo: {end_ssdmt - start_ssdmt:.2f} s")
 
-def generate_trafosMT(pref, feeder, dicionario_kv, conex_fios_prim, conex_fios_sec, conex_fios_ter, mapeamento_conn, n_phases_trafo, output_dir=None):
+def generate_trafosMT(feeder, dicionario_kv, conex_fios_prim, conex_fios_sec, conex_fios_ter, mapeamento_conn, n_phases_trafo, output_dir=None):
     start_trafos = time.time()
-    trafosMT = pd.read_csv(rf'Inputs\{pref} — UNTRMT.csv', sep=',', low_memory=False)
-    eqtrmt = pd.read_csv(rf'Inputs\{pref} — EQTRMT.csv', sep=',', low_memory=False)
+    trafosMT = pd.read_csv(rf'{script_dir}\Inputs\{pref} — UNTRMT.csv', sep=',', low_memory=False)
+    eqtrmt = pd.read_csv(rf'{script_dir}\Inputs\{pref} — EQTRMT.csv', sep=',', low_memory=False)
 
     trafosMT = trafosMT[trafosMT['CTMT'] == feeder] 
     if output_dir is None:
@@ -327,11 +337,11 @@ def generate_trafosMT(pref, feeder, dicionario_kv, conex_fios_prim, conex_fios_s
         if len(trafo_n_localizado) > 0:
             print(f"Tranformadores de Média do alimentador {feeder} Finalizados! - Tempo:{end_trafos - start_trafos:.2f} s - Trafos não localizados: {trafo_n_localizado} ")
 
-def generate_ssdBT(pref, feeder, conex_fios, quant_fios, output_dir=None):
+def generate_ssdBT(feeder, conex_fios, quant_fios, output_dir=None):
     start_ssdbt = time.time()
-    ssdBT = pd.read_csv(rf'Inputs\{pref} — SSDBT.csv', sep=',', low_memory=False)
+    ssdBT = pd.read_csv(rf'{script_dir}\Inputs\{pref} — SSDBT.csv', sep=',', low_memory=False)
     ssdBT_filtered = ssdBT[ssdBT['CTMT'] == feeder]
-    trafos_MT = pd.read_csv(rf'Inputs\{pref} — UNTRMT.csv', sep=',', low_memory=False)
+    trafos_MT = pd.read_csv(rf'{script_dir}\Inputs\{pref} — UNTRMT.csv', sep=',', low_memory=False)
     trafos_MT = trafos_MT[trafos_MT['CTMT'] == feeder]
     
     if output_dir is None:
@@ -359,9 +369,9 @@ def generate_ssdBT(pref, feeder, conex_fios, quant_fios, output_dir=None):
         end_ssdbt = time.time()
         print(f"Linhas de Baixa do alimentador {feeder} Finalizadas! - Tempo: {end_ssdbt - start_ssdbt:.2f} s")
 
-def generate_ucmt(pref, feeder, conex_fios, mapeamento_conn_load, dicionario_kv, n_phases_load, output_dir=None): #modificado dicionario conex_fios_prim para conex_fios e n_phases para n_phases_load, conex_fios para mapeamento_conn_load (12/12)
+def generate_ucmt(feeder, conex_fios, mapeamento_conn_load, dicionario_kv, n_phases_load, output_dir=None): #modificado dicionario conex_fios_prim para conex_fios e n_phases para n_phases_load, conex_fios para mapeamento_conn_load (12/12)
     start_ucmt = time.time()
-    ucmt = pd.read_csv(rf'Inputs\{pref} — UCMT_tab.csv', sep=',', low_memory=False)
+    ucmt = pd.read_csv(rf'{script_dir}\Inputs\{pref} — UCMT_tab.csv', sep=',', low_memory=False)
     ucmt_filtered = ucmt[ucmt['CTMT'] == feeder]
 
     if output_dir is None:
@@ -398,10 +408,10 @@ def generate_ucmt(pref, feeder, conex_fios, mapeamento_conn_load, dicionario_kv,
         end_ucmt = time.time()
         print(f"Unidades Consumidoras de Média do alimentador {feeder} Finalizadas! - Tempo: {end_ucmt - start_ucmt:.2f} s")
 
-def generate_ucbt(pref, feeder, dicionario_kv, n_phases_load, conex_fios, mapeamento_conn_load, output_dir=None): #modificado n_phases para n_phases_load, mapeamento_conn para mapeamento_conn_load (12/12)
+def generate_ucbt(feeder, dicionario_kv, n_phases_load, conex_fios, mapeamento_conn_load, output_dir=None): #modificado n_phases para n_phases_load, mapeamento_conn para mapeamento_conn_load (12/12)
     start_ucbt = time.time()
-    ucbt = pd.read_csv(rf'Inputs\{pref} — UCBT_tab.csv', sep=',', low_memory=False)
-    trafosMT = pd.read_csv(rf'Inputs\{pref} — UNTRMT.csv', sep=',', low_memory=False)
+    ucbt = pd.read_csv(rf'{script_dir}\Inputs\{pref} — UCBT_tab.csv', sep=',', low_memory=False)
+    trafosMT = pd.read_csv(rf'{script_dir}\Inputs\{pref} — UNTRMT.csv', sep=',', low_memory=False)
     trafosMT = trafosMT[trafosMT['CTMT'] == feeder]
     ucbt_filtered = ucbt[ucbt['CTMT'] == feeder]
 
@@ -462,11 +472,11 @@ def generate_ucbt(pref, feeder, dicionario_kv, n_phases_load, conex_fios, mapeam
 
 
 
-def generate_pip(pref, feeder, dicionario_kv, n_phases_load, conex_fios, mapeamento_conn_load, output_dir=None): #modificado n_phases para n_phases_load, mapeamento_conn para mapeamento_conn_load (12/12)
+def generate_pip(feeder, dicionario_kv, n_phases_load, conex_fios, mapeamento_conn_load, output_dir=None): #modificado n_phases para n_phases_load, mapeamento_conn para mapeamento_conn_load (12/12)
     start_pip = time.time()
-    pip = pd.read_csv(rf'Inputs\{pref} — PIP.csv', sep=',', low_memory=False)
+    pip = pd.read_csv(rf'{script_dir}\Inputs\{pref} — PIP.csv', sep=',', low_memory=False)
     pip_filtered = pip[pip['CTMT'] == feeder]
-    trafosMT = pd.read_csv(rf'Inputs\{pref} — UNTRMT.csv', sep=',', low_memory=False)
+    trafosMT = pd.read_csv(rf'{script_dir}\Inputs\{pref} — UNTRMT.csv', sep=',', low_memory=False)
     trafosMT = trafosMT[trafosMT['CTMT'] == feeder]
 
     if output_dir is None:
@@ -510,10 +520,10 @@ def generate_pip(pref, feeder, dicionario_kv, n_phases_load, conex_fios, mapeame
         end_pip = time.time()
         print(f"Ponto de Iluminação Pública do alimentador {feeder} Finalizadas! - Tempo: {end_pip - start_pip:.2f} s")
 
-def generate_ssdunsemt(pref, feeder, dicionario_tip_unid, conex_fios, n_phases, output_dir=None): #modificcado quant_fios para n_phases (12/12)
+def generate_ssdunsemt(feeder, dicionario_tip_unid, conex_fios, n_phases, output_dir=None): #modificcado quant_fios para n_phases (12/12)
     start_ssdunsemt = time.time()
-    ssdUNSEMT = pd.read_csv(rf'Inputs\{pref} — UNSEMT.csv', sep=',', low_memory=False)
-    ssdUNSEBT = pd.read_csv(rf'Inputs\{pref} — UNSEBT.csv', sep=',', low_memory=False)
+    ssdUNSEMT = pd.read_csv(rf'{script_dir}\Inputs\{pref} — UNSEMT.csv', sep=',', low_memory=False)
+    ssdUNSEBT = pd.read_csv(rf'{script_dir}\Inputs\{pref} — UNSEBT.csv', sep=',', low_memory=False)
 
     ssdUNSEMT_filtered = ssdUNSEMT[ssdUNSEMT['CTMT'] == feeder]
     ssdUNSEBT_filtered = ssdUNSEBT[ssdUNSEBT['CTMT'] == feeder]
@@ -578,11 +588,11 @@ def generate_ssdunsemt(pref, feeder, dicionario_tip_unid, conex_fios, n_phases, 
     
     return 1
 
-def generate_ramlig(pref, feeder, quant_fios, conex_fios, output_dir=None):
+def generate_ramlig(feeder, quant_fios, conex_fios, output_dir=None):
     start_ramlig = time.time()
-    ramlig = pd.read_csv(rf'Inputs\{pref} — RAMLIG.csv', sep=',', low_memory=False)
+    ramlig = pd.read_csv(rf'{script_dir}\Inputs\{pref} — RAMLIG.csv', sep=',', low_memory=False)
     ramlig = ramlig[ramlig['CTMT'] == feeder]
-    trafos_MT = pd.read_csv(rf'Inputs\{pref} — UNTRMT.csv', sep=',', low_memory=False)
+    trafos_MT = pd.read_csv(rf'{script_dir}\Inputs\{pref} — UNTRMT.csv', sep=',', low_memory=False)
     trafos_MT = trafos_MT[trafos_MT['CTMT'] == feeder]
 
     if output_dir is None:
@@ -612,14 +622,14 @@ def generate_ramlig(pref, feeder, quant_fios, conex_fios, output_dir=None):
 
     print(f"Ramal de Ligação do alimentador {feeder} Finalizado! - Tempo: {end_ramlig - start_ramlig:.2f} s")
 
-def generate_gds(pref, feeder, dicionario_kv, n_phases, n_phases_load, conex_fios, mapeamento_conn_load, output_dir=None): #modificado dicionario conex_fios_prim para conex_fios do UGMT, adicionado n_phases_load para ugbt, mapeamento_conn para mapeamento_conn_load (12/12)
+def generate_gds(feeder, dicionario_kv, n_phases, n_phases_load, conex_fios, mapeamento_conn_load, output_dir=None): #modificado dicionario conex_fios_prim para conex_fios do UGMT, adicionado n_phases_load para ugbt, mapeamento_conn para mapeamento_conn_load (12/12)
     start_gds = time.time()
-    ugmt = pd.read_csv(rf'Inputs\{pref} — UGMT_tab.csv', sep=',', low_memory=False)
-    ugbt = pd.read_csv(rf'Inputs\{pref} — UGBT_tab.csv', sep=',', low_memory=False)
+    ugmt = pd.read_csv(rf'{script_dir}\Inputs\{pref} — UGMT_tab.csv', sep=',', low_memory=False)
+    ugbt = pd.read_csv(rf'{script_dir}\Inputs\{pref} — UGBT_tab.csv', sep=',', low_memory=False)
     ugmt_filtered = ugmt[ugmt['CTMT'] == feeder]
     ugbt_filtered = ugbt[ugbt['CTMT'] == feeder]
 
-    trafosMT = pd.read_csv(rf'Inputs\{pref} — UNTRMT.csv', sep=',', low_memory=False)
+    trafosMT = pd.read_csv(rf'{script_dir}\Inputs\{pref} — UNTRMT.csv', sep=',', low_memory=False)
     trafosMT = trafosMT[trafosMT['CTMT'] == feeder]
     if ugmt_filtered.empty and ugbt_filtered.empty: return
     
@@ -691,7 +701,7 @@ def generate_gds(pref, feeder, dicionario_kv, n_phases, n_phases_load, conex_fio
 
 def generate_coordenadas(feeder, output_dir=None):
     start_coord = time.time()
-    coord = pd.read_csv(r'Inputs\coordenadas.csv', sep=',', low_memory=False)
+    coord = pd.read_csv(rf'{script_dir}\Inputs\{pref} — Coordenadas.csv', sep=',', low_memory=False)
     coord_filtered = coord[coord['CTMT'] == feeder]
 
     if output_dir is None:
@@ -719,9 +729,9 @@ def generate_coordenadas(feeder, output_dir=None):
         end_coord = time.time()
         print(f"Coordenadas Finalizadas! - Tempo:{end_coord - start_coord:.2f} s")
 
-def generate_capacitores(pref, feeder, dicionario_capacitores, n_fases, conex_fios, output_dir=None):
+def generate_capacitores(feeder, dicionario_capacitores, n_fases, conex_fios, output_dir=None):
     start_cap = time.time()
-    cap = pd.read_csv(rf'Inputs\{pref} — UNCRMT.csv', sep=',', low_memory=False)
+    cap = pd.read_csv(rf'{script_dir}\Inputs\{pref} — UNCRMT.csv', sep=',', low_memory=False)
     cap_filtered = cap[cap['CTMT'] == feeder]
     if cap_filtered.empty: return
 
@@ -748,12 +758,12 @@ def generate_capacitores(pref, feeder, dicionario_capacitores, n_fases, conex_fi
     return 1
 
 
-def generate_unremt(pref, feeder, conex_fios, n_phases_trafo, dicionario_kva, tp, mapeamento_conn, output_dir=None):
+def generate_unremt(feeder, conex_fios, n_phases_trafo, dicionario_kva, tp, mapeamento_conn, output_dir=None):
     start_unremt = time.time()
 
     # Ler as planilhas de entrada
-    unremt = pd.read_csv(rf'Inputs\{pref} — UNREMT.csv', sep=',', low_memory=False)
-    uqre = pd.read_csv(rf'Inputs\{pref} — EQRE.csv', sep=',', low_memory=False)
+    unremt = pd.read_csv(rf'{script_dir}\Inputs\{pref} — UNREMT.csv', sep=',', low_memory=False)
+    uqre = pd.read_csv(rf'{script_dir}\Inputs\{pref} — EQRE.csv', sep=',', low_memory=False)
 
     # Filtrar os dados pelo alimentador especificado
     unremt_filtered = unremt[unremt['CTMT'] == feeder]
@@ -890,10 +900,10 @@ def generate_unremt(pref, feeder, conex_fios, n_phases_trafo, dicionario_kva, tp
     
     return 1
 
-def generate_energymeters(pref, feeder, output_dir=None):
+def generate_energymeters(feeder, output_dir=None):
 
     tempo_meters = time.time()
-    ssdUNSEMT = pd.read_csv(rf'Inputs\{pref} — UNSEMT.csv', sep=',' , low_memory=False)
+    ssdUNSEMT = pd.read_csv(rf'{script_dir}\Inputs\{pref} — UNSEMT.csv', sep=',' , low_memory=False)
     ssdUNSEMT_filtered = ssdUNSEMT[ssdUNSEMT['CTMT'] == feeder]
 
     if ssdUNSEMT_filtered.empty: return
@@ -925,15 +935,14 @@ def generate_energymeters(pref, feeder, output_dir=None):
 
 
 # Função que valida os alimentadores comparando as potências simuladas com as potências do BDGD
-def feeders_feasibility(feeders_list, pref):
-    pref = pref.split('.')[0] # Retira a extensão do arquivo 
+def feeders_feasibility(feeders_list):
 
     # Obter o diretório onde o script está localizado
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    print(script_dir)
+    
+    parent_dir = os.path.dirname(script_dir)
 
     # Carregar o arquivo CSV
-    ctmt = pd.read_csv(rf'Inputs\{pref} — CTMT.csv', sep=',')
+    ctmt = pd.read_csv(rf'{script_dir}\Inputs\{pref} — CTMT.csv', sep=',')
 
     # Inicializa a interface do PyDSS
     dss = py_dss_interface.DSSDLL()
@@ -956,7 +965,7 @@ def feeders_feasibility(feeders_list, pref):
             for dia in ["DU", "SA", "DO"]:
                 print(f" Processando Feeder {feeder} - Dia {dia}")
 
-                dss.file = rf"{script_dir}\{feeder}\Master_{feeder}_{dia}.dss" #Verificar se o caminho está correto
+                dss.file = rf"{parent_dir}\{feeder}\Master_{feeder}_{dia}.dss" #Verificar se o caminho está correto
 
                 dss.text(f"compile {dss.file}")
                 # Resolve o circuito
@@ -975,7 +984,9 @@ def feeders_feasibility(feeders_list, pref):
                     else:
                         conv = 'Sim'
             energymeteryear = energymeter[0] * 252 + energymeter[1] * 53 + energymeter[2] * 60
-
+            if conv == 'Não':
+                energymeteryear = 0
+                energymeter = [0,0,0]
             # Adicionar os dados na lista
             data_list.append({
                 "Feeder": feeder,
@@ -991,11 +1002,16 @@ def feeders_feasibility(feeders_list, pref):
         # Criar o DataFrame final com todos os feeders
         df = pd.DataFrame(data_list)
         #print(df)
-        # Quebra a string em partes separadas pelo caractere '_'
-        partes = pref.split('_')
 
-        # Constrói a variável 'nome' com as partes desejadas
-        nome = f"{partes[0]}_{partes[2][:4]}_{int(partes[2][:4]) + 1}"
+        # Extrair a concessionária e o ano do prefixo
+        match_conc = re.match(r"([A-Za-z\-]+_[A-Za-z]+)", pref)
+        concessionaria = match_conc.group(1) if match_conc else ""
+        match_ano = re.search(r"_(\d{4})-", pref)
+        ano = match_ano.group(1) if match_ano else ""
+
+        # Junta para formar o novo prefixo
+        nome = f"{concessionaria}_{ano}"
+        
 
         # Salvar o DataFrame em uma planilha Excel
         filename = os.path.join(script_dir, f"{nome}.xlsx")
@@ -1019,8 +1035,7 @@ def feeders_feasibility(feeders_list, pref):
 #########################################################################################################
 # Função para processar cada alimentador
 def process_feeder(args):
-    feeder, pref, mvasc3, mvasc1 = args
-    pref = pref.split('.')[0] # Retira a extensão do arquivo 
+    feeder, mvasc3, mvasc1 = args
 
     pasta_path = str(feeder)
     os.makedirs(pasta_path, exist_ok=True)
@@ -1028,30 +1043,29 @@ def process_feeder(args):
 
 
 
-
-
-    generate_crvcrg(pref, output_dir=pasta_path)
-    generate_linecode(pref, output_dir=pasta_path)
-    generate_ssdmt(pref, feeder, dic.quant_fios, dic.conex_fios, output_dir=pasta_path)
-    generate_trafosMT(pref, feeder, dic.dicionario_kv, dic.conex_fios_prim, dic.conex_fios_sec, dic.conex_fios_terc, dic.mapeamento_conn, dic.n_phases_trafo, output_dir=pasta_path)
-    generate_ssdBT(pref, feeder, dic.conex_fios, dic.quant_fios, output_dir=pasta_path)
-    generate_ucmt(pref, feeder, dic.conex_fios, dic.mapeamento_conn_load, dic.dicionario_kv, dic.n_phases_load, output_dir=pasta_path)
-    generate_ucbt(pref, feeder, dic.dicionario_kv, dic.n_phases_load, dic.conex_fios, dic.mapeamento_conn_load, output_dir=pasta_path)
-    generate_pip(pref, feeder, dic.dicionario_kv, dic.n_phases_load, dic.conex_fios, dic.mapeamento_conn_load, output_dir=pasta_path)
-    generate_ramlig(pref, feeder, dic.quant_fios, dic.conex_fios, output_dir=pasta_path)
-    x = generate_gds(pref, feeder, dic.dicionario_kv, dic.n_phases, dic.n_phases_load, dic.conex_fios, dic.mapeamento_conn_load, output_dir=pasta_path)
-    y = generate_capacitores(pref, feeder, dic.dicionario_capacitores, dic.n_phases, dic.conex_fios, output_dir=pasta_path)
+    generate_crvcrg(output_dir=pasta_path)
+    generate_linecode(output_dir=pasta_path)
+    generate_ssdmt(feeder, dic.quant_fios, dic.conex_fios, output_dir=pasta_path)
+    generate_trafosMT(feeder, dic.dicionario_kv, dic.conex_fios_prim, dic.conex_fios_sec, dic.conex_fios_terc, dic.mapeamento_conn, dic.n_phases_trafo, output_dir=pasta_path)
+    generate_ssdBT(feeder, dic.conex_fios, dic.quant_fios, output_dir=pasta_path)
+    generate_ucmt(feeder, dic.conex_fios, dic.mapeamento_conn_load, dic.dicionario_kv, dic.n_phases_load, output_dir=pasta_path)
+    generate_ucbt(feeder, dic.dicionario_kv, dic.n_phases_load, dic.conex_fios, dic.mapeamento_conn_load, output_dir=pasta_path)
+    generate_pip(feeder, dic.dicionario_kv, dic.n_phases_load, dic.conex_fios, dic.mapeamento_conn_load, output_dir=pasta_path)
+    generate_ramlig(feeder, dic.quant_fios, dic.conex_fios, output_dir=pasta_path)
+    x = generate_gds(feeder, dic.dicionario_kv, dic.n_phases, dic.n_phases_load, dic.conex_fios, dic.mapeamento_conn_load, output_dir=pasta_path)
+    y = generate_capacitores(feeder, dic.dicionario_capacitores, dic.n_phases, dic.conex_fios, output_dir=pasta_path)
     generate_coordenadas(feeder, output_dir=pasta_path)
-    z = generate_ssdunsemt(pref, feeder, dic.dicionario_tip_unid, dic.conex_fios, dic.n_phases, output_dir=pasta_path)
-    w = generate_unremt(pref, feeder, dic.conex_fios, dic.n_phases_trafo, dic.dicionario_kva, dic.rel_tp, dic.mapeamento_conn, output_dir=pasta_path)
-    generate_energymeters(pref, feeder, output_dir=pasta_path)
+    z = generate_ssdunsemt(feeder, dic.dicionario_tip_unid, dic.conex_fios, dic.n_phases, output_dir=pasta_path)
+    w = generate_unremt(feeder, dic.conex_fios, dic.n_phases_trafo, dic.dicionario_kva, dic.rel_tp, dic.mapeamento_conn, output_dir=pasta_path)
+    generate_energymeters(feeder, output_dir=pasta_path)
     for dia_de_analise in ["DU", "SA", "DO"]:
-        generate_master(x, y, z, w, pref, feeder, dic.dicionario_kv, dia_de_analise, mvasc3, mvasc1, output_dir=pasta_path)
+        generate_master(x, y, z, w, feeder, dic.dicionario_kv, dia_de_analise, mvasc3, mvasc1, output_dir=pasta_path)
     
 # Função principal que modela os alimentadores de interesse usando processamento paralelo
-def feeders_modelling(feeders_list, pref, mvasc3, mvasc1):
+def feeders_modelling(feeders_list, mvasc3, mvasc1):
     # Utilizando Pool do multiprocessing para paralelizar o processo
-    args_list = [(feeder, pref, mvasc3, mvasc1) for feeder in feeders_list]
+    feeders_list = [int(f) if f.isdigit() else f for f in feeders_list] # Tenta converter cada alimentador para int; se não for puramente numérico, mantém como string
+    args_list = [(feeder, mvasc3, mvasc1) for feeder in feeders_list]
     with Pool() as pool:
         pool.map(process_feeder, args_list)
 
