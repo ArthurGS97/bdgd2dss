@@ -1,0 +1,13 @@
+New Loadshape.MyIrrad npts=24 interval=1 mult=[0 0 0 0 0 0 0.03 0.18 0.44 0.7 0.9 0.98 1 0.94 0.8 0.6 0.35 0.14 0.016 0 0 0 0 0] 
+New Tshape.MyTemp npts=24 interval=1 temp=[21.5 21 20.6 20.2 19.8 19.5 19.2 20.2 25.5 34.3 42.6 49.3 53.6 55.1 54.4 51.3 45.6 38.4 31.1 25.7 24.0 23.2 22.5 22] 
+New XYCurve.MyPvsT npts=4 xarray=[0 25 75 100] yarray=[1.2 1.0 0.8 0.6] 
+New XYCurve.MyEff npts=4 xarray=[0.1 0.2 0.4 1.0] yarray=[0.86 0.90 0.93 0.97] 
+
+New PVSystem.BT92281 bus1=1003249033.2.3.4 phases=1 conn=delta kv=0.22 kva=15.24 pf=1 irrad=0.84 pmpp=15.24 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT92618 bus1=1002924149.3.1.4 phases=1 conn=delta kv=0.22 kva=15.24 pf=1 irrad=0.84 pmpp=15.24 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT94316 bus1=1002951750.2.3.4 phases=1 conn=delta kv=0.22 kva=19.05 pf=1 irrad=0.84 pmpp=19.05 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT96292 bus1=1002924086.1.2.4 phases=1 conn=delta kv=0.22 kva=22.86 pf=1 irrad=0.84 pmpp=22.86 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT96294 bus1=1002924289.1.2.3.4 phases=3 conn=delta kv=0.22 kva=22.86 pf=1 irrad=0.84 pmpp=22.86 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT96403 bus1=1002933788.1.2.4 phases=1 conn=delta kv=0.22 kva=24.003 pf=1 irrad=0.84 pmpp=24.003 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT98198 bus1=1002937050.3.1.4 phases=1 conn=delta kv=0.22 kva=22.86 pf=1 irrad=0.84 pmpp=22.86 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT98219 bus1=1002937092.1.2.4 phases=1 conn=delta kv=0.22 kva=22.86 pf=1 irrad=0.84 pmpp=22.86 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 

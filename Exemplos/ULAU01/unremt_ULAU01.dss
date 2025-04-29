@@ -1,0 +1,60 @@
+New "Transformer.TFreg7027A" phases=1 windings=2 buses=["173046528.1.4" "173046583.1.4"] conns=[wye wye] kvs=[7.967433714816837 7.967433714816837] kvas=[1500 1500] xhl=0.7 r=0.2 %loadloss=0.10586666666666668 %noloadloss=0.02793333333333333
+New "Regcontrol.reg7027A" transformer="TFreg7027A" winding=2 vreg=120.0 band=2 ptratio=69.16396417270583
+New Reactor.TFreg7027A-1 phases=1 bus1=173046528.4 R=15 X=0 basefreq=60
+New Reactor.TFreg7027A-2 phases=1 bus1=173046583.4 R=15 X=0 basefreq=60
+
+New "Transformer.TFreg7027C" phases=1 windings=2 buses=["173046528.3.4" "173046583.3.4"] conns=[wye wye] kvs=[7.967433714816837 7.967433714816837] kvas=[1500 1500] xhl=0.7 r=0.2 %loadloss=0.10586666666666668 %noloadloss=0.02793333333333333
+New "Regcontrol.reg7027C" transformer="TFreg7027C" winding=2 vreg=120.0 band=2 ptratio=69.16396417270583
+New Reactor.TFreg7027C-1 phases=1 bus1=173046528.4 R=15 X=0 basefreq=60
+New Reactor.TFreg7027C-2 phases=1 bus1=173046583.4 R=15 X=0 basefreq=60
+
+New "Transformer.TFreg7027B" phases=1 windings=2 buses=["173046528.2.4" "173046583.2.4"] conns=[wye wye] kvs=[7.967433714816837 7.967433714816837] kvas=[1500 1500] xhl=0.7 r=0.2 %loadloss=0.10586666666666668 %noloadloss=0.02793333333333333
+New "Regcontrol.reg7027B" transformer="TFreg7027B" winding=2 vreg=120.0 band=2 ptratio=69.16396417270583
+New Reactor.TFreg7027B-1 phases=1 bus1=173046528.4 R=15 X=0 basefreq=60
+New Reactor.TFreg7027B-2 phases=1 bus1=173046583.4 R=15 X=0 basefreq=60
+
+New "Transformer.TFreg7430A" phases=1 windings=2 buses=["183618830.1.4" "183618831.1.4"] conns=[wye wye] kvs=[7.967433714816837 7.967433714816837] kvas=[1500 1500] xhl=0.7 r=0.2 %loadloss=0.10586666666666668 %noloadloss=0.02793333333333333
+New "Regcontrol.reg7430A" transformer="TFreg7430A" winding=2 vreg=108.66 band=2 ptratio=76.38206976555034
+New Reactor.TFreg7430A-1 phases=1 bus1=183618830.4 R=15 X=0 basefreq=60
+New Reactor.TFreg7430A-2 phases=1 bus1=183618831.4 R=15 X=0 basefreq=60
+
+New "Transformer.TFreg7430C" phases=1 windings=2 buses=["183618830.3.4" "183618831.3.4"] conns=[wye wye] kvs=[7.967433714816837 7.967433714816837] kvas=[1500 1500] xhl=0.7 r=0.2 %loadloss=0.10586666666666668 %noloadloss=0.02793333333333333
+New "Regcontrol.reg7430C" transformer="TFreg7430C" winding=2 vreg=108.66 band=2 ptratio=76.38206976555034
+New Reactor.TFreg7430C-1 phases=1 bus1=183618830.4 R=15 X=0 basefreq=60
+New Reactor.TFreg7430C-2 phases=1 bus1=183618831.4 R=15 X=0 basefreq=60
+
+New "Transformer.TFreg7430B" phases=1 windings=2 buses=["183618830.2.4" "183618831.2.4"] conns=[wye wye] kvs=[7.967433714816837 7.967433714816837] kvas=[1500 1500] xhl=0.7 r=0.2 %loadloss=0.10586666666666668 %noloadloss=0.02793333333333333
+New "Regcontrol.reg7430B" transformer="TFreg7430B" winding=2 vreg=108.66 band=2 ptratio=76.38206976555034
+New Reactor.TFreg7430B-1 phases=1 bus1=183618830.4 R=15 X=0 basefreq=60
+New Reactor.TFreg7430B-2 phases=1 bus1=183618831.4 R=15 X=0 basefreq=60
+
+New "Transformer.TFreg6669A" phases=1 windings=2 buses=["160969753.1.4" "162040154.1.4"] conns=[wye wye] kvs=[7.967433714816837 7.967433714816837] kvas=[1500 1500] xhl=0.7 r=0.2 %loadloss=0.10586666666666668 %noloadloss=0.02793333333333333
+New "Regcontrol.reg6669A" transformer="TFreg6669A" winding=2 vreg=63.33 band=2 ptratio=131.05440866453023
+New Reactor.TFreg6669A-1 phases=1 bus1=160969753.4 R=15 X=0 basefreq=60
+New Reactor.TFreg6669A-2 phases=1 bus1=162040154.4 R=15 X=0 basefreq=60
+
+New "Transformer.TFreg6669C" phases=1 windings=2 buses=["160969753.3.4" "162040154.3.4"] conns=[wye wye] kvs=[7.967433714816837 7.967433714816837] kvas=[1500 1500] xhl=0.7 r=0.2 %loadloss=0.10586666666666668 %noloadloss=0.02793333333333333
+New "Regcontrol.reg6669C" transformer="TFreg6669C" winding=2 vreg=63.33 band=2 ptratio=131.05440866453023
+New Reactor.TFreg6669C-1 phases=1 bus1=160969753.4 R=15 X=0 basefreq=60
+New Reactor.TFreg6669C-2 phases=1 bus1=162040154.4 R=15 X=0 basefreq=60
+
+New "Transformer.TFreg6669B" phases=1 windings=2 buses=["160969753.2.4" "162040154.2.4"] conns=[wye wye] kvs=[7.967433714816837 7.967433714816837] kvas=[1500 1500] xhl=0.7 r=0.2 %loadloss=0.10586666666666668 %noloadloss=0.02793333333333333
+New "Regcontrol.reg6669B" transformer="TFreg6669B" winding=2 vreg=63.33 band=2 ptratio=131.05440866453023
+New Reactor.TFreg6669B-1 phases=1 bus1=160969753.4 R=15 X=0 basefreq=60
+New Reactor.TFreg6669B-2 phases=1 bus1=162040154.4 R=15 X=0 basefreq=60
+
+New "Transformer.TFreg6564A" phases=1 windings=2 buses=["161728215.1.4" "157244290.1.4"] conns=[wye wye] kvs=[7.967433714816837 7.967433714816837] kvas=[2500 2500] xhl=0.7 r=0.2 %loadloss=0.06352000000000001 %noloadloss=0.01676
+New "Regcontrol.reg6564A" transformer="TFreg6564A" winding=2 vreg=120.0 band=2 ptratio=69.16396417270583
+New Reactor.TFreg6564A-1 phases=1 bus1=161728215.4 R=15 X=0 basefreq=60
+New Reactor.TFreg6564A-2 phases=1 bus1=157244290.4 R=15 X=0 basefreq=60
+
+New "Transformer.TFreg6564C" phases=1 windings=2 buses=["161728215.3.4" "157244290.3.4"] conns=[wye wye] kvs=[7.967433714816837 7.967433714816837] kvas=[2500 2500] xhl=0.7 r=0.2 %loadloss=0.06352000000000001 %noloadloss=0.01676
+New "Regcontrol.reg6564C" transformer="TFreg6564C" winding=2 vreg=120.0 band=2 ptratio=69.16396417270583
+New Reactor.TFreg6564C-1 phases=1 bus1=161728215.4 R=15 X=0 basefreq=60
+New Reactor.TFreg6564C-2 phases=1 bus1=157244290.4 R=15 X=0 basefreq=60
+
+New "Transformer.TFreg6564B" phases=1 windings=2 buses=["161728215.2.4" "157244290.2.4"] conns=[wye wye] kvs=[7.967433714816837 7.967433714816837] kvas=[2500 2500] xhl=0.7 r=0.2 %loadloss=0.06352000000000001 %noloadloss=0.01676
+New "Regcontrol.reg6564B" transformer="TFreg6564B" winding=2 vreg=120.0 band=2 ptratio=69.16396417270583
+New Reactor.TFreg6564B-1 phases=1 bus1=161728215.4 R=15 X=0 basefreq=60
+New Reactor.TFreg6564B-2 phases=1 bus1=157244290.4 R=15 X=0 basefreq=60
+

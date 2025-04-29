@@ -1,0 +1,6 @@
+New EnergyMeter.EM1     Element=line.subULAS628 Terminal=1  Action=Save localonly=no
+New monitor.MON1 _current element=line.subULAS628 terminal=2 mode=0
+
+New EnergyMeter.EM2     Element=line.SECR32974 Terminal=1  Action=Save localonly=no
+New monitor.MON2 _current element=line.SECR32974 terminal=2 mode=0
+

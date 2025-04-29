@@ -1,0 +1,24 @@
+New load.mt4622-1 phases=3 bus=149734108.1.2.3.4 model=2 kv=13.8 kw=411.20058321917804 pf=0.92 conn=delta status=variable vmaxpu=1.5 vminpu=0.92 daily=MT5_1
+New load.mt4622-2 phases=3 bus=149734108.1.2.3.4 model=3 kv=13.8 kw=411.20058321917804 pf=0.92 conn=delta status=variable vmaxpu=1.5 vminpu=0.92 daily=MT5_1
+
+New load.mt4706-1 phases=3 bus=149734108.1.2.3.4 model=2 kv=13.8 kw=42.75122979452055 pf=0.92 conn=delta status=variable vmaxpu=1.5 vminpu=0.92 daily=MT3_1
+New load.mt4706-2 phases=3 bus=149734108.1.2.3.4 model=3 kv=13.8 kw=42.75122979452055 pf=0.92 conn=delta status=variable vmaxpu=1.5 vminpu=0.92 daily=MT3_1
+
+New load.mt4739-1 phases=3 bus=149734108.1.2.3.4 model=2 kv=13.8 kw=33.161866381278536 pf=0.92 conn=delta status=variable vmaxpu=1.5 vminpu=0.92 daily=MT2_1
+New load.mt4739-2 phases=3 bus=149734108.1.2.3.4 model=3 kv=13.8 kw=33.161866381278536 pf=0.92 conn=delta status=variable vmaxpu=1.5 vminpu=0.92 daily=MT2_1
+
+New load.mt22024-1 phases=3 bus=164351436.1.2.3.4 model=2 kv=13.8 kw=32.65727739726027 pf=0.92 conn=delta status=variable vmaxpu=1.5 vminpu=0.92 daily=MT3_1
+New load.mt22024-2 phases=3 bus=164351436.1.2.3.4 model=3 kv=13.8 kw=32.65727739726027 pf=0.92 conn=delta status=variable vmaxpu=1.5 vminpu=0.92 daily=MT3_1
+
+New load.mt22044-1 phases=3 bus=160863317.1.2.3.4 model=2 kv=13.8 kw=23.320388127853878 pf=0.92 conn=delta status=variable vmaxpu=1.5 vminpu=0.92 daily=MT2_1
+New load.mt22044-2 phases=3 bus=160863317.1.2.3.4 model=3 kv=13.8 kw=23.320388127853878 pf=0.92 conn=delta status=variable vmaxpu=1.5 vminpu=0.92 daily=MT2_1
+
+New load.mt22129-1 phases=3 bus=129845419.1.2.3.4 model=2 kv=13.8 kw=15.998744292237443 pf=0.92 conn=delta status=variable vmaxpu=1.5 vminpu=0.92 daily=MT2_1
+New load.mt22129-2 phases=3 bus=129845419.1.2.3.4 model=3 kv=13.8 kw=15.998744292237443 pf=0.92 conn=delta status=variable vmaxpu=1.5 vminpu=0.92 daily=MT2_1
+
+New load.mt22210-1 phases=3 bus=158928381.1.2.3.4 model=2 kv=13.8 kw=9.865662100456623 pf=0.92 conn=delta status=variable vmaxpu=1.5 vminpu=0.92 daily=MT2_1
+New load.mt22210-2 phases=3 bus=158928381.1.2.3.4 model=3 kv=13.8 kw=9.865662100456623 pf=0.92 conn=delta status=variable vmaxpu=1.5 vminpu=0.92 daily=MT2_1
+
+New load.mt22261-1 phases=3 bus=166015754.1.2.3.4 model=2 kv=13.8 kw=8.590182648401827 pf=0.92 conn=delta status=variable vmaxpu=1.5 vminpu=0.92 daily=MT2_1
+New load.mt22261-2 phases=3 bus=166015754.1.2.3.4 model=3 kv=13.8 kw=8.590182648401827 pf=0.92 conn=delta status=variable vmaxpu=1.5 vminpu=0.92 daily=MT2_1
+

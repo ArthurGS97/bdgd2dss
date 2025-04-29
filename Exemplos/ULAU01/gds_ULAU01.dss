@@ -1,0 +1,94 @@
+New Loadshape.MyIrrad npts=24 interval=1 mult=[0 0 0 0 0 0 0.03 0.18 0.44 0.7 0.9 0.98 1 0.94 0.8 0.6 0.35 0.14 0.016 0 0 0 0 0] 
+New Tshape.MyTemp npts=24 interval=1 temp=[21.5 21 20.6 20.2 19.8 19.5 19.2 20.2 25.5 34.3 42.6 49.3 53.6 55.1 54.4 51.3 45.6 38.4 31.1 25.7 24.0 23.2 22.5 22] 
+New XYCurve.MyPvsT npts=4 xarray=[0 25 75 100] yarray=[1.2 1.0 0.8 0.6] 
+New XYCurve.MyEff npts=4 xarray=[0.1 0.2 0.4 1.0] yarray=[0.86 0.90 0.93 0.97] 
+
+New PVSystem.MT124 bus1=176815289.1.2.3.4 phases=3 conn=delta kv=13.8 kva=240.03 pf=1 irrad=0.84 pmpp=240.03 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+
+New PVSystem.MT224 bus1=180951447.1.2.3.4 phases=3 conn=delta kv=13.8 kva=190.5 pf=1 irrad=0.84 pmpp=190.5 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+
+New PVSystem.MT797 bus1=181857509.1.2.3.4 phases=3 conn=delta kv=13.8 kva=240.03 pf=1 irrad=0.84 pmpp=240.03 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+
+New PVSystem.MT1551 bus1=177279219.1.2.3.4 phases=3 conn=delta kv=13.8 kva=152.4 pf=1 irrad=0.84 pmpp=152.4 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+
+New PVSystem.MT1592 bus1=176541379.1.2.3.4 phases=3 conn=delta kv=13.8 kva=133.35 pf=1 irrad=0.84 pmpp=133.35 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+
+New PVSystem.BT2139 bus1=1004333893.1.2.4 phases=1 conn=delta kv=0.24 kva=7.2 pf=1 irrad=0.84 pmpp=7.2 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT2198 bus1=1003303059.1.2.4 phases=1 conn=delta kv=0.24 kva=7.2 pf=1 irrad=0.84 pmpp=7.2 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT2202 bus1=1004482160.1.2.4 phases=1 conn=delta kv=0.24 kva=9.6 pf=1 irrad=0.84 pmpp=9.6 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT4255 bus1=1011163150.1.2.4 phases=1 conn=delta kv=0.22 kva=15.24 pf=1 irrad=0.84 pmpp=15.24 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT91654 bus1=1010292084.1.2.4 phases=1 conn=delta kv=0.24 kva=7.2 pf=1 irrad=0.84 pmpp=7.2 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT91655 bus1=1003239156.1.2.4 phases=1 conn=delta kv=0.24 kva=7.2 pf=1 irrad=0.84 pmpp=7.2 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT91803 bus1=1011172889.2.3.4 phases=1 conn=delta kv=0.22 kva=15.24 pf=1 irrad=0.84 pmpp=15.24 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT98623 bus1=1006122708.1.2.4 phases=1 conn=delta kv=0.24 kva=7.2 pf=1 irrad=0.84 pmpp=7.2 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT98624 bus1=1005164415.1.2.4 phases=1 conn=delta kv=0.24 kva=7.2 pf=1 irrad=0.84 pmpp=7.2 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT98626 bus1=1005086260.1.2.4 phases=1 conn=delta kv=0.24 kva=4.8 pf=1 irrad=0.84 pmpp=4.8 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT98627 bus1=1004269626.1.2.4 phases=1 conn=delta kv=0.24 kva=4.8 pf=1 irrad=0.84 pmpp=4.8 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT98631 bus1=1005243662.1.2.4 phases=1 conn=delta kv=0.24 kva=7.2 pf=1 irrad=0.84 pmpp=7.2 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT98635 bus1=1005230943.1.2.4 phases=1 conn=delta kv=0.24 kva=7.2 pf=1 irrad=0.84 pmpp=7.2 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT98637 bus1=1010254947.1.2.4 phases=1 conn=delta kv=0.24 kva=7.2 pf=1 irrad=0.84 pmpp=7.2 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT98646 bus1=1011015115.1.2.4 phases=1 conn=delta kv=0.24 kva=4.8 pf=1 irrad=0.84 pmpp=4.8 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT98647 bus1=1004685818.1.2.4 phases=1 conn=delta kv=0.24 kva=7.2 pf=1 irrad=0.84 pmpp=7.2 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT98648 bus1=1006153697.1.2.4 phases=1 conn=delta kv=0.24 kva=7.2 pf=1 irrad=0.84 pmpp=7.2 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT98649 bus1=1003268458.1.2.4 phases=1 conn=delta kv=0.24 kva=7.2 pf=1 irrad=0.84 pmpp=7.2 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT98650 bus1=1010780215.1.2.4 phases=1 conn=delta kv=0.24 kva=7.2 pf=1 irrad=0.84 pmpp=7.2 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT98651 bus1=1010292086.1.2.4 phases=1 conn=delta kv=0.24 kva=7.2 pf=1 irrad=0.84 pmpp=7.2 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT98655 bus1=1004935354.1.2.4 phases=1 conn=delta kv=0.24 kva=7.2 pf=1 irrad=0.84 pmpp=7.2 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT98657 bus1=1005325793.1.2.4 phases=1 conn=delta kv=0.24 kva=7.2 pf=1 irrad=0.84 pmpp=7.2 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT98658 bus1=1003256551.1.2.4 phases=1 conn=delta kv=0.24 kva=7.2 pf=1 irrad=0.84 pmpp=7.2 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT98664 bus1=1003239016.1.2.4 phases=1 conn=delta kv=0.24 kva=7.56 pf=1 irrad=0.84 pmpp=7.56 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT98666 bus1=1010259848.1.2.4 phases=1 conn=delta kv=0.24 kva=7.2 pf=1 irrad=0.84 pmpp=7.2 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT98668 bus1=1005462972.1.2.4 phases=1 conn=delta kv=0.24 kva=7.56 pf=1 irrad=0.84 pmpp=7.56 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT98669 bus1=1004079989.1.2.4 phases=1 conn=delta kv=0.24 kva=7.2 pf=1 irrad=0.84 pmpp=7.2 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT98675 bus1=1003256684.1.2.4 phases=1 conn=delta kv=0.24 kva=7.2 pf=1 irrad=0.84 pmpp=7.2 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT98684 bus1=1003268500.1.2.4 phases=1 conn=delta kv=0.24 kva=7.2 pf=1 irrad=0.84 pmpp=7.2 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT98692 bus1=1004555660.1.2.4 phases=1 conn=delta kv=0.24 kva=7.2 pf=1 irrad=0.84 pmpp=7.2 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT98703 bus1=1003239086.1.2.4 phases=1 conn=delta kv=0.24 kva=7.56 pf=1 irrad=0.84 pmpp=7.56 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT98707 bus1=1003239051.1.2.4 phases=1 conn=delta kv=0.24 kva=7.2 pf=1 irrad=0.84 pmpp=7.2 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT98711 bus1=1004096082.1.2.4 phases=1 conn=delta kv=0.24 kva=7.56 pf=1 irrad=0.84 pmpp=7.56 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT98717 bus1=1004424263.1.2.4 phases=1 conn=delta kv=0.24 kva=7.2 pf=1 irrad=0.84 pmpp=7.2 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT98736 bus1=1004333844.1.2.4 phases=1 conn=delta kv=0.24 kva=7.2 pf=1 irrad=0.84 pmpp=7.2 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT98816 bus1=1003297067.1.2.4 phases=1 conn=delta kv=0.24 kva=7.2 pf=1 irrad=0.84 pmpp=7.2 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT98827 bus1=1010137843.1.2.4 phases=1 conn=delta kv=0.24 kva=7.2 pf=1 irrad=0.84 pmpp=7.2 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT98887 bus1=1005261813.1.2.4 phases=1 conn=delta kv=0.24 kva=7.2 pf=1 irrad=0.84 pmpp=7.2 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT99492 bus1=1004170667.1.2.4 phases=1 conn=delta kv=0.24 kva=10.8 pf=1 irrad=0.84 pmpp=10.8 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT99540 bus1=1004333900.1.2.4 phases=1 conn=delta kv=0.24 kva=7.2 pf=1 irrad=0.84 pmpp=7.2 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT99565 bus1=1004641949.1.2.3.4 phases=3 conn=delta kv=0.22 kva=47.625 pf=1 irrad=0.84 pmpp=47.625 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT100969 bus1=1002435346.1.2.4 phases=1 conn=delta kv=0.24 kva=9.6 pf=1 irrad=0.84 pmpp=9.6 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT100981 bus1=1010755688.1.2.4 phases=1 conn=delta kv=0.24 kva=7.2 pf=1 irrad=0.84 pmpp=7.2 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT100982 bus1=1002432616.1.2.3.4 phases=3 conn=delta kv=0.22 kva=45.72 pf=1 irrad=0.84 pmpp=45.72 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT100987 bus1=1010755207.1.2.4 phases=1 conn=delta kv=0.24 kva=4.8 pf=1 irrad=0.84 pmpp=4.8 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT101011 bus1=1003358527.1.2.4 phases=1 conn=delta kv=0.24 kva=7.2 pf=1 irrad=0.84 pmpp=7.2 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT101055 bus1=1004484589.1.2.4 phases=1 conn=delta kv=0.24 kva=7.56 pf=1 irrad=0.84 pmpp=7.56 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT101101 bus1=1002434597.1.2.4 phases=1 conn=delta kv=0.24 kva=12.0 pf=1 irrad=0.84 pmpp=12.0 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT101110 bus1=1003263887.1.2.3.4 phases=3 conn=delta kv=0.22 kva=114.3 pf=1 irrad=0.84 pmpp=114.3 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT101124 bus1=1006131570.1.2.4 phases=1 conn=delta kv=0.24 kva=7.2 pf=1 irrad=0.84 pmpp=7.2 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT101126 bus1=1002432301.1.2.4 phases=1 conn=delta kv=0.24 kva=24.0 pf=1 irrad=0.84 pmpp=24.0 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT101131 bus1=1005424318.1.2.4 phases=1 conn=delta kv=0.24 kva=4.8 pf=1 irrad=0.84 pmpp=4.8 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT101132 bus1=1003337702.1.2.3.4 phases=3 conn=delta kv=0.22 kva=76.2 pf=1 irrad=0.84 pmpp=76.2 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT101294 bus1=1003376566.1.2.4 phases=1 conn=delta kv=0.24 kva=24.0 pf=1 irrad=0.84 pmpp=24.0 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT101318 bus1=1006093938.1.2.4 phases=1 conn=delta kv=0.24 kva=7.2 pf=1 irrad=0.84 pmpp=7.2 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT101323 bus1=1002440099.1.2.3.4 phases=3 conn=delta kv=0.22 kva=38.1 pf=1 irrad=0.84 pmpp=38.1 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT101332 bus1=1003359395.1.2.3.4 phases=3 conn=delta kv=0.22 kva=76.2 pf=1 irrad=0.84 pmpp=76.2 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT101333 bus1=1002437705.1.2.4 phases=1 conn=delta kv=0.24 kva=10.8 pf=1 irrad=0.84 pmpp=10.8 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT101340 bus1=1004738045.1.2.4 phases=1 conn=delta kv=0.22 kva=45.72 pf=1 irrad=0.84 pmpp=45.72 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT101364 bus1=1003297046.1.2.4 phases=1 conn=delta kv=0.24 kva=4.8 pf=1 irrad=0.84 pmpp=4.8 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT182348 bus1=1003298096.1.2.4 phases=1 conn=delta kv=0.24 kva=7.2 pf=1 irrad=0.84 pmpp=7.2 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT182360 bus1=1005017275.1.2.4 phases=1 conn=delta kv=0.24 kva=4.8 pf=1 irrad=0.84 pmpp=4.8 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT182369 bus1=1003298110.1.2.3.4 phases=3 conn=delta kv=0.22 kva=22.86 pf=1 irrad=0.84 pmpp=22.86 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT184141 bus1=1011331256.1.2.4 phases=1 conn=delta kv=0.22 kva=24.003 pf=1 irrad=0.84 pmpp=24.003 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT184261 bus1=1011376752.1.2.4 phases=1 conn=delta kv=0.22 kva=24.003 pf=1 irrad=0.84 pmpp=24.003 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT184268 bus1=1011377529.1.2.4 phases=1 conn=delta kv=0.22 kva=15.24 pf=1 irrad=0.84 pmpp=15.24 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT184291 bus1=1011223212.1.2.4 phases=1 conn=delta kv=0.22 kva=15.24 pf=1 irrad=0.84 pmpp=15.24 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT184292 bus1=1011282248.1.2.4 phases=1 conn=delta kv=0.22 kva=24.003 pf=1 irrad=0.84 pmpp=24.003 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT184325 bus1=1011382529.1.2.4 phases=1 conn=delta kv=0.22 kva=22.86 pf=1 irrad=0.84 pmpp=22.86 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT184608 bus1=1011198233.3.1.4 phases=1 conn=delta kv=0.22 kva=24.003 pf=1 irrad=0.84 pmpp=24.003 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT184620 bus1=1010451898.1.2.4 phases=1 conn=delta kv=0.24 kva=7.2 pf=1 irrad=0.84 pmpp=7.2 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT184706 bus1=1011373743.3.1.4 phases=1 conn=delta kv=0.22 kva=15.24 pf=1 irrad=0.84 pmpp=15.24 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT184709 bus1=1011413477.1.4 phases=1 conn=wye kv=0.127 kva=38.1 pf=1 irrad=0.84 pmpp=38.1 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT184715 bus1=1011396614.1.2.4 phases=1 conn=delta kv=0.22 kva=24.003 pf=1 irrad=0.84 pmpp=24.003 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT184753 bus1=1011284246.1.2.3.4 phases=3 conn=delta kv=0.22 kva=24.003 pf=1 irrad=0.84 pmpp=24.003 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT184787 bus1=1010823568.1.4 phases=1 conn=wye kv=0.127 kva=24.003 pf=1 irrad=0.84 pmpp=24.003 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT184814 bus1=1005077650.1.2.4 phases=1 conn=delta kv=0.24 kva=10.8 pf=1 irrad=0.84 pmpp=10.8 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT184879 bus1=1011164727.3.1.4 phases=1 conn=delta kv=0.22 kva=24.003 pf=1 irrad=0.84 pmpp=24.003 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 
+New PVSystem.BT184882 bus1=1011161529.2.3.4 phases=1 conn=delta kv=0.22 kva=15.24 pf=1 irrad=0.84 pmpp=15.24 temperature=25 %cutin=0.1 %cutout=0.1 effcurve=MyEff p-tcurve=MyPvsT Daily=MyIrrad TDaily=MyTemp 

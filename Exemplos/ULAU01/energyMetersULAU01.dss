@@ -1,0 +1,78 @@
+New EnergyMeter.EM1     Element=line.subULAU01 Terminal=1  Action=Save localonly=no
+New monitor.MON1 _current element=line.subULAU01 terminal=2 mode=0
+
+New EnergyMeter.EM2     Element=line.SECR56946 Terminal=1  Action=Save localonly=no
+New monitor.MON2 _current element=line.SECR56946 terminal=2 mode=0
+
+New EnergyMeter.EM3     Element=line.SECR7454 Terminal=1  Action=Save localonly=no
+New monitor.MON3 _current element=line.SECR7454 terminal=2 mode=0
+
+New EnergyMeter.EM4     Element=line.SECR48462 Terminal=1  Action=Save localonly=no
+New monitor.MON4 _current element=line.SECR48462 terminal=2 mode=0
+
+New EnergyMeter.EM5     Element=line.SECR56947 Terminal=1  Action=Save localonly=no
+New monitor.MON5 _current element=line.SECR56947 terminal=2 mode=0
+
+New EnergyMeter.EM6     Element=line.SECR35967 Terminal=1  Action=Save localonly=no
+New monitor.MON6 _current element=line.SECR35967 terminal=2 mode=0
+
+New EnergyMeter.EM7     Element=line.SECR44718 Terminal=1  Action=Save localonly=no
+New monitor.MON7 _current element=line.SECR44718 terminal=2 mode=0
+
+New EnergyMeter.EM8     Element=line.SECR20698 Terminal=1  Action=Save localonly=no
+New monitor.MON8 _current element=line.SECR20698 terminal=2 mode=0
+
+New EnergyMeter.EM9     Element=line.SECR36528 Terminal=1  Action=Save localonly=no
+New monitor.MON9 _current element=line.SECR36528 terminal=2 mode=0
+
+New EnergyMeter.EM10     Element=line.SECR51140 Terminal=1  Action=Save localonly=no
+New monitor.MON10 _current element=line.SECR51140 terminal=2 mode=0
+
+New EnergyMeter.EM11     Element=line.SECR47808 Terminal=1  Action=Save localonly=no
+New monitor.MON11 _current element=line.SECR47808 terminal=2 mode=0
+
+New EnergyMeter.EM12     Element=line.SECR44489 Terminal=1  Action=Save localonly=no
+New monitor.MON12 _current element=line.SECR44489 terminal=2 mode=0
+
+New EnergyMeter.EM13     Element=line.SECR44490 Terminal=1  Action=Save localonly=no
+New monitor.MON13 _current element=line.SECR44490 terminal=2 mode=0
+
+New EnergyMeter.EM14     Element=line.SECR56821 Terminal=1  Action=Save localonly=no
+New monitor.MON14 _current element=line.SECR56821 terminal=2 mode=0
+
+New EnergyMeter.EM15     Element=line.SECR51462 Terminal=1  Action=Save localonly=no
+New monitor.MON15 _current element=line.SECR51462 terminal=2 mode=0
+
+New EnergyMeter.EM16     Element=line.SECR13705 Terminal=1  Action=Save localonly=no
+New monitor.MON16 _current element=line.SECR13705 terminal=2 mode=0
+
+New EnergyMeter.EM17     Element=line.SECR56965 Terminal=1  Action=Save localonly=no
+New monitor.MON17 _current element=line.SECR56965 terminal=2 mode=0
+
+New EnergyMeter.EM18     Element=line.SECR31856 Terminal=1  Action=Save localonly=no
+New monitor.MON18 _current element=line.SECR31856 terminal=2 mode=0
+
+New EnergyMeter.EM19     Element=line.SECR56945 Terminal=1  Action=Save localonly=no
+New monitor.MON19 _current element=line.SECR56945 terminal=2 mode=0
+
+New EnergyMeter.EM20     Element=line.SECR56948 Terminal=1  Action=Save localonly=no
+New monitor.MON20 _current element=line.SECR56948 terminal=2 mode=0
+
+New EnergyMeter.EM21     Element=line.SECR51124 Terminal=1  Action=Save localonly=no
+New monitor.MON21 _current element=line.SECR51124 terminal=2 mode=0
+
+New EnergyMeter.EM22     Element=line.SECR60340 Terminal=1  Action=Save localonly=no
+New monitor.MON22 _current element=line.SECR60340 terminal=2 mode=0
+
+New EnergyMeter.EM23     Element=line.SECR34575 Terminal=1  Action=Save localonly=no
+New monitor.MON23 _current element=line.SECR34575 terminal=2 mode=0
+
+New EnergyMeter.EM24     Element=line.SECR51128 Terminal=1  Action=Save localonly=no
+New monitor.MON24 _current element=line.SECR51128 terminal=2 mode=0
+
+New EnergyMeter.EM25     Element=line.SECR41807 Terminal=1  Action=Save localonly=no
+New monitor.MON25 _current element=line.SECR41807 terminal=2 mode=0
+
+New EnergyMeter.EM26     Element=line.SECR20075 Terminal=1  Action=Save localonly=no
+New monitor.MON26 _current element=line.SECR20075 terminal=2 mode=0
+
