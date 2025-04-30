@@ -134,7 +134,7 @@ Após realizado o *download*, será possível trabalhar com os arquivos. Para is
 
 **Fonte:** O autor (2024). 
 
-![tabelacamadas_f4](/Prints_git/tabelacamadas_f4.png "tabelacamadas_f4").
+![f4_todas_camadas](/Prints_git/f4_todas_camadas.png "f4_todas_camadas").
 
 **Figura 4: Captura de tela do *QGIS* mostrando as camadas da BDGD**
 
@@ -172,43 +172,44 @@ Com o editor aberto deve-se abrir o código que está nesse diretório chamado: 
 
 Com o script aberto, podemos agora realizar a filtragem das subestações e exportar os dados. A Figura 9 apresenta o código, que contém dois campos configuráveis pelo usuário: o caminho onde deseja salvar os arquivos exportados, quando realizado a cloangem do repositório já terá uma pasta chamada Inputs deve-se salvar nela, e o campo onde deve ser aplicado o *COD_ID* das subestações, conforme indicado. Após preencher esses campos, basta executar o script. Vale notar que essa etapa pode demorar, durante a qual o QGIS poderá ficar temporariamente travado; isso é esperado, então é necessário aguardar até a finalização do processo. Por exemplo, nos testes com todas as subestações de Uberlândia, esse procedimento levou cerca de 30 minutos em uma máquina com as seguintes especificações: *Intel Core i5-8500 de 8ª geração @ 3.00GHz, 8 GB de RAM, Windows 10 Pro e SSD NVMe*. Quanto maior a base de dados e o volume de dados a serem exportados, maior será o tempo de execução.
 
-![dados_entrada](/Prints_git/dados_entrada.png "dados_entrada").
+![f9_exportaqgis_entrada](/Prints_git/f9_exportaqgis_entrada.png "f9_exportaqgis_entrada").
 **Figura 9: Captura de tela do *QGIS* do script com o foco nas variáveis de entrada do usuário**
 
 Finalizado o processo de exportação das camadas, agora pode-se ir para os *scripts* em *Python* que realizarão a modelagem de alimentadores, verificação de convergência e validação dos mesmos.
 
 ## 3 - Convertendo BDGD em *.dss* usando *Python*
 
-Para facilitar o uso, foi disponibilizada uma rotina que lista os alimentadores presentes nos arquivos, por meio do *script feeders_list_all.py*, localizado neste diretório. Com os dados obtidos, agora é possível utilizar a biblioteca *bdgd2dss* para modelar os alimentadores desejados. Além disso, foi criada uma rotina adicional, *feeders_processing.py*, que permite modelar os alimentadores selecionados a partir da lista gerada anteriormente pelo *feeders_list_all.py*. O usuário também deverá informar o dia de análise (DU - Dia Útil, SA - Sábado, DO - Domingo) como dado de entrada.
+Para realizar a modelagem dos alimentadores utilizando a biblioteca **bdgd2dss**, utiliza-se o arquivo *main.py*, disponibilizado junto ao repositório. A estrutura do código é mostrado na Figura 10.
 
-Inicialmente, recomenda-se que o usuário selecione um conjunto de alimentadores para verificar quais estão adequados para a modelagem. A Figura 10 ilustra esse procedimento, mostrando a modelagem de todos os alimentadores da cidade de Uberlândia-MG.
-
-![f9_codigogerar_ali](/Prints_git/f9_codigogerar_ali.png "f9_codigogerar_ali").
+![novomain](/Prints_git/novomain.png "novomain").
 
 **Figura 10: Captura de tela do Visual Code do códifo *feeders_processing.py* sendo utilizado**
 
 **Fonte:** O Autor (2024).
 
-A título de demonstração de desempenho computacional, usou-se uma máquina que possui as seguintes configurações: *8th Gen Intel (R) Core (TM) i5-8500 @3.00GHz; 8 GB RAM; Windows 10 Pro and SSD NVMe*. O procedimento demorou 2822 segundos, que são aproximadamente 47 minutos, para gerar a modelagem dos 62 alimentadores da cidade de Uberlândia - Minas Gerais.
+Os dados de entrada necessários são os níveis de curto-circuito trifásico (*mvasc3*) e monofásico (*mvasc1*), ambos em MVA. Caso se deseje utilizar os valores padrão do *OpenDSS*, basta atribuir 0 a essas variáveis.
 
-Em sequência utiliza-se o *script* chamado *feeders_feasibility.py*. Esse criará uma planilha listando os alimentadores, quais convergem, e, também, uma análise da diferença de energia medida a partir dos dados da camada *CTMT* comparados com aqueles da simulação no OpenDSS, ao longo de um ano. Desta forma, o usuário poderá escolher um alimentador mais adequado, pois devido a falta de informações ou inconsistências na criação das planilhas da *BDGD* e disponibilização no repositório, acarretando, portanto, em erros na modelagem.A Figura 11 mostra essa planilha gerada. Um limiar de 15% foi escolhido entre as medidas de energia, no intuito de considerar que o alimentador está adequado ou não para análises e estudos, este limiar é um dado de entrada no *script feeders_feasibility.py*. 
+A execução do script inicia-se no bloco *if __name__ == "__main__":*, onde as funções principais são chamadas em sequência:
 
-![planilhafeeders](/Prints_git/planilhafeeders.png "planilhafeeders").
+1 - Listagem dos alimentadores disponíveis:
+A função *b2d.feeders_list()* retorna todos os alimentadores presentes na base de dados exportada. Essa lista é exibida no terminal como referência.
+Em seguida, define-se a lista feeders, que contém os identificadores dos alimentadores a serem simulados. Essa lista deve ser informada no formato de strings.
 
-**Figura 11: Captura de tela do planilha gerada em *feeders_feasibility.py* para escolha do alimentador baseado na convergência e limiar adotados**
+2 - Modelagem dos alimentadores:
+A função *b2d.feeders_modelling(feeders, mvasc3, mvasc1)* realiza a modelagem dos alimentadores selecionados, levando em consideração os dados de curto-circuito especificados. O processo de modelagem é executado com paralelismo, garantindo maior desempenho.
 
-**Fonte:** O Autor (2024).
+3 - Verificação da viabilidade elétrica:
+Após a modelagem, pode-se utilizar a função *b2d.feeders_feasibility(feeders)* para verificar a viabilidade elétrica dos alimentadores simulados.
 
-Com o alimentador escolhido, o usuário poderá direcionar para as suas análises e estudos. Algo importante a ser comentado é que para simular o alimentador, deve-se entrar no arquivo *Master* dele, e colocar o *solve* no fim do arquivo, e o arquivo das coordenadas para ser possível visualizar o circuito dentro do *OpenDSS*. Essa tarefa pode ser feita dentro do *OpenDSS* ou no ambiente *Python* com o auxilio da biblioteca *pydss*, que inclusive já foi utilizada anteriormente nos códigos. No diretório foi disponibilizada uma rotina para simular o alimentador e colher os dados desejados, chamado *solvedss.py*. o usuário apenas deverá entrar com o nome do alimentador em questão. Por fim, a Figura 12 mostra parte desse código. 
+Importante:
+A função *b2d.feeders_feasibility()* deve permanecer comentada (símbolo # no início da linha) caso os alimentadores ainda não tenham sido modelados. Para evitar reprocessamento desnecessário, recomenda-se comentar temporariamente a função de modelagem ao executar apenas a verificação de viabilidade.
 
-![solvedss](/Prints_git/solvedss.png "solvedss").
 
-**Figura 12: Captura de tela do *script solvedss.py***
-
-**Fonte:** O Autor (2024).
 
 > [!IMPORTANT] 
 > O arquivo *requirements.txt* lista todas as bibliotecas e as suas respectivas versões necessárias para a utilização dos *scripts* listados e disponíveis no diretório. Foi utilizado a versão do *python 2.8.2* [^Ref-Python] e o ambiente de simulações o Visual Studio Code [^Ref-Microsoft].
+
+> No [vídeo](https://www.youtube.com/@LEAPSE), explicamos a utilização da biblioteca, o que facilita seu entendimento e aplicação. 
 
 ## [](#header-2)3 - Como citar esta biblioteca
 
