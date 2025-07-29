@@ -219,25 +219,32 @@ Utilizando essa biblioteca, cite os seguintes trabalhos:
 
 >SOUZA, Arthur Gomes de; BERNARDES, Wellington Maycon S.; PASSATUTO, Luciana A. T. Aquisição de dados topológicos e coordenação de religadores usando as ferramentas de apoio QGIS e OpenDSS. *In*: IEEE INTERNATIONAL CONFERENCE ON INDUSTRY APPLICATIONS (INDUSCON), 15., 2023, São Bernardo do Campo, Brazil. Anais... São Bernardo do Campo: IEEE, 2023. p. 607-608. doi: 10.1109/INDUSCON58041.2023.10374830.
 
+>SOUZA, Arthur Gomes de; BERNARDES, Wellington M. Santos. Parametrização de religadores com apoio da base de dados geográfica da distribuidora, OpenDSS e Python. In: CONGRESSO BRASILEIRO DE AUTOMÁTICA (CBA), 25., 2024, Rio de Janeiro, Brasil. Anais. Rio de Janeiro: CBA, 2024. p. 1–7.
+
+>SOUZA, Arthur Gomes de; BERNARDES, Wellington M. Santos. Topological data acquisition and recloser coordination using QGIS and OpenDSS Tools. In: CONGRESSO BRASILEIRO DE PLANEJAMENTO ENERGÉTICO (CBPE), 14., 2024, Manaus, AM. Anais... Manaus: Sociedade Brasileira de Planejamento Energético, 2024. p. 2605–2617.
+
 >PASSATUTO, Luiz Arthur. T.; SOUZA, Arthur Gomes de; BERNARDES, Wellington Maycon S.; FREITAS, Lúcio C. G.; RESENDE, Ênio C. Assignment of Responsibility for Short-Duration Voltage Variation via QGIS, OpenDSS and Python. *In*: INTERNATIONAL WORKSHOP ON ARTIFICIAL INTELLIGENCE AND MACHINE LEARNING FOR ENERGY TRANSFORMATION (AIE), 2024, Vaasa, Finland. Anais... Vaasa: IEEE, 2024. p. 1-6. doi: 10.1109/AIE61866.2024.10561325.
 
 ## Referências
 [^Ref-BDGD]
 [^Ref-ManualBDGD]
-[^Ref-Prodist]
-[^Ref-Microsoft]
-[^Ref-Python]
 [^Ref-QGIS]
+[^Ref-Python]
+[^Ref-Microsoft]
+[^Ref-Prodist]
 
-[^Ref-BDGD]: AGÊNCIA NACIONAL DE ENERGIA ELÉTRICA (ANEEL). Dados abertos do Banco de Dados Geográficos de Distribuição - BDGD. Disponível em: [https://dadosabertos-aneel.opendata.arcgis.com/search?tags=distribuicao](https://dadosabertos-aneel.opendata.arcgis.com/search?tags=distribuicao). Acesso em: 27 ago. 2024.
 
-[^Ref-ManualBDGD]: AGÊNCIA NACIONAL DE ENERGIA ELÉTRICA (ANEEL). Manual de Instruções da BDGD. Disponível em: [https://www.gov.br/aneel/pt-br/centrais-de-conteudos/manuais-modelos-e-instrucoes/distribuicao](https://www.gov.br/aneel/pt-br/centrais-de-conteudos/manuais-modelos-e-instrucoes/distribuicao). Acesso em: 27 ago. 2024.
 
-[^Ref-Prodist]: AGÊNCIA NACIONAL DE ENERGIA ELÉTRICA (ANEEL). Procedimentos de Distribuição de Energia Elétrica no Sistema Elétrico Nacional – PRODIST: Módulo 10. Disponível em: [https://www.gov.br/aneel/pt-br/centrais-de-conteudos/procedimentos-regulatorios/prodist](https://www.gov.br/aneel/pt-br/centrais-de-conteudos/procedimentos-regulatorios/prodist). Acesso em: 27 ago. 2024.
 
-[^Ref-Microsoft]: MICROSOFT. Visual Studio Code. Disponível em: [https://code.visualstudio.com/download](https://code.visualstudio.com/download). Acesso em: 27 ago. 2024.
+[^Ref-BDGD]: AGÊNCIA NACIONAL DE ENERGIA ELÉTRICA (ANEEL). Dados abertos do Banco de Dados Geográficos de Distribuição - BDGD. Disponível em: [https://dadosabertos-aneel.opendata.arcgis.com/search](https://dadosabertos-aneel.opendata.arcgis.com/search). Acesso em: 29 jul. 2025.
 
-[^Ref-Python]: PYTHON SOFTWARE FOUNDATION. Python. Disponível em: [https://www.python.org/downloads/](https://www.python.org/downloads/). Acesso em: 27 ago. 2024.
+[^Ref-ManualBDGD]: AGÊNCIA NACIONAL DE ENERGIA ELÉTRICA (ANEEL). Manual de Instruções da BDGD. Disponível em: [https://www.gov.br/aneel/pt-br/centrais-de-conteudos/manuais-modelos-e-instrucoes/distribuicao](https://www.gov.br/aneel/pt-br/centrais-de-conteudos/manuais-modelos-e-instrucoes/distribuicao). Acesso em: 29 jul. 2025.
 
-[^Ref-QGIS]: QGIS. QGIS Geographic Information System. Disponível em: [https://qgis.org/download/](https://qgis.org/download/). Acesso em: 27 ago. 2024.
+[^Ref-Prodist]: AGÊNCIA NACIONAL DE ENERGIA ELÉTRICA (ANEEL). Procedimentos de Distribuição de Energia Elétrica no Sistema Elétrico Nacional – PRODIST: Módulo 10. Disponível em: [https://www.gov.br/aneel/pt-br/centrais-de-conteudos/procedimentos-regulatorios/prodist](https://www.gov.br/aneel/pt-br/centrais-de-conteudos/procedimentos-regulatorios/prodist). Acesso em: 29 jul. 2025.
+
+[^Ref-Microsoft]: MICROSOFT. Visual Studio Code. Disponível em: [https://code.visualstudio.com/download](https://code.visualstudio.com/download). Acesso em: 29 jul. 2025.
+
+[^Ref-Python]: PYTHON SOFTWARE FOUNDATION. Python. Disponível em: [https://www.python.org/downloads/](https://www.python.org/downloads/). Acesso em: 29 jul. 2025.
+
+[^Ref-QGIS]: QGIS. QGIS Geographic Information System. Disponível em: [https://qgis.org/download/](https://qgis.org/download/). Acesso em: 29 jul. 2025.
 
