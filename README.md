@@ -2,6 +2,11 @@
 <!-- https://portal.revendadesoftware.com.br/manuais/base-de-conhecimento/sintaxe-markdown -->
 <!-- https://docs.github.com/en/enterprise-cloud@latest/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax -->
 
+![PyPI](https://img.shields.io/pypi/v/bdgd2dss)
+![License](https://img.shields.io/github/license/ArthurGS97/bdgd2dss)
+![Downloads](https://static.pepy.tech/badge/bdgd2dss)
+
+
 # bdgd2dss
 
 Conjunto de arquivos referente a biblioteca **bdgd2dss** desenvolvida na linguagem *Python*, que transforma as planilhas oriundas da Base de Dados Geográfica da Distribuidora (BDGD) em arquivos *.dss* para simulação e estudos de alimentadores de sistemas de distribuição de energia elétrica no ambiente *OpenDSS*. A ferramenta em questão foi criada pelo Mestrando em Engenharia Elétrica Arthur Gomes de Souza que desenvolve pesquisas com o foco em proteção de sistemas elétricos de potência, sob orientação do prof. Dr. Wellington Maycon Santos Bernardes (Universidade Federal de Uberlândia).
@@ -204,6 +209,15 @@ Após a modelagem, pode-se utilizar a função *b2d.feeders_feasibility(feeders)
 Importante:
 A função *b2d.feeders_feasibility()* deve permanecer comentada (símbolo # no início da linha) caso os alimentadores ainda não tenham sido modelados. Para evitar reprocessamento desnecessário, recomenda-se comentar temporariamente a função de modelagem ao executar apenas a verificação de viabilidade.
 
+### Estrutura de diretórios recomendada
+
+```plaintext
+pasta/                        # Pasta criada pelo usuário para utilização da biblioteca
+│
+├── .venv/                    # Ambiente virtual com os pacotes necessários (inclusive o bdgd2dss)
+├── Inputs/                   # Pasta onde serão salvos os dados exportados a partir do QGIS
+├── main.py                   # Script para rodar a biblioteca e funções, disponível no repositório
+```
 
 
 > [!IMPORTANT] 
