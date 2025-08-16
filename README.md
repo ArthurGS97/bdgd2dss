@@ -376,7 +376,7 @@ A função *b2d.feeders_feasibility()* deve permanecer comentada (símbolo # no 
 
 ```
 
-Utilizando esta biblioteca, cite os seguintes trabalhos: 
+Utilizando esta biblioteca, cite também os seguintes trabalhos: 
 
 >SOUZA, Arthur Gomes de; BERNARDES, Wellington Maycon S. Parametrização de religadores com apoio da base de dados geográfica da distribuidora, OpenDSS e Python. *In*: XXV CONGRESSO BRASILEIRO DE AUTOMÁTICA (CBA), 25., 2024, Rio de Janeiro, RJ, Brazil. Anais... Campinas, SP: Sociedade Brasileira de Automática, 2024. p. 1–7.
 
