@@ -1,16 +1,12 @@
 import pandas as pd
 import time
 import os
-import py_dss_interface
-from . import dicionarios as dic
+import dicionarios as dic
 from multiprocessing import Pool
-import re
 
 
 # Função que lista todos os alimentadores
 script_dir = os.getcwd()
-
-#os.path.dirname(os.path.abspath(__file__))
 
 
 def prefixo_bdgd():
@@ -33,10 +29,12 @@ def feeders_list():
     return feeders_list
 
 #Função para gerar o arquivo Master.dss
-def generate_master(x, y, z, w, feeder, dicionario_kv, dia_de_analise, mvasc1, mvasc3, output_dir=None):
+def generate_master(x, y, z, w, feeder, dicionario_kv, dia_de_analise, output_dir=None):
     start_master = time.time()
 
     ctmt = pd.read_csv(rf'{script_dir}\Inputs\{pref} — CTMT.csv', sep=',', low_memory=False)
+    ctmt['COD_ID'] = ctmt['COD_ID'].astype(str).str.strip() # Forçar a coluna COD_ID como string e remover espaços em branco
+
 
     if output_dir is None:
         output_dir = os.getcwd()
@@ -46,14 +44,16 @@ def generate_master(x, y, z, w, feeder, dicionario_kv, dia_de_analise, mvasc1, m
         
         # Encontrar o cod_untrat e pac_ini correspondentes
         linha_feeder = ctmt[ctmt['COD_ID'] == feeder].iloc[0]
-        pac_ini = linha_feeder['PAC_INI']  # Ponto de acoplamento comum elétrico inicial  
+
+        #pac_ini = linha_feeder['PAC_INI'] #Na versão BDGD21 PAC_INI é só PAC
+        pac_ini = linha_feeder.get('PAC_INI', linha_feeder.get('PAC')) #Tentando pegar o PAC_INI, se não existir pega o PAC (07/10)
         kv = dicionario_kv[linha_feeder['TEN_NOM']]
         tape = linha_feeder['TEN_OPE']
 
    
         cont1 = [
             "Clear\n",
-            f"New circuit.{feeder} bus1=source.1.2.3 basekv={kv} pu={tape} angle=0 phases=3 frequency=60 mvasc3={mvasc3} mvasc1={mvasc1}\n",
+            f"New circuit.{feeder} bus1=source.1.2.3 basekv={kv} pu={tape} angle=0 phases=3 frequency=60 mvasc3=100 mvasc1=100\n",
             f"New line.sub{feeder} bus1=source.1.2.3 bus2={pac_ini}.1.2.3 phases=3 length=0.0001 r1=0.0001 x1=0.0001 units=km\n\n",
             "Redirect linecode.dss\n",
             f"Redirect crvcrg_{dia_de_analise}.dss\n",
@@ -72,7 +72,7 @@ def generate_master(x, y, z, w, feeder, dicionario_kv, dia_de_analise, mvasc1, m
         else: cont3 = []
         if z== 1: cont4 = [f"Redirect unseMTBT_{feeder}.dss\n"]
         else: cont4 = []
-        if w==1: cont5 = [f"Redirect unremt_{feeder}.dss\n\n"]
+        if w==1: cont5 = [f"!Redirect unremt_{feeder}.dss\n\n"]
         else: cont5 = ["\n"]
 
         cont6 = [
@@ -84,12 +84,12 @@ def generate_master(x, y, z, w, feeder, dicionario_kv, dia_de_analise, mvasc1, m
             "set mode = daily\n",
             "set stepsize = 1h\n",
             "set number = 24\n\n\n\n",
-            "!Solve\n\n",
-            f"!Buscoords coord_{feeder}.dss"
+            "Solve\n\n",
+            f"Buscoords coord_{feeder}.dss"
 
         ]
         
-        conteudo = cont1 + cont2 + cont3 + cont4 + cont5 + cont6
+        conteudo = cont1 + cont2 + cont3  + cont5 + cont4 + cont6
         arquivo.writelines(conteudo)
         end_master = time.time()
         print(f"Master{feeder}_{dia_de_analise} Finalizado! - Tempo: {end_master - start_master:.2f} s")
@@ -97,8 +97,19 @@ def generate_master(x, y, z, w, feeder, dicionario_kv, dia_de_analise, mvasc1, m
 
 def generate_crvcrg(output_dir=None):
     start_crvcrg = time.time()
-    crvcrg = pd.read_csv(rf'{script_dir}\Inputs\{pref} — CRVCRG.csv', sep=',', low_memory=False)
 
+    # Tenta ler o arquivo
+    try:
+        crvcrg = pd.read_csv(rf'{script_dir}\Inputs\{pref} — CRVCRG.csv', sep=',', low_memory=False)
+    except FileNotFoundError:
+        print(f"Aviso: arquivo não encontrado -> {pref} — CRVCRG.csv")
+        print("As curvas de carga não serão geradas, mas o programa continuará normalmente.")
+        return  # Sai da função sem interromper o restante do código
+    except Exception as e:
+        print(f"Erro ao tentar ler o arquivo {pref} — CRVCRG.csv: {e}")
+        print("As curvas de carga não serão geradas, mas o programa continuará normalmente.")
+        return
+    
     if output_dir is None:
         output_dir = os.getcwd()
 
@@ -210,6 +221,7 @@ def generate_linecode(output_dir=None):
 
         for index, linha in segcon.iterrows():
             cod_id = linha["COD_ID"]
+            cod_id = str(int(float(cod_id))) if str(cod_id).replace('.', '', 1).isdigit() else str(cod_id) # Garantir que o COD_ID seja uma string sem casas decimais
             r1 = linha["R1"]
             x1 = linha["X1"]
             cnom = linha["CMAX"]  
@@ -227,6 +239,8 @@ def generate_linecode(output_dir=None):
 def generate_ssdmt(feeder, quant_fios, conex_fios, output_dir=None): #modificado n_phases para quant_fios (12/12)
     start_ssdmt = time.time()
     ssdMT = pd.read_csv(rf'{script_dir}\Inputs\{pref} — SSDMT.csv', sep=',', low_memory=False)
+    ssdMT['CTMT'] = ssdMT['CTMT'].astype(str).str.strip() # Forçar a coluna COD_ID como string e remover espaços em branco
+
     # Filtrar apenas as linhas que pertencem ao alimentador escolhido
     ssdMT_filtered = ssdMT[ssdMT['CTMT'] == feeder]
     if output_dir is None:
@@ -251,12 +265,29 @@ def generate_ssdmt(feeder, quant_fios, conex_fios, output_dir=None): #modificado
         end_ssdmt = time.time()
         print(f"Linhas de Média do alimentador {feeder} Finalizadas! - Tempo: {end_ssdmt - start_ssdmt:.2f} s")
 
+
+
+
+def carregar_arquivo(base_path, pref, nome_antigo, nome_novo): # Função para carregar o arquivo, tentando primeiro o nome antigo e depois o novo do padrão do mod10 (07/10)
+    for nome in [nome_antigo, nome_novo]:
+        caminho = rf"{base_path}\{pref} — {nome}.csv"
+        if os.path.exists(caminho):
+            return pd.read_csv(caminho, sep=',', low_memory=False)
+    raise FileNotFoundError(f"Nenhum arquivo {nome_antigo}.csv ou {nome_novo}.csv encontrado.")
+
+
+
 def generate_trafosMT(feeder, dicionario_kv, conex_fios_prim, conex_fios_sec, conex_fios_ter, mapeamento_conn, n_phases_trafo, output_dir=None):
     start_trafos = time.time()
-    trafosMT = pd.read_csv(rf'{script_dir}\Inputs\{pref} — UNTRMT.csv', sep=',', low_memory=False)
-    eqtrmt = pd.read_csv(rf'{script_dir}\Inputs\{pref} — EQTRMT.csv', sep=',', low_memory=False)
+    
+    # Troquei na definição das planilha de trafosMT para untrmt (07/10)
+    #trafosMT = pd.read_csv(rf'{script_dir}\Inputs\{pref} — UNTRMT.csv', sep=',', low_memory=False) # Em BDGD21, UNTRMT == UNTRD
+    #eqtrmt = pd.read_csv(rf'{script_dir}\Inputs\{pref} — EQTRMT.csv', sep=',', low_memory=False) # Em BDGD21, EQTRMT == EQTRD
+    untrmt = carregar_arquivo(rf"{script_dir}\Inputs", pref, "UNTRMT", "UNTRD") # Tenta carregar UNTRMT, se não existir tenta UNTRD (07/10)
+    eqtrmt   = carregar_arquivo(rf"{script_dir}\Inputs", pref, "EQTRMT", "EQTRD") # Tenta carregar EQTRMT, se não existir tenta EQTRD (07/10)
+    untrmt['CTMT'] = untrmt['CTMT'].astype(str).str.strip() # Forçar a coluna COD_ID como string e remover espaços em branco
 
-    trafosMT = trafosMT[trafosMT['CTMT'] == feeder] 
+    untrmt = untrmt[untrmt['CTMT'] == feeder] 
     if output_dir is None:
         output_dir = os.getcwd()
     output_file_path = os.path.join(output_dir, f'trafosMT_{feeder}.dss') 
@@ -264,19 +295,38 @@ def generate_trafosMT(feeder, dicionario_kv, conex_fios_prim, conex_fios_sec, co
     trafo_n_localizado = []
 
     with open(output_file_path, 'w') as arquivo:
-        for index, linha in trafosMT.iterrows():
+        for index, linha in untrmt.iterrows():
             cod_id = str(linha["COD_ID"])  # Convertendo para string para garantir compatibilidade
             tape = linha["TAP"]
-            tipo = linha["TIP_TRAFO"] 
-            if tipo == "MT": windings = 3
-            else: windings = 2
-            
+            tipo = linha["TIP_TRAFO"]
+            if tipo == "MT": windings = 3 #REVISAR ESSA LÓGICA (BDGD21)
+            else: windings = 2 #REVISAR ESSA LÓGICA (BDGD21)
 
-            eqtrmt_linha = eqtrmt[eqtrmt['UNI_TR_MT'].astype(str) == cod_id]  # Convertendo também para string
+            pac1 = str(linha.get("PAC_1", "")).strip()  # Usa "" se não existir PAC_1
+            eqtrmt_linha = None  # Inicializa vazio
 
-            if eqtrmt_linha.empty:
+            # --- 1ª tentativa: procurar por PAC_1 ---
+            if "PAC_1" in eqtrmt.columns:
+                eqtrmt['PAC_1'] = eqtrmt['PAC_1'].astype(str).str.strip()
+                eqtrmt_linha = eqtrmt[eqtrmt['PAC_1'] == pac1]
+
+            # --- 2ª tentativa: se não achou, procurar por UNI_TR_MT ---
+            if (eqtrmt_linha is None or eqtrmt_linha.empty) and "UNI_TR_MT" in eqtrmt.columns:
+                eqtrmt['UNI_TR_MT'] = eqtrmt['UNI_TR_MT'].astype(str).str.strip()
+                eqtrmt_linha = eqtrmt[eqtrmt['UNI_TR_MT'] == str(cod_id).strip()]
+
+            # --- 3ª tentativa: se ainda não achou, procurar por UNI_TR ---
+            if (eqtrmt_linha is None or eqtrmt_linha.empty) and "UNI_TR" in eqtrmt.columns:
+                eqtrmt['UNI_TR'] = eqtrmt['UNI_TR'].astype(str).str.strip()
+                eqtrmt_linha = eqtrmt[eqtrmt['UNI_TR'] == str(cod_id).strip()]
+
+            # --- Caso tenha múltiplas correspondências, pega a primeira ---
+            if eqtrmt_linha is not None and not eqtrmt_linha.empty:
+                eqtrmt_linha = eqtrmt_linha.iloc[[0]]  # Mantém formato DataFrame com uma linha
+            else:
                 trafo_n_localizado.append(cod_id)
                 continue  # Pula para o próximo transformador
+
 
             xhl = eqtrmt_linha['XHL'].iloc[0]
             r = eqtrmt_linha['R'].iloc[0]
@@ -323,12 +373,22 @@ def generate_trafosMT(feeder, dicionario_kv, conex_fios_prim, conex_fios_sec, co
                 conex3 = conex_fios_ter.get(cod_lig_ter)
                 conn3 = mapeamento_conn.get(cod_lig_ter)
 
+                if not bus3 or not str(bus3).strip():
+                    bus3 = bus2 # Se não houver terceiro barramento, usa o segundo (16/10)
+                    #print(f"Transformador {cod_id} não possui terceiro barramento, usando o segundo barramento como terceiro.{bus3}")
+
+                kv1 = dicionario_kv.get(cod_ten_pri, 'nao_localizado')
+                kv2 = dicionario_kv.get(cod_ten_sec, 'nao_localizado')
+                kv3= dicionario_kv.get(cod_ten_ter, 'nao_localizado')
+
+                if kv3 == 'nao_localizado' or kv3 == 0:
+                    kv3 = kv2 # Se não houver tensão terciária, usa a secundária (16/10)
 
 
                 arquivo.write(f"New transformer.{cod_id} phases={fases} xhl={xhl} xht={xht} xlt= {xlt} %r={r} windings={windings} %loadloss={loadloss} %noloadloss={noloadloss}\n")
-                arquivo.write(f"~ wdg=1 bus={bus1}{conex1} kv={dicionario_kv.get(cod_ten_pri, 'nao_localizado')} kva={kva} tap={tape} conn={conn1}\n")
-                arquivo.write(f"~ wdg=2 bus={bus2}{conex2} kv={dicionario_kv.get(cod_ten_sec, 'nao_localizado')} kva={kva} tap={tape} conn={conn2}\n")
-                arquivo.write(f"~ wdg=3 bus={bus3}{conex3} kv={dicionario_kv.get(cod_ten_ter, 'nao_localizado')} kva={kva} tap={tape} conn={conn3}\n")
+                arquivo.write(f"~ wdg=1 bus={bus1}{conex1} kv={kv1} kva={kva} tap={tape} conn={conn1}\n")
+                arquivo.write(f"~ wdg=2 bus={bus2}{conex2} kv={kv2} kva={kva} tap={tape} conn={conn2}\n")
+                arquivo.write(f"~ wdg=3 bus={bus3}{conex3} kv={kv3} kva={kva} tap={tape} conn={conn3}\n")
                 arquivo.write(f'New Reactor.TF{cod_id} phases=1 bus1={bus2}.4 R=15 X=0 basefreq=60\n\n')
 
             
@@ -342,9 +402,12 @@ def generate_trafosMT(feeder, dicionario_kv, conex_fios_prim, conex_fios_sec, co
 def generate_ssdBT(feeder, conex_fios, quant_fios, output_dir=None):
     start_ssdbt = time.time()
     ssdBT = pd.read_csv(rf'{script_dir}\Inputs\{pref} — SSDBT.csv', sep=',', low_memory=False)
+    ssdBT['CTMT'] = ssdBT['CTMT'].astype(str).str.strip() # Forçar a coluna COD_ID como string e remover espaços em branco
     ssdBT_filtered = ssdBT[ssdBT['CTMT'] == feeder]
-    trafos_MT = pd.read_csv(rf'{script_dir}\Inputs\{pref} — UNTRMT.csv', sep=',', low_memory=False)
-    trafos_MT = trafos_MT[trafos_MT['CTMT'] == feeder]
+    #trafos_MT = pd.read_csv(rf'{script_dir}\Inputs\{pref} — UNTRMT.csv', sep=',', low_memory=False)
+    untrmt = carregar_arquivo(rf"{script_dir}\Inputs", pref, "UNTRMT", "UNTRD") # Tenta carregar UNTRMT, se não existir tenta UNTRD (07/10)
+    untrmt['CTMT'] = untrmt['CTMT'].astype(str).str.strip() # Forçar a coluna COD_ID como string e remover espaços em branco
+    untrmt = untrmt[untrmt['CTMT'] == feeder]
     
     if output_dir is None:
         output_dir = os.getcwd()
@@ -352,9 +415,12 @@ def generate_ssdBT(feeder, conex_fios, quant_fios, output_dir=None):
     
     with open(output_file_path, 'w') as arquivo:
         for index, linha in ssdBT_filtered.iterrows():
-            trafo = linha["UNI_TR_MT"]
-            trafo_linha = trafos_MT[trafos_MT['COD_ID'] == trafo]
-            if trafo_linha.empty: continue
+            #trafo = linha["UNI_TR_MT"]
+            trafo = linha.get("UNI_TR_MT", linha.get("UNI_TR_D", None)) #15/10
+            trafo = str(trafo).strip()
+            untrmt['COD_ID'] = untrmt['COD_ID'].astype(str).str.strip() # Forçar a coluna COD_ID como string e remover espaços em branco (07/11)
+            untrmt_linha = untrmt[untrmt['COD_ID'] == trafo] 
+            if untrmt_linha.empty: continue
 
             cod_id = linha["COD_ID"]
             bus1 = linha["PAC_1"]
@@ -374,6 +440,8 @@ def generate_ssdBT(feeder, conex_fios, quant_fios, output_dir=None):
 def generate_ucmt(feeder, conex_fios, mapeamento_conn_load, dicionario_kv, n_phases_load, output_dir=None): #modificado dicionario conex_fios_prim para conex_fios e n_phases para n_phases_load, conex_fios para mapeamento_conn_load (12/12)
     start_ucmt = time.time()
     ucmt = pd.read_csv(rf'{script_dir}\Inputs\{pref} — UCMT_tab.csv', sep=',', low_memory=False)
+    ucmt['CTMT'] = ucmt['CTMT'].astype(str).str.strip() # Forçar a coluna COD_ID como string e remover espaços em branco
+
     ucmt_filtered = ucmt[ucmt['CTMT'] == feeder]
 
     if output_dir is None:
@@ -385,7 +453,7 @@ def generate_ucmt(feeder, conex_fios, mapeamento_conn_load, dicionario_kv, n_pha
         for index, linha in ucmt_filtered.iterrows():
             sit_ativ = linha["SIT_ATIV"] 
             if sit_ativ == "DS": continue
-            cod_id = linha["OBJECTID"]
+            cod_id = linha["OBJECTID"] 
             bus = linha["PAC"]
             potencia = sum(linha[f"ENE_{i:02}"] for i in range(1, 13)) / (365 * 24)
             if potencia == 0: continue
@@ -413,9 +481,15 @@ def generate_ucmt(feeder, conex_fios, mapeamento_conn_load, dicionario_kv, n_pha
 def generate_ucbt(feeder, dicionario_kv, n_phases_load, conex_fios, mapeamento_conn_load, output_dir=None): #modificado n_phases para n_phases_load, mapeamento_conn para mapeamento_conn_load (12/12)
     start_ucbt = time.time()
     ucbt = pd.read_csv(rf'{script_dir}\Inputs\{pref} — UCBT_tab.csv', sep=',', low_memory=False)
-    trafosMT = pd.read_csv(rf'{script_dir}\Inputs\{pref} — UNTRMT.csv', sep=',', low_memory=False)
-    trafosMT = trafosMT[trafosMT['CTMT'] == feeder]
+    #untrmt = pd.read_csv(rf'{script_dir}\Inputs\{pref} — UNTRMT.csv', sep=',', low_memory=False)
+    untrmt = carregar_arquivo(rf"{script_dir}\Inputs", pref, "UNTRMT", "UNTRD") # Tenta carregar UNTRMT, se não existir tenta UNTRD (07/10)
+    
+    ucbt['CTMT'] = ucbt['CTMT'].astype(str).str.strip() # Forçar a coluna COD_ID como string e remover espaços em branco
+    untrmt['CTMT'] = untrmt['CTMT'].astype(str).str.strip() # Forçar a coluna COD_ID como string e remover espaços em branco
+
+    untrmt = untrmt[untrmt['CTMT'] == feeder]
     ucbt_filtered = ucbt[ucbt['CTMT'] == feeder]
+
 
     if output_dir is None:
         output_dir = os.getcwd()
@@ -426,7 +500,7 @@ def generate_ucbt(feeder, dicionario_kv, n_phases_load, conex_fios, mapeamento_c
         for index, linha in ucbt_filtered.iterrows():
             sit_ativ = linha["SIT_ATIV"] 
             if sit_ativ == "DS": continue
-            cod_id = linha["OBJECTID"]
+            cod_id = linha["OBJECTID"] 
             bus = linha["PAC"]
             fases = linha["FAS_CON"]
             codkv = linha["TEN_FORN"]
@@ -437,17 +511,21 @@ def generate_ucbt(feeder, dicionario_kv, n_phases_load, conex_fios, mapeamento_c
             conn = mapeamento_conn_load.get(fases)
             kv = dicionario_kv.get(codkv)
 
+            # Revisar a lógica de ajuste de tensão (BDGD21)
             if phases == 1 and conn == "wye": #ajuste de tensão para monofásico (casos de erro de cadastro)
-                trafo = linha["UNI_TR_MT"]
-                trafo_linha = trafosMT[trafosMT['COD_ID'] == trafo]
+                #trafo = linha["UNI_TR_MT"]# Em BDGD21, UNI_TR_MT está como UNI_TR_D
+                trafo = linha.get("UNI_TR_MT", linha.get("UNI_TR_D")) # Tentando pegar o UNI_TR_MT, se não existir pega o UNI_TR_D (07/10)
+                trafo = str(trafo).strip()
+                trafo_linha = untrmt[untrmt['COD_ID'] == trafo]
                 if trafo_linha.empty: continue
                 if not trafo_linha.empty and "T" in trafo_linha['TIP_TRAFO'].iloc[0]:
                     kv = round((trafo_linha['TEN_LIN_SE'].iloc[0] / (3**0.5)),4)  # Dividir por raiz de 3 para obter a tensão de fase
 
             if phases == 1 or phases == 3: 
                 if conn == "delta":
-                    trafo = linha["UNI_TR_MT"]
-                    trafo_linha = trafosMT[trafosMT['COD_ID'] == trafo]
+                    #trafo = linha["UNI_TR_MT"]
+                    trafo = linha.get("UNI_TR_MT", linha.get("UNI_TR_D", None)) #15/10
+                    trafo_linha = untrmt[untrmt['COD_ID'] == trafo]
                     if trafo_linha.empty: continue
                     if not trafo_linha.empty and "T" in trafo_linha['TIP_TRAFO'].iloc[0]:
                         kv = round((trafo_linha['TEN_LIN_SE'].iloc[0]),4)
@@ -477,9 +555,14 @@ def generate_ucbt(feeder, dicionario_kv, n_phases_load, conex_fios, mapeamento_c
 def generate_pip(feeder, dicionario_kv, n_phases_load, conex_fios, mapeamento_conn_load, output_dir=None): #modificado n_phases para n_phases_load, mapeamento_conn para mapeamento_conn_load (12/12)
     start_pip = time.time()
     pip = pd.read_csv(rf'{script_dir}\Inputs\{pref} — PIP.csv', sep=',', low_memory=False)
+    pip['CTMT'] = pip['CTMT'].astype(str).str.strip() # Forçar a coluna COD_ID como string e remover espaços em branco
+
     pip_filtered = pip[pip['CTMT'] == feeder]
-    trafosMT = pd.read_csv(rf'{script_dir}\Inputs\{pref} — UNTRMT.csv', sep=',', low_memory=False)
-    trafosMT = trafosMT[trafosMT['CTMT'] == feeder]
+
+    #untrmt = pd.read_csv(rf'{script_dir}\Inputs\{pref} — UNTRMT.csv', sep=',', low_memory=False)
+    untrmt = carregar_arquivo(rf"{script_dir}\Inputs", pref, "UNTRMT", "UNTRD") # Tenta carregar UNTRMT, se não existir tenta UNTRD (07/10)
+    untrmt['CTMT'] = untrmt['CTMT'].astype(str).str.strip() # Forçar a coluna COD_ID como string e remover espaços em branco    
+    untrmt = untrmt[untrmt['CTMT'] == feeder]
 
     if output_dir is None:
         output_dir = os.getcwd()
@@ -488,8 +571,10 @@ def generate_pip(feeder, dicionario_kv, n_phases_load, conex_fios, mapeamento_co
     with open(output_file_path, 'w') as arquivo:
         for index, linha in pip_filtered.iterrows():
             sit_ativ = linha["SIT_ATIV"] 
-            if sit_ativ == "DS": continue
-            cod_id = linha["OBJECTID"]
+            if sit_ativ == "DS": 
+                continue
+
+            cod_id = linha["OBJECTID"] 
             bus = linha["PAC"]
             fases = linha["FAS_CON"]
             codkv = linha["TEN_FORN"]
@@ -499,10 +584,15 @@ def generate_pip(feeder, dicionario_kv, n_phases_load, conex_fios, mapeamento_co
             conn = mapeamento_conn_load.get(fases)
             kv = dicionario_kv.get(codkv)
 
+
+            # Revisar a lógica de ajuste de tensão (BDGD21)
             if phases == 1 and conn == "wye":
-                trafo = linha["UNI_TR_MT"]
-                trafo_linha = trafosMT[trafosMT['COD_ID'] == trafo]
-                if trafo_linha.empty: continue
+                #trafo = linha["UNI_TR_MT"] # Em BDGD21, UNI_TR_MT está como UNI_TR_D
+                trafo = linha.get("UNI_TR_MT", linha.get("UNI_TR_D")) # Tentando pegar o UNI_TR_MT, se não existir pega o UNI_TR_D (07/10)
+                trafo = str(trafo).strip()
+                trafo_linha = untrmt[untrmt['COD_ID'] == trafo]
+                if trafo_linha.empty: 
+                    continue
                 if not trafo_linha.empty and "T" in trafo_linha['TIP_TRAFO'].iloc[0]:
                     kv = round((trafo_linha['TEN_LIN_SE'].iloc[0] / (3**0.5)),4)  # Dividir por raiz de 3 para obter a tensão de fase
 
@@ -513,9 +603,7 @@ def generate_pip(feeder, dicionario_kv, n_phases_load, conex_fios, mapeamento_co
 
             curvacarga = linha["TIP_CC"]
             fp = 0.92
-
             #arquivo.write(f"New load.pip{cod_id} phases={phases} bus={bus}{conex} kv={kv} kw={potencia} pf={fp} conn={conn} model = 8 ZIPV = [0.5 0 0.5 0 0 1 0.9] daily={curvacarga}\n")
-
             arquivo.write(f"New load.pip{cod_id}-1 phases={phases} bus={bus}{conex} model=2 kv={kv} kw={potencia/2} pf={fp} conn={conn} status=variable vmaxpu=1.5 vminpu=0.92 daily={curvacarga}\n")
             arquivo.write(f"New load.pip{cod_id}-2 phases={phases} bus={bus}{conex} model=3 kv={kv} kw={potencia/2} pf={fp} conn={conn} status=variable vmaxpu=1.5 vminpu=0.92 daily={curvacarga}\n\n")
 
@@ -524,12 +612,18 @@ def generate_pip(feeder, dicionario_kv, n_phases_load, conex_fios, mapeamento_co
 
 def generate_ssdunsemt(feeder, dicionario_tip_unid, conex_fios, n_phases, output_dir=None): #modificcado quant_fios para n_phases (12/12)
     start_ssdunsemt = time.time()
+
     ssdUNSEMT = pd.read_csv(rf'{script_dir}\Inputs\{pref} — UNSEMT.csv', sep=',', low_memory=False)
     ssdUNSEBT = pd.read_csv(rf'{script_dir}\Inputs\{pref} — UNSEBT.csv', sep=',', low_memory=False)
+    ssdUNSEMT['CTMT'] = ssdUNSEMT['CTMT'].astype(str).str.strip() # Forçar a coluna COD_ID como string e remover espaços em branco
+    ssdUNSEBT['CTMT'] = ssdUNSEBT['CTMT'].astype(str).str.strip() # Forçar a coluna COD_ID como string e remover espaços em branco
 
     ssdUNSEMT_filtered = ssdUNSEMT[ssdUNSEMT['CTMT'] == feeder]
     ssdUNSEBT_filtered = ssdUNSEBT[ssdUNSEBT['CTMT'] == feeder]
-    if ssdUNSEMT_filtered.empty and ssdUNSEBT_filtered.empty: return
+
+    if ssdUNSEMT_filtered.empty and ssdUNSEBT_filtered.empty: 
+        print(f"Nenhuma linha SSDUNSEMT ou SSDUNSEBT encontrada para o alimentador {feeder}. Pulando geração do arquivo.")
+        return
 
     if output_dir is None:
         output_dir = os.getcwd()
@@ -557,11 +651,12 @@ def generate_ssdunsemt(feeder, dicionario_tip_unid, conex_fios, n_phases, output
             tip_unid = linha["TIP_UNID"]
             tipo_unidade = dicionario_tip_unid.get(tip_unid, "")
 
-            if not str(bus1).startswith("SEGM") and tip_unid != 33 and tip_unid !=34: #condição para não escrever as linhas de seccionamento da subestação
-                arquivo.write(f"New line.SEC{cod_id} phases={phases} bus1={bus1}{conex} bus2={bus2}{conex} length={length} units=km r1={r1} r0={r1} x1=0 x0=0 c1=0 c0=0 switch={chc} !unid={tip_unid}={tipo_unidade}\n\n")
-            
-            if tip_unid==33 or tip_unid==34:
-                arquivo.write(f"!New line.SEC{cod_id} phases={phases} bus1={bus1}{conex} bus2={bus2}{conex} length={length} units=km r1={r1} r0={r1} x1=0 x0=0 c1=0 c0=0 switch={chc} !unid={tip_unid}={tipo_unidade}\n")
+            #if not str(bus1).startswith("SEGM") and tip_unid != 33 and tip_unid !=34: #condição para não escrever as linhas de seccionamento da subestação
+            #Condição desativada em 06/11 conforme nova observação em outros testes
+            arquivo.write(f"New line.SEC{cod_id} phases={phases} bus1={bus1}{conex} bus2={bus2}{conex} length={length} units=km r1={r1} r0={r1} x1=0 x0=0 c1=0 c0=0 switch={chc} !unid={tip_unid}={tipo_unidade}\n\n")
+            # Aqui acima, coloquei switch=T fixo, pois BDGDs que tem chaves desconectadas por erro de cadastro funcionam se estiverem fechadas (T-true ou F-false) no OpenDSS (07/11)
+            #if tip_unid==33 or tip_unid==34:
+                #arquivo.write(f"!New line.SEC{cod_id} phases={phases} bus1={bus1}{conex} bus2={bus2}{conex} length={length} units=km r1={r1} r0={r1} x1=0 x0=0 c1=0 c0=0 switch={chc} !unid={tip_unid}={tipo_unidade}\n")
 
         for index, linha in ssdUNSEBT_filtered.iterrows():
             sit_ativ = linha["SIT_ATIV"] 
@@ -593,9 +688,12 @@ def generate_ssdunsemt(feeder, dicionario_tip_unid, conex_fios, n_phases, output
 def generate_ramlig(feeder, quant_fios, conex_fios, output_dir=None):
     start_ramlig = time.time()
     ramlig = pd.read_csv(rf'{script_dir}\Inputs\{pref} — RAMLIG.csv', sep=',', low_memory=False)
+    ramlig['CTMT'] = ramlig['CTMT'].astype(str).str.strip() # Forçar a coluna COD_ID como string e remover espaços em branco
     ramlig = ramlig[ramlig['CTMT'] == feeder]
-    trafos_MT = pd.read_csv(rf'{script_dir}\Inputs\{pref} — UNTRMT.csv', sep=',', low_memory=False)
-    trafos_MT = trafos_MT[trafos_MT['CTMT'] == feeder]
+    #untrmt = pd.read_csv(rf'{script_dir}\Inputs\{pref} — UNTRMT.csv', sep=',', low_memory=False)
+    untrmt = carregar_arquivo(rf"{script_dir}\Inputs", pref, "UNTRMT", "UNTRD") # Tenta carregar UNTRMT, se não existir tenta UNTRD (07/10)
+    untrmt['CTMT'] = untrmt['CTMT'].astype(str).str.strip() # Forçar a coluna COD_ID como string e remover espaços em branco
+    untrmt = untrmt[untrmt['CTMT'] == feeder]
 
     if output_dir is None:
         output_dir = os.getcwd()
@@ -604,8 +702,11 @@ def generate_ramlig(feeder, quant_fios, conex_fios, output_dir=None):
     with open(output_file_path, 'w') as arquivo:
         for _, linha in ramlig.iterrows():
 
-            trafo = linha["UNI_TR_MT"]
-            trafo_linha = trafos_MT[trafos_MT['COD_ID'] == trafo]
+            #trafo = linha["UNI_TR_MT"]# Em BDGD21, UNI_TR_MT está como UNI_TR_D
+            trafo = linha.get("UNI_TR_MT", linha.get("UNI_TR_D")) # Tentando pegar o UNI_TR_MT, se não existir pega o UNI_TR_D (07/10)
+            trafo = str(trafo).strip()
+            untrmt['COD_ID'] = untrmt['COD_ID'].astype(str).str.strip() # Forçar a coluna COD_ID como string e remover espaços em branco (07/11)
+            trafo_linha = untrmt[untrmt['COD_ID'] == trafo]
             if trafo_linha.empty: continue
 
             cod_id = linha["COD_ID"]
@@ -628,11 +729,16 @@ def generate_gds(feeder, dicionario_kv, n_phases, n_phases_load, conex_fios, map
     start_gds = time.time()
     ugmt = pd.read_csv(rf'{script_dir}\Inputs\{pref} — UGMT_tab.csv', sep=',', low_memory=False)
     ugbt = pd.read_csv(rf'{script_dir}\Inputs\{pref} — UGBT_tab.csv', sep=',', low_memory=False)
+    ugmt['CTMT'] = ugmt['CTMT'].astype(str).str.strip() # Forçar a coluna COD_ID como string e remover espaços em branco
+    ugbt['CTMT'] = ugbt['CTMT'].astype(str).str.strip() # Forçar a coluna COD_ID como string e remover espaços em branco
     ugmt_filtered = ugmt[ugmt['CTMT'] == feeder]
     ugbt_filtered = ugbt[ugbt['CTMT'] == feeder]
 
-    trafosMT = pd.read_csv(rf'{script_dir}\Inputs\{pref} — UNTRMT.csv', sep=',', low_memory=False)
-    trafosMT = trafosMT[trafosMT['CTMT'] == feeder]
+    #untrmt = pd.read_csv(rf'{script_dir}\Inputs\{pref} — UNTRMT.csv', sep=',', low_memory=False)
+    untrmt = carregar_arquivo(rf"{script_dir}\Inputs", pref, "UNTRMT", "UNTRD") # Tenta carregar UNTRMT, se não existir tenta UNTRD (07/10)
+    untrmt['CTMT'] = untrmt['CTMT'].astype(str).str.strip() # Forçar a coluna COD_ID como string e remover espaços em branco
+    untrmt = untrmt[untrmt['CTMT'] == feeder]
+    
     if ugmt_filtered.empty and ugbt_filtered.empty: return
     
     if output_dir is None:
@@ -650,7 +756,9 @@ def generate_gds(feeder, dicionario_kv, n_phases, n_phases_load, conex_fios, map
             if sit_ativ == "DS": continue
             cod_id = linha["OBJECTID"]
             bus = linha["PAC"]
-            kv = dicionario_kv.get(linha["TEN_CON"], 13.8)
+            #kv = dicionario_kv.get(linha["TEN_CON"], 13.8) #Tanto no mod10 novo e antigo o atributo correto é TEN_FORN só o da CEMIG está como TEN_CON (BDGD21)
+            kv = dicionario_kv.get(linha.get("TEN_CON", linha.get("TEN_FORN", 13.8)), 13.8) # Tentando pegar o TEN_CON, se não existir pega o TEN_FORN (07/10)
+
             potencia = linha["POT_INST"]
 
             #if potencia <= 1: potencia = 10 #Muitos UGMT de Uberlândia não possuem a potência instalada correta, então foi feito um tratamento para que a potência seja 10kVA
@@ -669,7 +777,9 @@ def generate_gds(feeder, dicionario_kv, n_phases, n_phases_load, conex_fios, map
             if sit_ativ == "DS": continue
             cod_id = linha["OBJECTID"]
             bus = linha["PAC"]
-            kv = dicionario_kv.get(linha["TEN_CON"], 0.22)
+            #kv = dicionario_kv.get(linha["TEN_CON"], 0.22) #Tanto no mod10 novo e antigo o atributo correto é TEN_FORN só o da CEMIG está como TEN_CON (BDGD21)
+            kv = dicionario_kv.get(linha.get("TEN_CON", linha.get("TEN_FORN", 13.8)), 13.8) # Tentando pegar o TEN_CON, se não existir pega o TEN_FORN (07/10)
+
             potencia = linha["POT_INST"]
             if potencia == 0: continue
 
@@ -680,17 +790,22 @@ def generate_gds(feeder, dicionario_kv, n_phases, n_phases_load, conex_fios, map
             conex = conex_fios.get(fases)
             conn = mapeamento_conn_load.get(fases)
 
+            # Revisar a lógica de ajuste de tensão (BDGD21)
             if phases == 1 and conn == "wye": #ajuste de tensão para monofásico (casos de erro de cadastro)
-                trafo = linha["UNI_TR_MT"]
-                trafo_linha = trafosMT[trafosMT['COD_ID'] == trafo]
+                #trafo = linha["UNI_TR_MT"] # Em BDGD21, UNI_TR_MT está como UNI_TR_D
+                trafo = linha.get("UNI_TR_MT", linha.get("UNI_TR_D")) # Tentando pegar o UNI_TR_MT, se não existir pega o UNI_TR_D (07/10)
+
+                trafo_linha = untrmt[untrmt['COD_ID'] == trafo]
                 if trafo_linha.empty: continue
                 if not trafo_linha.empty and "T" in trafo_linha['TIP_TRAFO'].iloc[0]:
                     kv = round((trafo_linha['TEN_LIN_SE'].iloc[0] / (3**0.5)),4)  # Dividir por raiz de 3 para obter a tensão de fase
 
             if phases == 1 or phases == 3: 
                 if conn == "delta":
-                    trafo = linha["UNI_TR_MT"]
-                    trafo_linha = trafosMT[trafosMT['COD_ID'] == trafo]
+                    #trafo = linha["UNI_TR_MT"]# Em BDGD21, UNI_TR_MT está como UNI_TR_D
+                    trafo = linha.get("UNI_TR_MT", linha.get("UNI_TR_D")) # Tentando pegar o UNI_TR_MT, se não existir pega o UNI_TR_D (07/10)
+
+                    trafo_linha = untrmt[untrmt['COD_ID'] == trafo]
                     if trafo_linha.empty: continue
                     if not trafo_linha.empty and "T" in trafo_linha['TIP_TRAFO'].iloc[0]:
                         kv = round((trafo_linha['TEN_LIN_SE'].iloc[0]),4)
@@ -704,6 +819,8 @@ def generate_gds(feeder, dicionario_kv, n_phases, n_phases_load, conex_fios, map
 def generate_coordenadas(feeder, output_dir=None):
     start_coord = time.time()
     coord = pd.read_csv(rf'{script_dir}\Inputs\{pref} — Coordenadas.csv', sep=',', low_memory=False)
+    coord['CTMT'] = coord['CTMT'].astype(str).str.strip() # Forçar a coluna COD_ID como string e remover espaços em branco
+
     coord_filtered = coord[coord['CTMT'] == feeder]
 
     if output_dir is None:
@@ -734,6 +851,8 @@ def generate_coordenadas(feeder, output_dir=None):
 def generate_capacitores(feeder, dicionario_capacitores, n_fases, conex_fios, output_dir=None):
     start_cap = time.time()
     cap = pd.read_csv(rf'{script_dir}\Inputs\{pref} — UNCRMT.csv', sep=',', low_memory=False)
+    cap['CTMT'] = cap['CTMT'].astype(str).str.strip() # Forçar a coluna COD_ID como string e remover espaços em branco
+
     cap_filtered = cap[cap['CTMT'] == feeder]
     if cap_filtered.empty: return
 
@@ -750,7 +869,12 @@ def generate_capacitores(feeder, dicionario_capacitores, n_fases, conex_fios, ou
             fases = n_fases.get(lig)
             conex = conex_fios.get(lig)
             pac1 = linha["PAC_1"]
-            kvar = dicionario_capacitores.get(linha["POT_NOM"], 100)
+
+            #Adicionado verificação se a potência do capacitor está no dicionário (BDGD21)
+            if linha["POT_NOM"] not in dicionario_capacitores:
+                continue
+            kvar = dicionario_capacitores[linha["POT_NOM"]]
+
 
             arquivo.write(f"new Capacitor.cap{cod_id} phases={fases} bus1={pac1}{conex} bus2={pac1}.4.4.4 kvar={kvar}\n")
 
@@ -766,6 +890,8 @@ def generate_unremt(feeder, conex_fios, n_phases_trafo, dicionario_kva, tp, mape
     # Ler as planilhas de entrada
     unremt = pd.read_csv(rf'{script_dir}\Inputs\{pref} — UNREMT.csv', sep=',', low_memory=False)
     uqre = pd.read_csv(rf'{script_dir}\Inputs\{pref} — EQRE.csv', sep=',', low_memory=False)
+    unremt['CTMT'] = unremt['CTMT'].astype(str).str.strip() # Forçar a coluna COD_ID como string e remover espaços em branco
+
 
     # Filtrar os dados pelo alimentador especificado
     unremt_filtered = unremt[unremt['CTMT'] == feeder]
@@ -784,11 +910,20 @@ def generate_unremt(feeder, conex_fios, n_phases_trafo, dicionario_kva, tp, mape
             pac2 = linha["PAC_2"]
 
 
-            # Filtrar a planilha UQRE para obter os dados do transformador correspondente ao cod_id
-            uqre_filtered = uqre[uqre['UN_RE'] == cod_id]
+            # --- Filtrar a planilha UQRE para obter os dados do transformador correspondente ao cod_id ---
+            if "UN_RE" in uqre.columns:
+                uqre_filtered = uqre[uqre['UN_RE'].astype(str).str.strip() == str(cod_id).strip()]
+            elif "PAC_1" in uqre.columns:
+                uqre_filtered = uqre[uqre['PAC_1'].astype(str).str.strip() == str(cod_id).strip()]
+            else:
+                print("Erro: A planilha UQRE não possui as colunas 'UN_RE' nem 'PAC_1'.")
+                continue  # Garante que não quebre o código
+
+            # --- Verificação após o filtro ---
             if uqre_filtered.empty:
                 print(f"Aviso: Transformador {cod_id} não encontrado na planilha UQRE.")
                 continue
+
             
             num_linhas = uqre_filtered.shape[0]
 
@@ -799,7 +934,11 @@ def generate_unremt(feeder, conex_fios, n_phases_trafo, dicionario_kva, tp, mape
                 conex = conex_fios.get(lig)
                 conn = mapeamento_conn.get(lig)
                 fases = n_phases_trafo.get(lig)
-                rel_tp = tp.get(uqre_filtered.iloc[0]['REL_TP'], 120)
+                
+                cod_tp = uqre_filtered.iloc[0]['REL_TP']
+                prim, sec = tp.get(cod_tp, (13800, 115))  # valor padrão
+                rel_tp_c = prim / sec
+
                 per_ferro = uqre_filtered.iloc[0]['PER_FER']
                 noloadloss = (per_ferro / (pot*1000)) *  100
                 per_totais = uqre_filtered.iloc[0]['PER_TOT']
@@ -807,13 +946,14 @@ def generate_unremt(feeder, conex_fios, n_phases_trafo, dicionario_kva, tp, mape
                 r = uqre_filtered.iloc[0]['R']
                 xhl = uqre_filtered.iloc[0]['XHL']
                 cod_id = uqre_filtered.iloc[0]['COD_ID']
-                kvs = 13.8
-                if conn == 'wye': kvs = 13.8 / (3 ** 0.5)
+                kvs = prim
+                if conn == 'wye': kvs = prim / (3 ** 0.5)
 
                 arquivo.write(f'New "Transformer.TFreg{cod_id}" phases={fases} windings=2 buses=["{pac1}{conex}" "{pac2}{conex}"] conns=[{conn} {conn}] kvs=[{kvs} {kvs}] kvas=[{pot} {pot}] xhl={xhl} r={r} %loadloss={loadloss} %noloadloss={noloadloss}\n')
-                arquivo.write(f'New "Regcontrol.reg{cod_id}" transformer="TFreg{cod_id}" winding=2 vreg={rel_tp} band=2 ptratio={(tape / rel_tp) * (kvs * 1000)}\n')
-                arquivo.write(f'New Reactor.TFreg{cod_id}-1 phases=1 bus1={pac1}.4 R=15 X=0 basefreq=60\n')
-                arquivo.write(f'New Reactor.TFreg{cod_id}-2 phases=1 bus1={pac2}.4 R=15 X=0 basefreq=60\n\n')
+                arquivo.write(f'New "Regcontrol.reg{cod_id}" transformer="TFreg{cod_id}" winding=2 vreg={(tape*kvs)/rel_tp_c} ptratio={rel_tp_c}\n\n')
+                if conn == 'wye':    
+                    arquivo.write(f'New Reactor.TFreg{cod_id}-1 phases=1 bus1={pac1}.4 R=15 X=0 basefreq=60\n')
+                    arquivo.write(f'New Reactor.TFreg{cod_id}-2 phases=1 bus1={pac2}.4 R=15 X=0 basefreq=60\n\n')
 
             
             if num_linhas ==2:
@@ -831,25 +971,30 @@ def generate_unremt(feeder, conex_fios, n_phases_trafo, dicionario_kva, tp, mape
                 fases2 = n_phases_trafo.get(lig2)
                 cod_id2 = uqre_filtered.iloc[1]['COD_ID']
 
-                rel_tp = tp.get(uqre_filtered.iloc[0]['REL_TP'], 120)
+                cod_tp = uqre_filtered.iloc[0]['REL_TP']
+                prim, sec = tp.get(cod_tp, (13800, 115))  # valor padrão
+                rel_tp_c = prim / sec
+
                 per_ferro = uqre_filtered.iloc[0]['PER_FER']
                 noloadloss = (per_ferro / (pot*1000)) *  100
                 per_vazio = uqre_filtered.iloc[0]['PER_TOT']
                 loadloss = (per_vazio / (pot*1000)) * 100
                 r = uqre_filtered.iloc[0]['R']
                 xhl = uqre_filtered.iloc[0]['XHL']
-                kvs = 13.8
-                if conn1 == 'wye': kvs = 13.8 / (3 ** 0.5)
+                kvs = prim
+                if conn1 == 'wye': kvs = prim / (3 ** 0.5)
 
                 arquivo.write(f'New "Transformer.TFreg{cod_id1}" phases={fases1} windings=2 buses=["{pac1}{conex1}" "{pac2}{conex1}"] conns=[{conn1} {conn1}] kvs=[{kvs} {kvs}] kvas=[{pot} {pot}] xhl={xhl} r={r} %loadloss={loadloss} %noloadloss={noloadloss}\n')
-                arquivo.write(f'New "Regcontrol.reg{cod_id1}" transformer="TFreg{cod_id1}" winding=2 vreg={rel_tp} band=2 ptratio={(tape / rel_tp) * (kvs * 1000)}\n')
-                arquivo.write(f'New Reactor.TFreg{cod_id1}-1 phases=1 bus1={pac1}.4 R=15 X=0 basefreq=60\n')
-                arquivo.write(f'New Reactor.TFreg{cod_id1}-2 phases=1 bus1={pac2}.4 R=15 X=0 basefreq=60\n\n')
+                arquivo.write(f'New "Regcontrol.reg{cod_id1}" transformer="TFreg{cod_id1}" winding=2 vreg={(tape*kvs)/rel_tp_c} ptratio={rel_tp_c}\n')
+                if conn1 == 'wye':    
+                    arquivo.write(f'New Reactor.TFreg{cod_id1}-1 phases=1 bus1={pac1}.4 R=15 X=0 basefreq=60\n')
+                    arquivo.write(f'New Reactor.TFreg{cod_id1}-2 phases=1 bus1={pac2}.4 R=15 X=0 basefreq=60\n\n')
 
                 arquivo.write(f'New "Transformer.TFreg{cod_id2}" phases={fases2} windings=2 buses=["{pac1}{conex2}" "{pac2}{conex2}"] conns=[{conn2} {conn2}] kvs=[{kvs} {kvs}] kvas=[{pot} {pot}] xhl={xhl} r={r} %loadloss={loadloss} %noloadloss={noloadloss}\n')
-                arquivo.write(f'New "Regcontrol.reg{cod_id2}" transformer="TFreg{cod_id2}" winding=2 vreg={rel_tp} band=2 ptratio={(tape / rel_tp) * (kvs * 1000)}\n')
-                arquivo.write(f'New Reactor.TFreg{cod_id2}-1 phases=1 bus1={pac1}.4 R=15 X=0 basefreq=60\n')
-                arquivo.write(f'New Reactor.TFreg{cod_id2}-2 phases=1 bus1={pac2}.4 R=15 X=0 basefreq=60\n\n')
+                arquivo.write(f'New "Regcontrol.reg{cod_id2}" transformer="TFreg{cod_id2}" winding=2 vreg={(tape*kvs)/rel_tp_c} ptratio={rel_tp_c}\n\n')
+                if conn1 == 'wye':
+                    arquivo.write(f'New Reactor.TFreg{cod_id2}-1 phases=1 bus1={pac1}.4 R=15 X=0 basefreq=60\n')
+                    arquivo.write(f'New Reactor.TFreg{cod_id2}-2 phases=1 bus1={pac2}.4 R=15 X=0 basefreq=60\n\n')
 
             if num_linhas == 3:
                 pot = dicionario_kva.get(uqre_filtered.iloc[0]['POT_NOM'])
@@ -872,30 +1017,36 @@ def generate_unremt(feeder, conex_fios, n_phases_trafo, dicionario_kva, tp, mape
                 fases3 = n_phases_trafo.get(lig3)
                 cod_id3 = uqre_filtered.iloc[2]['COD_ID']
 
-                rel_tp = tp.get(uqre_filtered.iloc[0]['REL_TP'], 120)
+                cod_tp = uqre_filtered.iloc[0]['REL_TP']
+                prim, sec = tp.get(cod_tp, (13800, 115))  # valor padrão
+                rel_tp_c = prim / sec
+
                 per_ferro = uqre_filtered.iloc[0]['PER_FER']
                 noloadloss = (per_ferro / (pot*1000)) *  100
                 per_vazio = uqre_filtered.iloc[0]['PER_TOT']
                 loadloss = (per_vazio / (pot*1000)) * 100
                 r = uqre_filtered.iloc[0]['R']
                 xhl = uqre_filtered.iloc[0]['XHL']
-                kvs = 13.8
-                if conn1 == 'wye': kvs = 13.8 / (3 ** 0.5)
+                kvs = prim
+                if conn1 == 'wye': kvs = prim / (3 ** 0.5)
 
                 arquivo.write(f'New "Transformer.TFreg{cod_id1}" phases={fases1} windings=2 buses=["{pac1}{conex1}" "{pac2}{conex1}"] conns=[{conn1} {conn1}] kvs=[{kvs} {kvs}] kvas=[{pot} {pot}] xhl={xhl} r={r} %loadloss={loadloss} %noloadloss={noloadloss}\n')
-                arquivo.write(f'New "Regcontrol.reg{cod_id1}" transformer="TFreg{cod_id1}" winding=2 vreg={rel_tp} band=2 ptratio={(tape / rel_tp) * (kvs * 1000)}\n')
-                arquivo.write(f'New Reactor.TFreg{cod_id1}-1 phases=1 bus1={pac1}.4 R=15 X=0 basefreq=60\n')
-                arquivo.write(f'New Reactor.TFreg{cod_id1}-2 phases=1 bus1={pac2}.4 R=15 X=0 basefreq=60\n\n')
+                arquivo.write(f'New "Regcontrol.reg{cod_id1}" transformer="TFreg{cod_id1}" winding=2 vreg={(tape*kvs)/rel_tp_c} ptratio={rel_tp_c}\n')
+                if conn1 == 'wye':
+                    arquivo.write(f'New Reactor.TFreg{cod_id1}-1 phases=1 bus1={pac1}.4 R=15 X=0 basefreq=60\n')
+                    arquivo.write(f'New Reactor.TFreg{cod_id1}-2 phases=1 bus1={pac2}.4 R=15 X=0 basefreq=60\n\n')
 
                 arquivo.write(f'New "Transformer.TFreg{cod_id2}" phases={fases2} windings=2 buses=["{pac1}{conex2}" "{pac2}{conex2}"] conns=[{conn2} {conn2}] kvs=[{kvs} {kvs}] kvas=[{pot} {pot}] xhl={xhl} r={r} %loadloss={loadloss} %noloadloss={noloadloss}\n')
-                arquivo.write(f'New "Regcontrol.reg{cod_id2}" transformer="TFreg{cod_id2}" winding=2 vreg={rel_tp} band=2 ptratio={(tape / rel_tp) * (kvs * 1000)}\n')
-                arquivo.write(f'New Reactor.TFreg{cod_id2}-1 phases=1 bus1={pac1}.4 R=15 X=0 basefreq=60\n')
-                arquivo.write(f'New Reactor.TFreg{cod_id2}-2 phases=1 bus1={pac2}.4 R=15 X=0 basefreq=60\n\n')
+                arquivo.write(f'New "Regcontrol.reg{cod_id2}" transformer="TFreg{cod_id2}" winding=2 vreg={(tape*kvs)/rel_tp_c} ptratio={rel_tp_c}\n')
+                if conn1 == 'wye':
+                    arquivo.write(f'New Reactor.TFreg{cod_id2}-1 phases=1 bus1={pac1}.4 R=15 X=0 basefreq=60\n')
+                    arquivo.write(f'New Reactor.TFreg{cod_id2}-2 phases=1 bus1={pac2}.4 R=15 X=0 basefreq=60\n\n')
 
                 arquivo.write(f'New "Transformer.TFreg{cod_id3}" phases={fases3} windings=2 buses=["{pac1}{conex3}" "{pac2}{conex3}"] conns=[{conn3} {conn3}] kvs=[{kvs} {kvs}] kvas=[{pot} {pot}] xhl={xhl} r={r} %loadloss={loadloss} %noloadloss={noloadloss}\n')
-                arquivo.write(f'New "Regcontrol.reg{cod_id3}" transformer="TFreg{cod_id3}" winding=2 vreg={rel_tp} band=2 ptratio={(tape / rel_tp) * (kvs * 1000)}\n')
-                arquivo.write(f'New Reactor.TFreg{cod_id3}-1 phases=1 bus1={pac1}.4 R=15 X=0 basefreq=60\n')
-                arquivo.write(f'New Reactor.TFreg{cod_id3}-2 phases=1 bus1={pac2}.4 R=15 X=0 basefreq=60\n\n')
+                arquivo.write(f'New "Regcontrol.reg{cod_id3}" transformer="TFreg{cod_id3}" winding=2 vreg={(tape*kvs)/rel_tp_c} ptratio={rel_tp_c}\n\n')
+                if conn1 == 'wye':
+                    arquivo.write(f'New Reactor.TFreg{cod_id3}-1 phases=1 bus1={pac1}.4 R=15 X=0 basefreq=60\n')
+                    arquivo.write(f'New Reactor.TFreg{cod_id3}-2 phases=1 bus1={pac2}.4 R=15 X=0 basefreq=60\n\n')
 
     end_unremt = time.time()
     print(f"UNREMT do alimentador {feeder} Finalizado! - Tempo: {end_unremt - start_unremt:.2f} s")
@@ -906,6 +1057,8 @@ def generate_energymeters(feeder, output_dir=None):
 
     tempo_meters = time.time()
     ssdUNSEMT = pd.read_csv(rf'{script_dir}\Inputs\{pref} — UNSEMT.csv', sep=',' , low_memory=False)
+    ssdUNSEMT['CTMT'] = ssdUNSEMT['CTMT'].astype(str).str.strip() # Forçar a coluna COD_ID como string e remover espaços em branco
+
     ssdUNSEMT_filtered = ssdUNSEMT[ssdUNSEMT['CTMT'] == feeder]
 
     if ssdUNSEMT_filtered.empty: return
@@ -924,7 +1077,9 @@ def generate_energymeters(feeder, output_dir=None):
             cod_id = linha["COD_ID"]
             tip_unid = linha["TIP_UNID"]
             ope = linha["P_N_OPE"]
-            untrat = linha["UNI_TR_AT"]
+            #untrat = linha["UNI_TR_AT"] # Em BDGD21, UNI_TR_AT está como UNI_TR_S
+            untrat = linha.get("UNI_TR_AT", linha.get("UNI_TR_S")) # Tentando pegar o UNI_TR_AT, se não existir pega o UNI_TR_S (07/10)
+            
             aux=0
             if untrat != 0 and untrat != None: aux=1 #condição para não escrever os medidores dos religadores das SEs (já escrita no Master.dss)
             if tip_unid == 32 and aux==1 and ope == 'F':
@@ -936,107 +1091,15 @@ def generate_energymeters(feeder, output_dir=None):
     print(f"Medidores de Energia do alimentador {feeder} Finalizados! - Tempo: {tempo_meters_end - tempo_meters:.2f} s")
 
 
-# Função que valida os alimentadores comparando as potências simuladas com as potências do BDGD
-def feeders_feasibility(feeders_list):
-
-    # Obter o diretório onde o script está localizado
-    
-    main_dir = os.getcwd()  # pega o diretório atual onde 'teste.py' está rodando
-
-    # Carregar o arquivo CSV
-    ctmt = pd.read_csv(rf'{script_dir}\Inputs\{pref} — CTMT.csv', sep=',')
-
-    # Inicializa a interface do PyDSS
-    dss = py_dss_interface.DSSDLL()
-
-    # Lista para armazenar os dados de cada feeder
-    data_list = []
-
-    def montar_planilha():
-        time_start = time.time()
-        for feeder in feeders_list:
-            # Filtra a tabela para o feeder específico
-            filtered_ctmt = ctmt[ctmt['COD_ID'] == feeder]
-
-            # Soma das colunas de energia (ENE_01 até ENE_12)
-            energy_columns = [f'ENE_{str(i).zfill(2)}' for i in range(1, 13)]
-            energyBDGD = filtered_ctmt[energy_columns].sum().sum()
-
-            energymeter = [0,0,0]
-            n=0
-            for dia in ["DU", "SA", "DO"]:
-                print(f" Processando Feeder {feeder} - Dia {dia}")
-
-                dss.file = os.path.join(main_dir, feeder, f"Master_{feeder}_{dia}.dss")
-
-                dss.text(f"compile {dss.file}")
-                # Resolve o circuito
-                dss.solution_solve()
-                # Seleciona o medidor "EM1"
-                dss.meters_write_name("EM1")
-
-                energymeter[n] = dss.meters_register_values()[0]
-                n+=1
-
-                if dia == "DU":
-                    teste_conv = dss.solution_read_converged()  # Verifica se convergiu (1) ou não (0)
-                    if teste_conv == 0:
-                        conv = 'Não'
-                        energymeteryear = 'N/A'
-                    else:
-                        conv = 'Sim'
-            energymeteryear = energymeter[0] * 252 + energymeter[1] * 53 + energymeter[2] * 60
-            if conv == 'Não':
-                energymeteryear = 0
-                energymeter = [0,0,0]
-            # Adicionar os dados na lista
-            data_list.append({
-                "Feeder": feeder,
-                "Converged": conv,
-                "Energy Meter DU": energymeter[0],
-                "Energy Meter SA": energymeter[1],
-                "Energy Meter DO": energymeter[2],
-                "Energy Meter Year": energymeteryear,
-                "Energy BDGD": energyBDGD
-            })
-
-
-        # Criar o DataFrame final com todos os feeders
-        df = pd.DataFrame(data_list)
-        #print(df)
-
-        match_conc = re.match(r"([^_]+)", pref)
-        concessionaria = match_conc.group(1) if match_conc else ""
-        
-
-        # Salvar o DataFrame em uma planilha Excel
-        filename = os.path.join(main_dir, f"{concessionaria}.xlsx")
-        df.to_excel(filename, index=False)
-
-        for index, row in df.iterrows():
-            if pd.isna(row["Energy Meter Year"]) or row["Energy Meter Year"] == 0:
-                df.at[index, "Converged"] = "Não"
-                df.at[index, "Energy Meter Year"] = "N/A"
-
-        # Salvar as alterações na planilha
-        df.to_excel(filename, index=False)
-
-
-        time_end = time.time()
-        print(f"ComparativoFeeders.xlsx da Concessionária {concessionaria} criada e formatada com sucesso em {time_end-time_start}!")
-
-    montar_planilha()
-
 
 #########################################################################################################
 # Função para processar cada alimentador
 def process_feeder(args):
-    feeder, mvasc3, mvasc1 = args
+    feeder = args
 
     pasta_path = str(feeder)
     os.makedirs(pasta_path, exist_ok=True)
     print(f'\n\nPasta criada: {pasta_path}')
-
 
 
     generate_crvcrg(output_dir=pasta_path)
@@ -1054,15 +1117,40 @@ def process_feeder(args):
     z = generate_ssdunsemt(feeder, dic.dicionario_tip_unid, dic.conex_fios, dic.n_phases, output_dir=pasta_path)
     w = generate_unremt(feeder, dic.conex_fios, dic.n_phases_trafo, dic.dicionario_kva, dic.rel_tp, dic.mapeamento_conn, output_dir=pasta_path)
     generate_energymeters(feeder, output_dir=pasta_path)
+
     for dia_de_analise in ["DU", "SA", "DO"]:
-        generate_master(x, y, z, w, feeder, dic.dicionario_kv, dia_de_analise, mvasc3, mvasc1, output_dir=pasta_path)
-    
+        generate_master(x, y, z, w, feeder, dic.dicionario_kv, dia_de_analise, output_dir=pasta_path)
+
 # Função principal que modela os alimentadores de interesse usando processamento paralelo
-def feeders_modelling(feeders_list, mvasc3, mvasc1):
-    # Utilizando Pool do multiprocessing para paralelizar o processo
-    feeders_list = [int(f) if f.isdigit() else f for f in feeders_list] # Tenta converter cada alimentador para int; se não for puramente numérico, mantém como string
-    args_list = [(feeder, mvasc3, mvasc1) for feeder in feeders_list]
+def feeders_modelling(feeders):
+    feeders_disp = feeders_list()  # lista de alimentadores disponíveis
+    feeders_disp = [str(f).strip() for f in feeders_disp]  # normaliza os nomes
+    feeders = [str(f).strip() for f in feeders]  # normaliza os nomes
+    
+    # Filtra apenas os que existem e exibe avisos
+    feeders_validos = []
+    for f in feeders:
+        if f in feeders_disp:
+            feeders_validos.append(f)
+        else:
+            print(f"\n Aviso ⚠️: O alimentador '{f}' não está na lista de disponíveis e será ignorado.")
+
+    if not feeders_validos:
+        print("Nenhum alimentador válido encontrado. Encerrando.")
+        return
+
+    # Paraleliza apenas os válidos
+    args_list = [(feeder) for feeder in feeders_validos]
     with Pool() as pool:
         pool.map(process_feeder, args_list)
 
+
+# Função principal que modela os alimentadores de interesse SEM processamento paralelo
+def feeders_modelling_sempool(feeders):
+    # Garante que todos os nomes são strings limpas
+    feeders = [str(f).strip() for f in feeders]
+
+    # Processa cada alimentador sequencialmente
+    for feeder in feeders:
+        process_feeder(feeder)
 
