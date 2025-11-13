@@ -102,6 +102,10 @@ Inicialmente, os dados da BDGD são classificados como entidades geográficas e 
 
 **Fonte:** Adaptado de ANEEL (2021) [2].
 
+**Observação:**
+Em versões mais antigas da BDGD, as camadas UNTRD, EQTRD, UNTRS e EQTRS eram nomeadas, respectivamente, como UNTRMT (Unidade Transformadora de Média Tensão), EQTRMT (Equipamento Transformador de Média Tensão), UNTRAT (Unidade Transformadora de Alta Tensão) e EQTRAT (Equipamento Transformador de Alta Tensão). Na prática, isso não afeta o processo de modelagem, pois o código reconhece e trata corretamente ambos os formatos.
+
+
 ### 1.2 - *Download* dos arquivos
 
 Para realizar o *download* dos dados de uma distribuidora, basta acessar o link: https://dadosabertos-aneel.opendata.arcgis.com/search?tags=distribuicao [1] e pesquisá-la. Assim sendo, aparecerá mais de um arquivo, correspondente a cada ano. A Figura 1 mostra essa etapa.
@@ -164,119 +168,7 @@ Com essas informações, será possível acessar todas as camadas e aplicar a fi
 ![terminal_py](https://raw.githubusercontent.com/ArthurGS97/bdgd2dss/main/Prints_git/terminal_py.png "terminal_py")
 **Figura 7: Captura de tela do *QGIS* para abrir o terminal *python***
 
-E copiar e colar o código no editor que foi aberto:
-
-```bash
-import os
-import time
-import csv
-
-inicio = time.time()
-
-output_dir = "C:/BA/Inputs"  # Ajuste conforme necessário
-
-# Valores válidos para o campo SUB
-sub_values = ('COD', 'BRE', 'BRN', '')
-
-# Definir os sufixos das camadas que serão exportadas
-layers_to_export = [
-    'CRVCRG', 'CTMT', 'EQRE', 'EQTRMT', 'PIP', 'RAMLIG', 'SEGCON',
-    'SSDBT', 'SSDMT', 'UCBT_tab', 'UCMT_tab', 'UGBT_tab', 'UGMT_tab',
-    'UNCRMT', 'UNREMT', 'UNSEBT', 'UNSEMT', 'UNTRMT', 'SUB'
-]
-
-
-# Obter todas as camadas carregadas
-all_layers = list(QgsProject.instance().mapLayers().values())
-
-if not all_layers:
-    raise Exception("Nenhuma camada carregada no projeto.")
-
-# Extrair prefixo do nome da primeira camada
-first_layer_name = all_layers[0].name()
-pref = first_layer_name.split(' — ')[0]
-print(f"Prefixo extraído: {pref}")
-
-# Criar lista de camadas que não serão exportadas (a serem removidas)
-layers_to_remove = [
-    layer for layer in all_layers
-    if not any(layer.name().endswith(f' — {suffix}') for suffix in layers_to_export)
-]
-
-# Remover essas camadas do projeto com segurança
-for layer in layers_to_remove:
-    layer_name = layer.name()  # <- ESSA LINHA É ESSENCIAL
-    QgsProject.instance().removeMapLayer(layer)
-    print(f"Camada {layer_name} removida do projeto.")
-
-# Re-obter as camadas restantes após a remoção
-filtered_layers = list(QgsProject.instance().mapLayers().values())
-
-# Aplicar filtros condicionais nas camadas
-for layer in filtered_layers:
-    if layer.type() == QgsMapLayer.VectorLayer:
-        layer_fields = [field.name() for field in layer.fields()]
-        
-        if layer.name().endswith(" — SUB") and 'COD_ID' in layer_fields:
-            filter_expression = f"COD_ID IN {sub_values}"
-            layer.setSubsetString(filter_expression)
-            print(f"Camada {layer.name()} filtrada com COD_ID em {sub_values}.")
-        
-        elif 'SUB' in layer_fields:
-            filter_expression = f"SUB IN {sub_values}"
-            layer.setSubsetString(filter_expression)
-            print(f"Camada {layer.name()} filtrada com SUB em {sub_values}.")
-
-
-# Garantir que o diretório existe
-if not os.path.exists(output_dir):
-    os.makedirs(output_dir)
-
-# Exportar apenas as camadas especificadas
-for layer in filtered_layers:
-    if any(layer.name().endswith(f' — {suffix}') for suffix in layers_to_export):
-        csv_filename = os.path.join(output_dir, f"{layer.name()}.csv")
-        error = QgsVectorFileWriter.writeAsVectorFormat(layer, csv_filename, "utf-8", layer.crs(), "CSV")
-        if error[0] == QgsVectorFileWriter.NoError:
-            print(f"Camada {layer.name()} exportada com sucesso para {csv_filename}.")
-        else:
-            print(f"Erro ao exportar camada {layer.name()}.")
-
-# Gerar o arquivo de coordenadas baseado na camada SSDMT
-ssdmt_layer_name = f"{pref} — SSDMT"
-ssdmt_layers = QgsProject.instance().mapLayersByName(ssdmt_layer_name)
-
-if not ssdmt_layers:
-    raise Exception(f"Camada '{ssdmt_layer_name}' não encontrada.")
-    
-ssdmt = ssdmt_layers[0]
-
-file_path = os.path.join(output_dir, f"{pref} — Coordenadas.csv")
-
-with open(file_path, mode='w', newline='') as csvfile:
-    writer = csv.writer(csvfile)
-    writer.writerow(["CTMT", "PAC1", "Coord1", "PAC2", "Coord2"])
-
-    for feature in ssdmt.getFeatures():
-        ctmt = feature["CTMT"]
-        pac_1 = feature["PAC_1"]
-        pac_2 = feature["PAC_2"]
-        geom = feature.geometry()
-
-        if geom.isMultipart():
-            line = geom.asMultiPolyline()[0]
-        else:
-            line = geom.asPolyline()
-
-        if len(line) >= 2:
-            coord_1_str = f"{line[0].x()}, {line[0].y()}"
-            coord_2_str = f"{line[-1].x()}, {line[-1].y()}"
-            writer.writerow([ctmt, pac_1, coord_1_str, pac_2, coord_2_str])
-
-fim = time.time()
-print("Arquivo coordenadas.csv gerado com sucesso!")
-print(f"Tempo de execução: {fim - inicio:.2f} segundos.")
-```
+E copiar e colar o código disponível em `exportar_qgis.py` no editor que foi aberto.
 
 Com o script aberto, podemos agora realizar a filtragem das subestações e a exportação dos dados. A Figura 8 apresenta o trecho de código com dois campos configuráveis pelo usuário:
 
@@ -295,67 +187,37 @@ Finalizado o processo de exportação das camadas, deve-se criar um arquivo na r
 import bdgd2dss as b2d
 import time
 
-################ DADOS DE ENTRADA #####################
-mvasc3 = 227.8  # potência de curto-circuito trifásico
-mvasc1 = 234.9  # potência de curto-circuito monofásico
-#######################################################
 
 if __name__ == "__main__":
     start_total = time.time()
 
     # Chamando a função para obter a lista de alimentadores disponíveis nessa BDGD
     feeders_all = b2d.feeders_list()
-    print(f"Alimentadores disponíveis: {feeders_all}") # Exibe a lista de alimentadores disponíveis na BDGD
+    #print(f"Alimentadores disponíveis: {feeders_all}") # Exibe a lista de alimentadores disponíveis na BDGD
     
     # Escolhe os alimentadores que deseja simular, pode ser apenas um, vários ou todos, no formato especificado
-    feeders = ['ULAD202']
-
+    feeders = ['ULAU11', 'ULAE714', 'ULAD202', 'ULAD203']  # Exemplo de alimentadores escolhidos
     # Chamando a função para modelar os alimentadores escolhidos usando processamento paralelo
-    #b2d.feeders_modelling(feeders, mvasc3, mvasc1)
-
-    # Chamando a função para verificar a viabilidade dos alimentadores
-    #b2d.feeders_feasibility(feeders)
+    b2d.feeders_modelling(feeders)
 
     end_total = time.time()
     print(f"\nTempo total: {end_total - start_total} s") # Exibe o tempo total de execução do script
 ```
 
-Se todas as etapas anteriores forem executadas corretamente, a estrutura final do projeto será a seguinte:
-
-```plaintext
-pasta/                        #Pasta criada pelo usuário para utilização da biblioteca
-│
-├── .venv/                    # Ambiente virtual com os pacotes necessários (inclusive o bdgd2dss)
-├── Inputs/                   # Pasta que ficará salvo os dados exportados a partir do QGIS
-├── main.py                   # Script para rodar a biblioteca e funções, disponível no texto
-```
 
 ## 3 - Convertendo BDGD em *.dss* usando *Python*
 
-Para realizar a modelagem dos alimentadores utilizando a biblioteca **bdgd2dss**, utiliza-se o arquivo criado com o código acima. A estrutura do código é mostrado na Figura 9.
+Para realizar a modelagem dos alimentadores utilizando a biblioteca **bdgd2dss**, utiliza-se o arquivo criado com o código acima.
 
-![novomain](https://raw.githubusercontent.com/ArthurGS97/bdgd2dss/main/Prints_git/novomain.png "novomain")
-
-**Figura 9: Captura de tela do Visual Code do códifo *feeders_processing.py* sendo utilizado**
-
-**Fonte:** O Autor (2024).
-
-Os dados de entrada necessários são os níveis de curto-circuito trifásico (*mvasc3*) e monofásico (*mvasc1*), ambos em MVA.
-
-A execução do script inicia-se no bloco *if __name__ == "__main__":*, onde as funções principais são chamadas em sequência:
+A execução do script inicia-se no bloco *if __name__ == "__main__":*, onde as funções são chamadas em sequência:
 
 1 - Listagem dos alimentadores disponíveis:
 A função *b2d.feeders_list()* retorna todos os alimentadores presentes na base de dados exportada. Essa lista é exibida no terminal como referência.
 Em seguida, define-se a lista feeders, que contém os identificadores dos alimentadores a serem simulados. Essa lista deve ser informada no formato de strings.
 
 2 - Modelagem dos alimentadores:
-A função *b2d.feeders_modelling(feeders, mvasc3, mvasc1)* realiza a modelagem dos alimentadores selecionados, levando em consideração os dados de curto-circuito especificados. O processo de modelagem é executado com paralelismo, garantindo maior desempenho.
+A função *b2d.feeders_modelling(feeders)* realiza a modelagem dos alimentadores selecionados, levando em consideração os dados de curto-circuito especificados. O processo de modelagem é executado com paralelismo, garantindo maior desempenho.
 
-3 - Verificação da viabilidade elétrica:
-Após a modelagem, pode-se utilizar a função *b2d.feeders_feasibility(feeders)* para verificar a viabilidade elétrica dos alimentadores simulados.
-
-Importante:
-A função *b2d.feeders_feasibility()* deve permanecer comentada (símbolo # no início da linha) caso os alimentadores ainda não tenham sido modelados. Para evitar reprocessamento desnecessário, recomenda-se comentar temporariamente a função de modelagem ao executar apenas a verificação de viabilidade.
 
 > No [vídeo](https://www.youtube.com/@LEAPSE), explicamos a utilização da biblioteca, o que facilita seu entendimento e aplicação.
 
@@ -363,7 +225,8 @@ A função *b2d.feeders_feasibility()* deve permanecer comentada (símbolo # no 
 
 > Qualquer inconsistência ou dificuldade na utilização da biblioteca pode contactar os autores.
 
-## [](#header-2)3 - Como citar esta biblioteca:
+
+## [](#header-2)4 - Como citar esta biblioteca:
 
 ```Bash
 @misc{bdgd2dss,
@@ -388,6 +251,13 @@ Utilizando esta biblioteca, cite também os seguintes trabalhos:
 
 >PASSATUTO, Luiz Arthur. T.; SOUZA, Arthur Gomes de; BERNARDES, Wellington Maycon S.; FREITAS, L. C. G.; RESENDE, Ênio C. Assignment of Responsibility for Short-Duration Voltage Variation via QGIS, OpenDSS and Python. *In*: 2024 INTERNATIONAL WORKSHOP ON ARTIFICIAL INTELLIGENCE AND MACHINE LEARNING FOR ENERGY TRANSFORMATION (AIE), 2024, Vaasa, Finland. Anais... Vaasa: IEEE, 2024. p. 1-6. doi: 10.1109/AIE61866.2024.10561325.
 
+## 🗓️ Histórico de versões
+
+Consulte o [CHANGELOG](CHANGELOG.md) para ver a lista completa de alterações, novas funcionalidades e correções realizadas em cada versão da biblioteca.
+
+> Última versão: **v0.1.0** — publicada em **15/11/2025**.
+
+
 ## Agradecimentos 
 
 O presente trabalho foi realizado com apoio da CAPES - Código de Financiamento 001, da FAPEMIG, do CNPq e do Programa de Pós-Graduação em Engenharia Elétrica (PPGEELT) da Faculdade de Engenharia Elétrica (FEELT) da Universidade Federal de Uberlândia (UFU). As principais dependências encontradas são: bibliotecas py-dss-interface, numpy e pandas.
@@ -405,4 +275,5 @@ O presente trabalho foi realizado com apoio da CAPES - Código de Financiamento 
 [5] PYTHON SOFTWARE FOUNDATION. Python. Disponível em: [https://www.python.org/downloads/](https://www.python.org/downloads/). Acesso em: 16 ago. 2025.
 
 [6] QGIS. QGIS Geographic Information System. Disponível em: [https://qgis.org/download/](https://qgis.org/download/). Acesso em: 29 jul. 2025.
+
 
