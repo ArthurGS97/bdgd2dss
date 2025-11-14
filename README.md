@@ -251,6 +251,17 @@ Utilizando esta biblioteca, cite também os seguintes trabalhos:
 
 >PASSATUTO, Luiz Arthur. T.; SOUZA, Arthur Gomes de; BERNARDES, Wellington Maycon S.; FREITAS, L. C. G.; RESENDE, Ênio C. Assignment of Responsibility for Short-Duration Voltage Variation via QGIS, OpenDSS and Python. *In*: 2024 INTERNATIONAL WORKSHOP ON ARTIFICIAL INTELLIGENCE AND MACHINE LEARNING FOR ENERGY TRANSFORMATION (AIE), 2024, Vaasa, Finland. Anais... Vaasa: IEEE, 2024. p. 1-6. doi: 10.1109/AIE61866.2024.10561325.
 
+## [](#header-2)5 - Rotinas auxiliares:
+
+Além das rotinas já descritas neste README, este diretório também inclui duas rotinas adicionais que auxiliam na correção de problemas comuns na BDGD e na realização de testes com múltiplos alimentadores:
+
+1. **`loads_isolated.py`**  
+   O usuário deve informar as cargas isoladas identificadas a partir do *Show Isolated* do OpenDSS, além do nome do arquivo `.dss` que deseja atualizar. A rotina localizará essas cargas e as comentará automaticamente utilizando `!`.
+
+2. **`test_feeders.py`**  
+   Permite testar, de forma automatizada, vários alimentadores já modelados para os três dias típicos (DU, SA e DO).  
+   **Atenção:** esta rotina funciona apenas com alimentadores previamente modelados e depende de bibliotecas compatíveis com versões do Python até **3.12**.
+
 ## 🗓️ Histórico de versões
 
 Consulte o [CHANGELOG](CHANGELOG.md) para ver a lista completa de alterações, novas funcionalidades e correções realizadas em cada versão da biblioteca.
@@ -275,5 +286,6 @@ O presente trabalho foi realizado com apoio da CAPES - Código de Financiamento 
 [5] PYTHON SOFTWARE FOUNDATION. Python. Disponível em: [https://www.python.org/downloads/](https://www.python.org/downloads/). Acesso em: 16 ago. 2025.
 
 [6] QGIS. QGIS Geographic Information System. Disponível em: [https://qgis.org/download/](https://qgis.org/download/). Acesso em: 29 jul. 2025.
+
 
 
