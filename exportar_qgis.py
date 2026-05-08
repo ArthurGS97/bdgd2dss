@@ -4,10 +4,10 @@ import csv
 
 inicio = time.time()
 
-output_dir = "C:/CEMIG23/Inputs"  # Ajuste conforme necessário
+output_dir = "C:/Teste/Inputs"  # Ajuste conforme necessário
 
 # Valores válidos para o campo SUB
-sub_values = ('1726720', '1726707', '1726712')
+sub_values = ('1726712')
 
 # Definir os sufixos das camadas que serão exportadas
 layers_to_export = [
@@ -22,6 +22,12 @@ all_layers = list(QgsProject.instance().mapLayers().values())
 
 if not all_layers:
     raise Exception("Nenhuma camada carregada no projeto.")
+    
+# Garantir formato correto para cláusula IN
+if isinstance(sub_values, str):
+    sub_values = f"('{sub_values}')"
+else:
+    sub_values = "(" + ", ".join(f"'{v}'" for v in sub_values) + ")"
 
 # Extrair prefixo do nome da primeira camada
 first_layer_name = all_layers[0].name()
