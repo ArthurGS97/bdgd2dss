@@ -256,7 +256,7 @@ Utilizando esta biblioteca, cite também os seguintes trabalhos:
 
 ## 🗓️ Histórico de versões
 
-Consulte o [CHANGELOG](CHANGELOG.md) para ver a lista completa de alterações, novas funcionalidades e correções realizadas em cada versão da biblioteca.
+Consulte o [CHANGELOG](https://github.com/ArthurGS97/bdgd2dss/blob/main/CHANGELOG.md) para ver a lista completa de alterações, novas funcionalidades e correções realizadas em cada versão da biblioteca.
 
 > Última versão: **v0.1.0** — publicada em **15/11/2025**.
 
