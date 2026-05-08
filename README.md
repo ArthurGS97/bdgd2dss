@@ -253,16 +253,6 @@ Utilizando esta biblioteca, cite também os seguintes trabalhos:
 
 > SOUZA, Arthur Gomes de; PASSATUTO, Luiz Arthur Tarralo; BERNARDES, Wellington Maycon Santos; FREITAS, Luiz Carlos Gomes; RESENDE, Ênio Costa. Attribution of responsibility for short-duration voltage variations in power distribution systems via QGIS, OpenDSS, and Python language. Institute of Electrical and Electronics Engineers Transactions on Industry Applications, v. 62, n. 2, p. 2377–2391, 2026. DOI: 10.1109/TIA.2025.3618601.
 
-## [](#header-2)5 - Rotinas auxiliares:
-
-Além das rotinas já descritas neste README, este diretório também inclui duas rotinas adicionais que auxiliam na correção de problemas comuns na BDGD e na realização de testes com múltiplos alimentadores:
-
-1. **`loads_isolated.py`**  
-   O usuário deve informar as cargas isoladas identificadas a partir do *Show Isolated* do OpenDSS, além do nome do arquivo `.dss` que deseja atualizar. A rotina localizará essas cargas e as comentará automaticamente utilizando `!`.
-
-2. **`test_feeders.py`**  
-   Permite testar, de forma automatizada, vários alimentadores já modelados para os três dias típicos (DU, SA e DO).  
-   **Atenção:** esta rotina funciona apenas com alimentadores previamente modelados e depende de bibliotecas compatíveis com versões do Python até **3.12**.
 
 ## 🗓️ Histórico de versões
 
