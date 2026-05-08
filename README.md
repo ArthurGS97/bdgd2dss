@@ -219,7 +219,7 @@ Em seguida, define-se a lista feeders, que contém os identificadores dos alimen
 A função *b2d.feeders_modelling(feeders)* realiza a modelagem dos alimentadores selecionados, levando em consideração os dados de curto-circuito especificados. O processo de modelagem é executado com paralelismo, garantindo maior desempenho.
 
 
-> No [vídeo](https://www.youtube.com/@LEAPSE), explicamos a utilização da biblioteca, o que facilita seu entendimento e aplicação.
+> No [vídeo](https://www.youtube.com/watch?v=Zhio9aYRiVM), explicamos a utilização da biblioteca, o que facilita seu entendimento e aplicação.
 
 > Mais detalhes no link: https://github.com/ArthurGS97/bdgd2dss.
 
@@ -250,6 +250,8 @@ Utilizando esta biblioteca, cite também os seguintes trabalhos:
 >SOUZA, Arthur Gomes de; BERNARDES, Wellington Maycon S. Topological data acquisition and recloser coordination using QGIS and OpenDSS Tools. *In*: XIV CONGRESSO BRASILEIRO DE PLANEJAMENTO ENERGÉTICO (CBPE), 14., 2024, Manaus, AM. Anais... Itajubá, MG: Sociedade Brasileira de Planejamento Energético, 2024. p. 2605–2617.
 
 >PASSATUTO, Luiz Arthur. T.; SOUZA, Arthur Gomes de; BERNARDES, Wellington Maycon S.; FREITAS, L. C. G.; RESENDE, Ênio C. Assignment of Responsibility for Short-Duration Voltage Variation via QGIS, OpenDSS and Python. *In*: 2024 INTERNATIONAL WORKSHOP ON ARTIFICIAL INTELLIGENCE AND MACHINE LEARNING FOR ENERGY TRANSFORMATION (AIE), 2024, Vaasa, Finland. Anais... Vaasa: IEEE, 2024. p. 1-6. doi: 10.1109/AIE61866.2024.10561325.
+
+> SOUZA, Arthur Gomes de; PASSATUTO, Luiz Arthur Tarralo; BERNARDES, Wellington Maycon Santos; FREITAS, Luiz Carlos Gomes; RESENDE, Ênio Costa. Attribution of responsibility for short-duration voltage variations in power distribution systems via QGIS, OpenDSS, and Python language. Institute of Electrical and Electronics Engineers Transactions on Industry Applications, v. 62, n. 2, p. 2377–2391, 2026. DOI: 10.1109/TIA.2025.3618601.
 
 ## [](#header-2)5 - Rotinas auxiliares:
 
