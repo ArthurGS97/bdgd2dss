@@ -7,13 +7,15 @@
 ![License](https://img.shields.io/github/license/ArthurGS97/bdgd2dss)
 ![Downloads](https://static.pepy.tech/badge/bdgd2dss)
 
+<br/>
+
 <div align="center">
-    <img src="Prints_git/icon.png" width="120" >
+    <img src="Prints_git/icon.png" width="120">
 </div>
 
 # bdgd2dss 
 
-Conjunto de arquivos referente à biblioteca **bdgd2dss** desenvolvida na linguagem *Python*, que transforma as planilhas oriundas da Base de Dados Geográfica da Distribuidora (BDGD) em arquivos *.dss* para simulação e estudos de alimentadores de sistemas de distribuição de energia elétrica no ambiente *OpenDSS*. A ferramenta em questão foi criada pelo Mestrando em Engenharia Elétrica Arthur Gomes de Souza, que desenvolve pesquisas com o foco em proteção de sistemas elétricos de potência, sob orientação do prof. Dr. Wellington Maycon Santos Bernardes (Universidade Federal de Uberlândia).
+Conjunto de arquivos referente à biblioteca **bdgd2dss** desenvolvida na linguagem *Python*, que transforma as planilhas oriundas da Base de Dados Geográfica da Distribuidora (BDGD) em arquivos *.dss* para simulação e estudos de alimentadores de sistemas de distribuição de energia elétrica no ambiente *OpenDSS*. A ferramenta em questão foi criada pelo Doutorando em Engenharia Elétrica Ms. [Arthur Gomes de Souza](http://lattes.cnpq.br/7889046727547877), que desenvolve pesquisas com o foco em proteção de sistemas elétricos de potência, sob orientação do Prof. Dr. [Wellington Maycon Santos Bernardes](http://lattes.cnpq.br/8631549983581675) (Universidade Federal de Uberlândia).
 
 Instalação
 ------------
@@ -133,7 +135,7 @@ Escolhendo o arquivo correspondente, basta baixar como mostra a Figura 2. Alerta
 
 ### 2.1 - Gerenciador de Fonte de Dados
 
-Após realizado o *download*, será possível trabalhar com os arquivos. Para isso deve-se usar a ferramenta *QGIS* [6], um *software* livre com código-fonte aberto, e multiplataforma. Basicamente é um sistema de informação geográfica (SIG) que permite a visualização, edição e análise de dados georreferenciados. O *download* pode ser feito no *link*: https://qgis.org/download/. Abrindo o *QGIS*, deve-se ir em "Gerenciador da Fonte de Dados" (opção Vetor). Ao selecionar a opção "Diretório", coloca-se a codificação em "Automático", em Tipo escolhe-se a opção "Arquivo aberto GDB", e em Base de Vetores escolhe a pasta do arquivo BDGD baixado e extraído. Finalmente em *LIST_ALL_TABLES* coloca-se em "*YES*" para ser possível uma pré-visualização das camadas disponíveis e selecionar aquelas que desejar visualizar, todas as camadas devem ser selecionadas no campo "Selecionar Todas" e, em seguida, deve-se clicar em "Adicionar Camadas" para prosseguir com a visualização. Essas etapas são mostradas na Figura 3 e 4. 
+Após realizado o *download*, será possível trabalhar com os arquivos. Para isso deve-se usar a ferramenta *QGIS* [6], um *software* livre com código-fonte aberto, e multiplataforma. Basicamente é um sistema de informação geográfica (SIG) que permite a visualização, edição e análise de dados georreferenciados. O *download* pode ser feito no *link*: https://qgis.org/download/. Abrindo o *QGIS*, deve-se ir em "Gerenciador da Fonte de Dados" (opção Vetor). Ao selecionar a opção "Diretório", coloca-se a codificação em "Automático", em Tipo escolhe-se a opção "Arquivo aberto GDB", e em Base de Vetores escolhe a pasta do arquivo BDGD baixado e extraído. Finalmente em *LIST_ALL_TABLES* coloca-se em "*YES*" para ser possível uma pré-visualização das camadas disponíveis e selecionar aquelas que desejar visualizar, todas as camadas devem ser selecionadas no campo "Selecionar Todas" e, em seguida, deve-se clicar em "Adicionar Camadas" para prosseguir com a visualização. Essas etapas são mostradas nas Figuras 3 e 4. 
 
 ![fontededados_f3](https://raw.githubusercontent.com/ArthurGS97/bdgd2dss/main/Prints_git/fontededados_f3.png "fontededados_f3")
 
@@ -236,20 +238,20 @@ A função *b2d.feeders_modelling(feeders)* realiza a modelagem dos alimentadore
 @misc{bdgd2dss,
   author       = {Arthur Gomes de Souza and Wellington Maycon Santos Bernardes},
   title        = {bdgd2dss: Ferramenta para modelagem de alimentadores da BDGD para uso com OpenDSS},
-  year         = {2025},
+  year         = {2026},
   howpublished = {\url{https://pypi.org/project/bdgd2dss/}},
-  note         = {Versão 0.0.5, disponível no PyPI}
+  note         = {Versão 0.0.9, disponível no PyPI}
 }
 
 ```
 
-Utilizando esta biblioteca, cite também os seguintes trabalhos: 
+Utilizando esta biblioteca, cite também o(s) apropriado(s) trabalho(s): 
 
->SOUZA, Arthur Gomes de; BERNARDES, Wellington Maycon S. Parametrização de religadores com apoio da base de dados geográfica da distribuidora, OpenDSS e Python. *In*: XXV CONGRESSO BRASILEIRO DE AUTOMÁTICA (CBA), 25., 2024, Rio de Janeiro, RJ, Brazil. Anais... Campinas, SP: Sociedade Brasileira de Automática, 2024. p. 1–7.
+>SOUZA, Arthur Gomes de; BERNARDES, Wellington Maycon S. Parametrização de religadores com apoio da base de dados geográfica da distribuidora, OpenDSS e Python. *In*: XXV CONGRESSO BRASILEIRO DE AUTOMÁTICA (CBA), 25., 2024, Rio de Janeiro, RJ, Brasil. Anais... Campinas, SP: Sociedade Brasileira de Automática, 2024. p. 1–7.
 
->SOUZA, Arthur Gomes de; SANTOS JÚNIOR, Júlio C.; GUEDES, Michele R.; BERNARDES, Wellington Maycon S. Coordinating distribution power system protection in a utility from Uberlândia - MG using a geographic database, QGIS and OpenDSS. *In*: XIV LATIN-AMERICAN CONGRESS ON ELECTRICITY, GENERATION AND TRANSMISSION - CLAGTEE 2022, 14., 2022, Rio de Janeiro, RJ, Brazil. Anais... Guaratinguetá, SP: UNESP, 2022. p. 1-9. 
+>SOUZA, Arthur Gomes de; SANTOS JÚNIOR, Júlio C.; GUEDES, Michele R.; BERNARDES, Wellington Maycon S. Coordinating distribution power system protection in a utility from Uberlândia - MG using a geographic database, QGIS and OpenDSS. *In*: XIV LATIN-AMERICAN CONGRESS ON ELECTRICITY, GENERATION AND TRANSMISSION - CLAGTEE 2022, 14., 2022, Rio de Janeiro, RJ, Brasil. Anais... Guaratinguetá, SP: UNESP, 2022. p. 1-9. 
 
->SOUZA, Arthur Gomes de; BERNARDES, Wellington Maycon S.; PASSATUTO, Luiz Arthur T. Aquisição de dados topológicos e coordenação de religadores usando as ferramentas de apoio QGIS e OpenDSS. *In*: 15TH IEEE INTERNATIONAL CONFERENCE ON INDUSTRY APPLICATIONS (INDUSCON), 15., 2023, São Bernardo do Campo, Brazil. Anais... Piscataway, New Jersey: IEEE, 2023. p. 607-608. doi: 10.1109/INDUSCON58041.2023.10374830.
+>SOUZA, Arthur Gomes de; BERNARDES, Wellington Maycon S.; PASSATUTO, Luiz Arthur T. Aquisição de dados topológicos e coordenação de religadores usando as ferramentas de apoio QGIS e OpenDSS. *In*: 15TH IEEE INTERNATIONAL CONFERENCE ON INDUSTRY APPLICATIONS (INDUSCON), 15., 2023, São Bernardo do Campo, Brasil. Anais... Piscataway, New Jersey: IEEE, 2023. p. 607-608. doi: 10.1109/INDUSCON58041.2023.10374830.
 
 >SOUZA, Arthur Gomes de; BERNARDES, Wellington Maycon S. Topological data acquisition and recloser coordination using QGIS and OpenDSS Tools. *In*: XIV CONGRESSO BRASILEIRO DE PLANEJAMENTO ENERGÉTICO (CBPE), 14., 2024, Manaus, AM. Anais... Itajubá, MG: Sociedade Brasileira de Planejamento Energético, 2024. p. 2605–2617.
 
@@ -282,7 +284,4 @@ O presente trabalho foi realizado com apoio da CAPES - Código de Financiamento 
 [5] PYTHON SOFTWARE FOUNDATION. Python. Disponível em: [https://www.python.org/downloads/](https://www.python.org/downloads/). Acesso em: 08 nov. 2025.
 
 [6] QGIS. QGIS Geographic Information System. Disponível em: [https://qgis.org/download/](https://qgis.org/download/). Acesso em: 08 nov. 2025.
-
-
-
 
