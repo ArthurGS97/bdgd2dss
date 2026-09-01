@@ -1,3 +1,7 @@
+## [v0.1.0] - 01/09/2026
+### 🐞 Correções
+- Correção no READ.ME e inconsistências no número da versão.
+
 ## [v0.0.9] - 08/05/2026
 
 ### 🚀 Novas Funcionalidades
