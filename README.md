@@ -246,14 +246,18 @@ A função *b2d.feeders_modelling(feeders)* realiza a modelagem dos alimentadore
 ```
 
 ```Bash
-@software{souza2026bdgd2dss,
-  author    = {Souza, Arthur Gomes de and Bernardes, Wellington Maycon Santos},
-  title     = {{bdgd2dss} - Ferramenta para modelagem de alimentadores da {BDGD} para uso com {OpenDSS}},
-  year      = {2026},
-  publisher = {Zenodo},
-  doi       = {10.5281/zenodo.22798623},
-  url       = {https://doi.org/10.5281/zenodo.22798623},
-  note      = {Computer software}
+@software{souza_2026_22814491,
+  author       = {Souza, Arthur Gomes de and
+                  Bernardes, Wellington Maycon Santos},
+  title        = {bdgd2dss - Ferramenta para modelagem de
+                   alimentadores da BDGD para uso com OpenDSS
+                  },
+  month        = sep,
+  year         = 2026,
+  publisher    = {Zenodo},
+  version      = {0.1.0},
+  doi          = {10.5281/zenodo.22814491},
+  url          = {https://doi.org/10.5281/zenodo.22814491},
 }
 ```
 Utilizando esta biblioteca, cite também o(s) apropriado(s) trabalho(s): 
