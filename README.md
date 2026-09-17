@@ -240,11 +240,22 @@ A função *b2d.feeders_modelling(feeders)* realiza a modelagem dos alimentadore
   title        = {bdgd2dss: Ferramenta para modelagem de alimentadores da BDGD para uso com OpenDSS},
   year         = {2026},
   howpublished = {\url{https://pypi.org/project/bdgd2dss/}},
-  note         = {Versão 0.0.9, disponível no PyPI}
+  note         = {Versão 0.1.0, disponível no PyPI}
 }
 
 ```
 
+```Bash
+@software{souza2026bdgd2dss,
+  author    = {Souza, Arthur Gomes de and Bernardes, Wellington Maycon Santos},
+  title     = {{bdgd2dss} - Ferramenta para modelagem de alimentadores da {BDGD} para uso com {OpenDSS}},
+  year      = {2026},
+  publisher = {Zenodo},
+  doi       = {10.5281/zenodo.22798623},
+  url       = {https://doi.org/10.5281/zenodo.22798623},
+  note      = {Computer software}
+}
+```
 Utilizando esta biblioteca, cite também o(s) apropriado(s) trabalho(s): 
 
 >SOUZA, Arthur Gomes de; BERNARDES, Wellington Maycon S. Parametrização de religadores com apoio da base de dados geográfica da distribuidora, OpenDSS e Python. *In*: XXV CONGRESSO BRASILEIRO DE AUTOMÁTICA (CBA), 25., 2024, Rio de Janeiro, RJ, Brasil. Anais... Campinas, SP: Sociedade Brasileira de Automática, 2024. p. 1–7.
@@ -264,7 +275,7 @@ Utilizando esta biblioteca, cite também o(s) apropriado(s) trabalho(s):
 
 Consulte o [CHANGELOG](https://github.com/ArthurGS97/bdgd2dss/blob/main/CHANGELOG.md) para ver a lista completa de alterações, novas funcionalidades e correções realizadas em cada versão da biblioteca.
 
-> Última versão: **v0.1.0** — publicada em **15/11/2025**.
+> Última versão: **v0.1.0** — publicada em **01/09/2026**.
 
 
 ## Agradecimentos 
