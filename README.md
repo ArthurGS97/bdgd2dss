@@ -6,12 +6,14 @@
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux-brightgreen)
 ![License](https://img.shields.io/github/license/ArthurGS97/bdgd2dss)
 ![Downloads](https://static.pepy.tech/badge/bdgd2dss)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22814491.svg)](https://doi.org/10.5281/zenodo.22814491)
+![Build](https://img.shields.io/badge/build-passing-brightgreen)
 
 <br/>
 
-<div align="center">
-    <img src="Prints_git/icon.png" width="120">
-</div>
+<p align="center">
+  <img src="https://raw.githubusercontent.com/ArthurGS97/bdgd2dss/main/Prints_git/icon.png" alt="icon" width="180">
+</p>
 
 # bdgd2dss 
 
