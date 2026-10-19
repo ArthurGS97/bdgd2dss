@@ -286,7 +286,7 @@ Consulte o [CHANGELOG](https://github.com/ArthurGS97/bdgd2dss/blob/main/CHANGELO
 
 ## Agradecimentos 
 
-O presente trabalho foi realizado com apoio da CAPES - Código de Financiamento 001, da FAPEMIG, do CNPq e do Programa de Pós-Graduação em Engenharia Elétrica (PPGEELT) da Faculdade de Engenharia Elétrica (FEELT) da Universidade Federal de Uberlândia (UFU). As principais dependências encontradas são: bibliotecas py-dss-interface, numpy e pandas.
+O presente trabalho foi realizado com apoio da CAPES - Código de Financiamento 001, da FAPEMIG, do CNPq e do Programa de Pós-Graduação em Engenharia Elétrica (PPGEELT) da Faculdade de Engenharia Elétrica (FEELT) da Universidade Federal de Uberlândia (UFU). 
 
 ## Referências
 
