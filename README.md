@@ -242,7 +242,7 @@ A função *b2d.feeders_modelling(feeders)* realiza a modelagem dos alimentadore
   title        = {bdgd2dss: Ferramenta para modelagem de alimentadores da BDGD para uso com OpenDSS},
   year         = {2026},
   howpublished = {\url{https://pypi.org/project/bdgd2dss/}},
-  note         = {Versão 0.1.0, disponível no PyPI}
+  note         = {Versão 0.1.2, disponível no PyPI}
 }
 
 ```
@@ -257,7 +257,7 @@ A função *b2d.feeders_modelling(feeders)* realiza a modelagem dos alimentadore
   month        = sep,
   year         = 2026,
   publisher    = {Zenodo},
-  version      = {0.1.0},
+  version      = {0.1.2},
   doi          = {10.5281/zenodo.22814491},
   url          = {https://doi.org/10.5281/zenodo.22814491},
 }
@@ -281,7 +281,7 @@ Utilizando esta biblioteca, cite também o(s) apropriado(s) trabalho(s):
 
 Consulte o [CHANGELOG](https://github.com/ArthurGS97/bdgd2dss/blob/main/CHANGELOG.md) para ver a lista completa de alterações, novas funcionalidades e correções realizadas em cada versão da biblioteca.
 
-> Última versão: **v0.1.0** — publicada em **01/09/2026**.
+> Última versão: **v0.1.2** — publicada em **20/10/2026**.
 
 
 ## Agradecimentos 
