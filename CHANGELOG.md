@@ -1,3 +1,7 @@
+## [v0.1.2] - 20/10/2026
+### 🐞 Correções
+- Correção no READ.ME e nova versão para o PyPI.
+- 
 ## [v0.1.1] - 19/10/2026
 ### 🐞 Correções
 - Correção no READ.ME e nova versão para o PyPI.
