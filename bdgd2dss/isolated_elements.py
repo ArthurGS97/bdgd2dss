@@ -26,13 +26,13 @@ conteudo_txt = match.group(1) if match else ""
 # --- Extrai cargas ---
 todas_cargas = [
     carga.lower().strip()
-    for carga in re.findall(r'Load\.\S+', conteudo_txt, re.IGNORECASE)
+    for carga in re.findall(r'Load\.[^\s"]+', conteudo_txt, re.IGNORECASE)
 ]
 
 # --- Extrai linhas de ramais de ligação, linhas bt e chaves --- 
 todas_linhas = [
     carga.lower().strip()
-    for carga in re.findall(r'Line\.\S+', conteudo_txt, re.IGNORECASE)
+    for carga in re.findall(r'Line\.[^\s"]+', conteudo_txt, re.IGNORECASE)
 ]
 
 
